@@ -11,8 +11,10 @@ import (
 	"./rich"
 )
 
+//go:generate openssl genrsa -out keys/private.rsa 1024
+//go:generate openssl rsa -in keys/private.rsa -pubout -out keys/public.rsa.pub
+//go:generate go-bindata -nomemcopy -pkg keys -o ./keys/bindata.go keys/private.rsa keys/public.rsa.pub
 //go:generate go-bindata -nomemcopy -pkg rich -o ./rich/bindata.go www/...
-//go:generate go-bindata -nomemcopy -pkg keys -o ./keys/bindata.go keys/p*
 
 func main() {
 	app := cli.NewApp()

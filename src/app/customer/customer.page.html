@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons  slot="start">
+      <ion-button (click)="ok()">
+        保存
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ customer.name }}</ion-title>
+    <ion-buttons  slot="end">
+      <ion-button (click)="cancel()">
+        取消
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+        <ion-label fixed>姓名</ion-label>
+        <ion-input required type="text" placeholder="客户姓名" [(ngModel)]="customer.name"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label fixed>电话</ion-label>
+        <ion-input type="text" placeholder="联系方式" [(ngModel)]="customer.phone"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label fixed>备注</ion-label>
+        <ion-input type="text" placeholder="备注信息" [(ngModel)]="customer.note"></ion-input>
+    </ion-item>
+  </ion-list>
+</ion-content>

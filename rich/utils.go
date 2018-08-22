@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"os"
 	"strings"
 )
 
@@ -30,4 +31,12 @@ func GetIp() (string, error) {
 		}
 	}
 	return "", errors.New("未找到IP")
+}
+
+// 创建目录
+func mkdir(path string) {
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		os.MkdirAll(path, 0777)
+	}
 }

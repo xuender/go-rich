@@ -50,3 +50,5 @@ data/
 temp/
 db/
 bindata.go
+private.rsa
+public.rsa.pub

@@ -3,4 +3,4 @@ Generar certificados para JWT
 
 openssl genrsa -out private.rsa 1024
 
-openssl rsa -in private.rsa -pubout > public.rsa.pub
+openssl rsa -in private.rsa -pubout -out public.rsa.pub

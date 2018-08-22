@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 
 	"github.com/urfave/cli"
 	"github.com/xuender/goutils"
@@ -70,7 +73,17 @@ func runAction(c *cli.Context) error {
 			goutils.Open(url)
 		}
 	}
+	// 退出
+	quitChan := make(chan os.Signal)
+	signal.Notify(quitChan,
+		syscall.SIGINT,
+		syscall.SIGTERM,
+		syscall.SIGHUP,
+	)
 	// 运行
-	web.Run()
+	go web.Run()
+	fmt.Println(<-quitChan)
+	web.Close()
+	log.Println("退出")
 	return nil
 }

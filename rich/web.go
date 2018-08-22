@@ -8,12 +8,12 @@ import (
 
 	"../keys"
 
-	static "github.com/Code-Hex/echo-static"
 	jwt "github.com/dgrijalva/jwt-go"
 	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/syndtr/goleveldb/leveldb"
+	"github.com/syndtr/goleveldb/leveldb/util"
 	"github.com/xuender/goutils"
 )
 
@@ -55,40 +55,72 @@ func (w *Web) Init() error {
 	}
 	// 数据库初始化
 	db, err := leveldb.OpenFile(w.Db, nil)
-	// 数据库链接
-	w.db = db
 	if err != nil {
 		return err
 	}
+	// 数据库链接
+	w.db = db
 	// 每日帐目初始化
-	data, err := db.Get(DAYS_KEY, nil)
-	if err == nil {
-		goutils.Decode(data, &w.days)
-	} else {
-		w.days = Days{}
-	}
+	w.Get(DAYS_KEY, &w.days)
 	return nil
+}
+
+// 数据库数据读取
+func (w *Web) Get(key []byte, p interface{}) error {
+	data, err := w.db.Get(key, nil)
+	if err != nil {
+		return err
+	}
+	return goutils.Decode(data, p)
+}
+
+// 数据库数据保存
+func (w *Web) Put(key []byte, p interface{}) error {
+	bs, err := goutils.Encode(p)
+	if err != nil {
+		return err
+	}
+	return w.db.Put(key, bs, nil)
+}
+
+// 迭代获取数据
+func (w *Web) Iterator(prefix []byte, f func(bs []byte)) {
+	iter := w.db.NewIterator(util.BytesPrefix(prefix), nil)
+	for iter.Next() {
+		f(iter.Value())
+	}
+	iter.Release()
 }
 
 func (w *Web) Run() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	// 跨域访问
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{"http://localhost:8100"},
+		AllowMethods:     []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
+		AllowCredentials: true,
+	}))
 	e.GET("/test", w.test)
 	e.GET("/days", w.getDays)
 	e.POST("/login", w.login)
 	// 需要身份认证
 	api := e.Group("/api")
-	api.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		SigningKey:    verifyKey,
-		SigningMethod: "RS256",
-	}))
-	api.GET("/user", w.test)
+	// api.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+	// 	SigningKey:    verifyKey,
+	// 	SigningMethod: "RS256",
+	// }))
+	w.customerRoute(api.Group("/c"))
 	// 静态资源
 	e.Static("/", "www")
-	e.Use(static.ServeRoot("/", getAssets("www")))
+	// e.Use(static.ServeRoot("/", getAssets("www")))
 	// 启动服务
 	e.Start(w.Port)
+}
+
+func (w *Web) Close() {
+	w.db.Close()
 }
 
 // 静态资源

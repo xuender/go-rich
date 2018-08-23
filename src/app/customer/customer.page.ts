@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
-import { Customer } from '../api/customer';
-import { ViewController } from '@ionic/core';
+import { map } from 'lodash-es'
+import { Customer, Property } from '../api/customer';
 
 @Component({
   selector: 'app-customer',
@@ -9,19 +9,28 @@ import { ViewController } from '@ionic/core';
   styleUrls: ['./customer.page.scss'],
 })
 export class CustomerPage implements OnInit {
-
   customer: Customer
+  properties: Property[]
   constructor(
     public modalCtrl: ModalController,
     private navParams: NavParams
   ) {
     this.customer = this.navParams.get('customer')
+    this.properties = map(this.customer.properties, (v, k) => {
+      return {
+        key: k,
+        value: v,
+      }
+    })
   }
   cancel() {
     this.modalCtrl.dismiss();
   }
 
   ok() {
+    for (const p of this.properties) {
+      this.customer.properties[p.key] = p.value
+    }
     this.modalCtrl.dismiss(this.customer);
   }
 

@@ -1,18 +1,21 @@
 import { Injectable } from '@angular/core'
+import { ActionSheetController } from '@ionic/angular'
 import { Customer, Divider } from './customer'
-import { sortBy, chain, invert, isNumber } from 'lodash-es'
+import { sortBy, chain, invert, isNumber, pull, remove } from 'lodash-es'
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
-  static URL = 'http://localhost:6181'
+  // static URL = 'http://localhost:6181'
+  static URL = ''
   customers: Customer[] = []
   dividers: Divider[] = []
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private actionSheetCtrl: ActionSheetController
   ) {
     this.load()
   }
@@ -59,5 +62,31 @@ export class CustomerService {
       pro[k] -= 1
     }
     return this.http.post<any>(`${CustomerService.URL}/api/c/promap`, invert(pro))
+  }
+  // 删除客户
+  async del(c: Customer) {
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: `确认删除客户 [ ${c.name} ] ?`,
+      buttons: [{
+        text: '删除',
+        role: 'destructive',
+        icon: 'trash',
+        handler: () => {
+          this.http.delete(`${CustomerService.URL}/api/c/${c.id}`)
+            .subscribe(r => {
+              pull(this.customers, c)
+              for (const d of this.dividers) {
+                pull(d.customers, c)
+              }
+              remove(this.dividers, d => d.customers.length === 0)
+            })
+        }
+      }, {
+        text: '取消',
+        icon: 'close',
+        role: 'cancel',
+      }]
+    });
+    await actionSheet.present();
   }
 }

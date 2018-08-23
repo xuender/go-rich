@@ -3,7 +3,7 @@
     <ion-title>
       联系人
     </ion-title>
-    <ion-buttons  slot="end">
+    <ion-buttons slot="end">
       <ion-button (click)="upload()">
         上传
       </ion-button>
@@ -15,17 +15,22 @@
   <ion-list>
     <ion-item-group *ngFor="let d of customer.dividers">
       <ion-item-divider color="light">{{ d.divide }}</ion-item-divider>
-      <ion-item button *ngFor="let c of d.customers" (click)="open(c)">
-        <ion-avatar slot="start">
-          <img src="/assets/img/contact.png">
-        </ion-avatar>
-        <ion-label>
-        <h2>{{ c.name }}</h2>
-        <h3>{{ c.phone }}</h3>
-        <p>{{ c.note }}</p>
-        </ion-label>
-        <ion-badge *ngIf="c.trades">{{ c.trades.length }}</ion-badge>
-      </ion-item>
+      <ion-item-sliding *ngFor="let c of d.customers">
+        <ion-item button (click)="open(c)">
+          <ion-avatar slot="start">
+            <img src="/assets/img/contact.png">
+          </ion-avatar>
+          <ion-label>
+            <h2>{{ c.name }}</h2>
+            <h3>{{ c.phone }}</h3>
+            <p>{{ c.note }}</p>
+          </ion-label>
+          <ion-badge *ngIf="c.trades">{{ c.trades.length }}</ion-badge>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option (click)="customer.del(c)" color="danger">删除</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
     </ion-item-group>
   </ion-list>
 </ion-content>

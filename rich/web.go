@@ -2,11 +2,14 @@ package rich
 
 import (
 	"crypto/rsa"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"../keys"
+	"rsc.io/qr"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	assetfs "github.com/elazarl/go-bindata-assetfs"
@@ -92,6 +95,11 @@ func (w *Web) Iterator(prefix []byte, f func(bs []byte)) {
 	iter.Release()
 }
 
+// 删除
+func (w *Web) Delete(key []byte) error {
+	return w.db.Delete(key, nil)
+}
+
 func (w *Web) Run() {
 	e := echo.New()
 	e.Use(middleware.Logger())
@@ -102,8 +110,7 @@ func (w *Web) Run() {
 		AllowMethods:     []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 		AllowCredentials: true,
 	}))
-	e.GET("/test", w.test)
-	e.GET("/days", w.getDays)
+	e.GET("/qr", w.qrcode)
 	e.POST("/login", w.login)
 	// 需要身份认证
 	api := e.Group("/api")
@@ -161,11 +168,46 @@ func (w *Web) login(c echo.Context) error {
 	return echo.ErrUnauthorized
 }
 
+// QR码
+func (w *Web) qrcode(c echo.Context) error {
+	url, err := GetUrl(w.Port)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	code, err := qr.Encode(url, qr.Q)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "QR码生成错误")
+	}
+	return c.Blob(http.StatusOK, "image/png", code.PNG())
+}
+
 // 测试
 func (w *Web) test(c echo.Context) error {
 	return c.String(http.StatusOK, "ok")
 }
 
-func (w *Web) getDays(c echo.Context) error {
-	return c.JSON(http.StatusOK, w.days)
+func (w *Web) saveTemp(c echo.Context) (string, error) {
+	// 来源
+	file, err := c.FormFile("file")
+	if err != nil {
+		return "", err
+	}
+	src, err := file.Open()
+	if err != nil {
+		return "", err
+	}
+	defer src.Close()
+	// 目的
+	mkdir(w.Temp)
+	f := w.Temp + string(os.PathSeparator) + file.Filename
+	dst, err := os.Create(f)
+	if err != nil {
+		return "", err
+	}
+	defer dst.Close()
+	// 复制
+	if _, err = io.Copy(dst, src); err != nil {
+		return "", err
+	}
+	return f, nil
 }

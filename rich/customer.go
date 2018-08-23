@@ -2,7 +2,6 @@ package rich
 
 import (
 	"errors"
-	"io"
 	"net/http"
 	"os"
 	"time"
@@ -28,10 +27,23 @@ func (w *Web) customerRoute(c *echo.Group) {
 	// excel 格式定义
 	c.POST("/promap", w.postPromap)
 	c.GET("/promap", w.getPromap)
-	c.POST("/up", w.cup)
-	// TODO
+	c.POST("/up", w.customerUp)
 	c.GET("/all", w.customerAll)
+	c.DELETE("/:id", w.deleteCustomer)
 }
+
+// 删除用户
+func (w *Web) deleteCustomer(c echo.Context) error {
+	id := new(goutils.ID)
+	err := id.Parse(c.Param("id"))
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	w.Delete(id[:])
+	return c.JSON(http.StatusOK, "删除完毕")
+}
+
+// 获取全部客户
 func (w *Web) customerAll(c echo.Context) error {
 	cs := []Customer{}
 	w.Iterator([]byte{CustomerIdPrefix, '-'}, func(data []byte) {
@@ -44,6 +56,7 @@ func (w *Web) customerAll(c echo.Context) error {
 
 var customerPromapKey = []byte("CP-MAP")
 
+// 设置 excel 定义
 func (w *Web) postPromap(c echo.Context) error {
 	m := make(map[int]string)
 	if err := c.Bind(&m); err != nil {
@@ -52,49 +65,30 @@ func (w *Web) postPromap(c echo.Context) error {
 	w.Put(customerPromapKey, m)
 	return c.JSON(http.StatusOK, m)
 }
+
+// 获取 excel 定义
 func (w *Web) getPromap(c echo.Context) error {
 	m := make(map[int]string)
 	w.Get(customerPromapKey, &m)
 	return c.JSON(http.StatusOK, m)
 }
-func (w *Web) saveTemp(c echo.Context) (string, error) {
-	// 来源
-	file, err := c.FormFile("file")
-	if err != nil {
-		return "", err
-	}
-	src, err := file.Open()
-	if err != nil {
-		return "", err
-	}
-	defer src.Close()
-	// 目的
-	mkdir(w.Temp)
-	f := w.Temp + string(os.PathSeparator) + file.Filename
-	dst, err := os.Create(f)
-	if err != nil {
-		return "", err
-	}
-	defer dst.Close()
-	// 复制
-	if _, err = io.Copy(dst, src); err != nil {
-		return "", err
-	}
-	return f, nil
-}
-func (w *Web) cup(c echo.Context) error {
+
+// 客户信息上传
+func (w *Web) customerUp(c echo.Context) error {
 	promap := make(map[int]string)
 	err := w.Get(customerPromapKey, &promap)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, "Excel尚未定义")
 	}
 	file, err := w.saveTemp(c)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	cs, err := loadXlsx(file, promap)
+	cs, err := readXlsx(file, promap)
+	// log.Printf("size: %d %s\n", len(cs), promap)
 	if err == nil {
 		for _, c := range cs {
+			// log.Println(c.Name)
 			w.Put(c.Id[:], c)
 		}
 		os.Remove(file)
@@ -102,7 +96,9 @@ func (w *Web) cup(c echo.Context) error {
 	}
 	return c.String(http.StatusInternalServerError, err.Error())
 }
-func loadXlsx(file string, promap map[int]string) (cs []Customer, err error) {
+
+// Excel 文件读取
+func readXlsx(file string, promap map[int]string) (cs []Customer, err error) {
 	xlsx, err := excelize.OpenFile(file)
 	if err != nil {
 		return
@@ -153,5 +149,6 @@ func NewCustomer(row []string, customerProMap map[int]string) (c Customer, err e
 	}
 	c.Id = goutils.NewId(CustomerIdPrefix)
 	c.Pinyin = pinyin.Slug(row[0], args)
+	c.Ca = time.Now()
 	return
 }

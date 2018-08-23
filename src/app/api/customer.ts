@@ -6,9 +6,14 @@ export interface Customer {
   ca: Date                        // 创建时间
   trades?: string[]                // 消费记录
   note?: string                    // 备注
-  properties?: Map<string, string> // 扩展属性
+  properties?: any // 扩展属性
 }
 export interface Divider {
   divide: string
   customers: Customer[]
+}
+
+export interface Property{
+  key: string
+  value: string
 }

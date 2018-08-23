@@ -3,7 +3,7 @@ import { CustomerService } from '../../api/customer.service';
 import { pull, pick, omit } from 'lodash-es'
 import { ModalController } from '@ionic/angular';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-const KEYS = ['name', 'phone', 'note']
+const KEYS = ['Name', 'Phone', 'Note']
 
 @Component({
   selector: 'app-upload',
@@ -11,7 +11,7 @@ const KEYS = ['name', 'phone', 'note']
   styleUrls: ['./upload.page.scss'],
 })
 export class UploadPage implements OnInit {
-  pro: any = { name: 1, phone: 2, note: 3 }
+  pro: any = { Name: 1, Phone: 2, Note: 3 }
   exp: any[] = []
   isEdit: boolean = false
   uploader: FileUploader = new FileUploader({ url: `${CustomerService.URL}/api/c/up` });

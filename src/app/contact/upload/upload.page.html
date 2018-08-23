@@ -21,15 +21,15 @@
   <ion-list>
     <ion-item>
       <ion-label fixed>姓名</ion-label>
-      <ion-input required type="number" placeholder="姓名所在列" [(ngModel)]="pro.name" min="1" max="30" [disabled]="!isEdit"></ion-input>
+      <ion-input required type="number" placeholder="姓名所在列" [(ngModel)]="pro.Name" min="1" max="30" [disabled]="!isEdit"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label fixed>电话</ion-label>
-      <ion-input type="number" placeholder="联系方式所在列, 0为没有" [(ngModel)]="pro.phone" min="0" max="30" [disabled]="!isEdit"></ion-input>
+      <ion-input type="number" placeholder="联系方式所在列, 0为没有" [(ngModel)]="pro.Phone" min="0" max="30" [disabled]="!isEdit"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label fixed>备注</ion-label>
-      <ion-input type="number" placeholder="备注信息所在列, 0为没有" [(ngModel)]="pro.note" min="0" max="30" [disabled]="!isEdit"></ion-input>
+      <ion-input type="number" placeholder="备注信息所在列, 0为没有" [(ngModel)]="pro.Note" min="0" max="30" [disabled]="!isEdit"></ion-input>
     </ion-item>
   </ion-list>
   <ion-list-header>

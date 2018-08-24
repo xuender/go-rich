@@ -11,6 +11,7 @@ import (
 	"../keys"
 	"rsc.io/qr"
 
+	static "github.com/Code-Hex/echo-static"
 	jwt "github.com/dgrijalva/jwt-go"
 	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/labstack/echo"
@@ -68,6 +69,41 @@ func (w *Web) Init() error {
 	return nil
 }
 
+// 启动服务
+func (w *Web) Run() {
+	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	// 跨域访问
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{"http://localhost:8100"},
+		AllowMethods:     []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
+		AllowCredentials: true,
+	}))
+	e.GET("/qr", w.qrcode)
+	e.POST("/login", w.login)
+	// 需要身份认证
+	api := e.Group("/api")
+	// api.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+	// 	SigningKey:    verifyKey,
+	// 	SigningMethod: "RS256",
+	// }))
+	w.customerRoute(api.Group("/c"))
+	// 静态资源
+	if false {
+		e.Static("/", "www")
+	} else {
+		e.Use(static.ServeRoot("/", getAssets("www")))
+	}
+	// 启动服务
+	e.Start(w.Port)
+}
+
+// 关闭服务
+func (w *Web) Close() {
+	w.db.Close()
+}
+
 // 数据库数据读取
 func (w *Web) Get(key []byte, p interface{}) error {
 	data, err := w.db.Get(key, nil)
@@ -98,36 +134,6 @@ func (w *Web) Iterator(prefix []byte, f func(bs []byte)) {
 // 删除
 func (w *Web) Delete(key []byte) error {
 	return w.db.Delete(key, nil)
-}
-
-func (w *Web) Run() {
-	e := echo.New()
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	// 跨域访问
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{"http://localhost:8100"},
-		AllowMethods:     []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
-		AllowCredentials: true,
-	}))
-	e.GET("/qr", w.qrcode)
-	e.POST("/login", w.login)
-	// 需要身份认证
-	api := e.Group("/api")
-	// api.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-	// 	SigningKey:    verifyKey,
-	// 	SigningMethod: "RS256",
-	// }))
-	w.customerRoute(api.Group("/c"))
-	// 静态资源
-	e.Static("/", "www")
-	// e.Use(static.ServeRoot("/", getAssets("www")))
-	// 启动服务
-	e.Start(w.Port)
-}
-
-func (w *Web) Close() {
-	w.db.Close()
 }
 
 // 静态资源
@@ -181,11 +187,7 @@ func (w *Web) qrcode(c echo.Context) error {
 	return c.Blob(http.StatusOK, "image/png", code.PNG())
 }
 
-// 测试
-func (w *Web) test(c echo.Context) error {
-	return c.String(http.StatusOK, "ok")
-}
-
+// 上传文件临时保存
 func (w *Web) saveTemp(c echo.Context) (string, error) {
 	// 来源
 	file, err := c.FormFile("file")

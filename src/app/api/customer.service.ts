@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core'
 import { ActionSheetController } from '@ionic/angular'
 import { Customer, Divider } from './customer'
-import { sortBy, chain, invert, isNumber, pull, remove } from 'lodash-es'
+import { sortBy, invert, isNumber, pull, remove } from 'lodash-es'
 import { HttpClient } from '@angular/common/http';
+import { chain } from './utils';
 
 @Injectable({
   providedIn: 'root'

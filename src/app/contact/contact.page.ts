@@ -4,6 +4,7 @@ import { CustomerService } from '../api/customer.service';
 import { Customer } from '../api/customer';
 import { CustomerPage } from '../customer/customer.page';
 import { UploadPage } from './upload/upload.page';
+import { GroupPage } from './group/group.page';
 
 @Component({
   selector: 'app-contact',
@@ -11,6 +12,7 @@ import { UploadPage } from './upload/upload.page';
   styleUrls: ['contact.page.scss']
 })
 export class ContactPage {
+  title : string=''
   constructor(
     public customer: CustomerService,
     public modalCtrl: ModalController
@@ -40,6 +42,22 @@ export class ContactPage {
     });
     modal.onDidDismiss(d => {
       if (d.data) {
+      }
+    })
+    return await modal.present()
+  }
+  /**
+   * 分组
+   */
+  async group() {
+    console.log('分组')
+    const modal = await this.modalCtrl.create({
+      component: GroupPage,
+    });
+    modal.onDidDismiss(d => {
+      if (d.data) {
+        this.title = d.data
+        this.customer.load(d.data)
       }
     })
     return await modal.present()

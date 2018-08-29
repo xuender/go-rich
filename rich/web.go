@@ -64,6 +64,8 @@ func (w *Web) Init() error {
 	}
 	// 数据库链接
 	w.db = db
+	// 用户初始化
+	w.UserInit()
 	// 每日帐目初始化
 	w.Get(DAYS_KEY, &w.days)
 	return nil
@@ -88,7 +90,10 @@ func (w *Web) Run() {
 	// 	SigningKey:    verifyKey,
 	// 	SigningMethod: "RS256",
 	// }))
+	// 客户
 	w.customerRoute(api.Group("/c"))
+	// 用户
+	w.userRoute(api.Group("/u"))
 	// 静态资源
 	if false {
 		e.Static("/", "www")
@@ -123,12 +128,13 @@ func (w *Web) Put(key []byte, p interface{}) error {
 }
 
 // 迭代获取数据
-func (w *Web) Iterator(prefix []byte, f func(bs []byte)) {
+func (w *Web) Iterator(prefix []byte, f func(bs []byte)) error {
 	iter := w.db.NewIterator(util.BytesPrefix(prefix), nil)
 	for iter.Next() {
 		f(iter.Value())
 	}
 	iter.Release()
+	return iter.Error()
 }
 
 // 删除
@@ -154,7 +160,7 @@ func (w *Web) login(c echo.Context) error {
 		return err
 	}
 	// TODO 身份认证
-	if u.Phone == "139" && u.Password == "123" {
+	if u.Phone == "139" && u.Pass == "123" {
 		// 创建令牌
 		token := jwt.New(jwt.SigningMethodRS256)
 		// 设置用户信息

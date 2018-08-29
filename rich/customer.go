@@ -4,6 +4,9 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"sort"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
@@ -13,23 +16,34 @@ import (
 )
 
 type Customer struct {
-	Id         goutils.ID        `json:"id"`                   // 主键
-	Name       string            `json:"name"`                 // 姓名
-	Pinyin     string            `json:"pinyin"`               // 拼音
-	Phone      string            `json:"phone,omitempty"`      // 电话
-	Ca         time.Time         `json:"ca"`                   // 创建时间
-	Trades     []goutils.ID      `json:"trades,omitempty"`     // 消费记录
-	Note       string            `json:"note,omitempty"`       // 备注
-	Properties map[string]string `json:"properties,omitempty"` // 扩展属性
+	Id     goutils.ID   `json:"id"`               // 主键
+	Name   string       `json:"name"`             // 姓名
+	Pinyin string       `json:"pinyin"`           // 拼音
+	Phone  string       `json:"phone,omitempty"`  // 电话
+	Ca     time.Time    `json:"ca"`               // 创建时间
+	Trades []goutils.ID `json:"trades,omitempty"` // 消费记录
+	Note   string       `json:"note,omitempty"`   // 备注
+	Extend []Ext        `json:"extend,omitempty"` // 扩展属性
 }
 
 func (w *Web) customerRoute(c *echo.Group) {
 	// excel 格式定义
-	c.POST("/promap", w.postPromap)
-	c.GET("/promap", w.getPromap)
+	c.PUT("/ext", w.postExt)
+	c.GET("/ext", w.getExt)
 	c.POST("/up", w.customerUp)
 	c.GET("/all", w.customerAll)
+	c.DELETE("/all", w.cleanCustomer)
+	c.GET("/groups", w.customerGroups)
+	c.GET("/g/:group", w.customerGroup)
 	c.DELETE("/:id", w.deleteCustomer)
+}
+
+// 清除用户
+func (w *Web) cleanCustomer(c echo.Context) error {
+	for _, c := range w.customers() {
+		w.Delete(c.Id[:])
+	}
+	return c.JSON(http.StatusOK, "清除完毕")
 }
 
 // 删除用户
@@ -43,40 +57,80 @@ func (w *Web) deleteCustomer(c echo.Context) error {
 	return c.JSON(http.StatusOK, "删除完毕")
 }
 
-// 获取全部客户
-func (w *Web) customerAll(c echo.Context) error {
+// 获取客户分组列表
+func (w *Web) customerGroups(c echo.Context) error {
+	m := make(map[string]bool)
+	for _, c := range w.customers() {
+		rs := []rune(c.Pinyin)
+		if len(rs) > 0 {
+			m[strings.ToUpper(string(rs[0:1]))] = true
+		}
+	}
+	ret := []string{}
+	for item, _ := range m {
+		ret = append(ret, item)
+	}
+	sort.Strings(ret)
+	return c.JSON(http.StatusOK, ret)
+}
+
+// 获取客户分组
+func (w *Web) customerGroup(c echo.Context) error {
+	group := strings.ToUpper(c.Param("group"))
+	ret := []Customer{}
+	for _, c := range w.customers() {
+		rs := []rune(c.Pinyin)
+		if len(rs) > 0 {
+			if group == strings.ToUpper(string(rs[0:1])) {
+				ret = append(ret, c)
+			}
+		}
+	}
+	sort.Slice(ret, func(i int, j int) bool {
+		return ret[i].Pinyin > ret[j].Pinyin
+	})
+	return c.JSON(http.StatusOK, ret)
+}
+
+// 客户列表
+func (w *Web) customers() []Customer {
 	cs := []Customer{}
 	w.Iterator([]byte{CustomerIdPrefix, '-'}, func(data []byte) {
 		c := Customer{}
 		goutils.Decode(data, &c)
 		cs = append(cs, c)
 	})
-	return c.JSON(http.StatusOK, cs)
+	return cs
 }
 
-var customerPromapKey = []byte("CP-MAP")
+// 获取全部客户
+func (w *Web) customerAll(c echo.Context) error {
+	return c.JSON(http.StatusOK, w.customers())
+}
+
+var extCustomerKey = []byte("EXT-C")
 
 // 设置 excel 定义
-func (w *Web) postPromap(c echo.Context) error {
-	m := make(map[int]string)
+func (w *Web) postExt(c echo.Context) error {
+	m := []Ext{}
 	if err := c.Bind(&m); err != nil {
 		return err
 	}
-	w.Put(customerPromapKey, m)
+	w.Put(extCustomerKey, m)
 	return c.JSON(http.StatusOK, m)
 }
 
 // 获取 excel 定义
-func (w *Web) getPromap(c echo.Context) error {
-	m := make(map[int]string)
-	w.Get(customerPromapKey, &m)
+func (w *Web) getExt(c echo.Context) error {
+	m := []Ext{}
+	w.Get(extCustomerKey, &m)
 	return c.JSON(http.StatusOK, m)
 }
 
 // 客户信息上传
 func (w *Web) customerUp(c echo.Context) error {
-	promap := make(map[int]string)
-	err := w.Get(customerPromapKey, &promap)
+	promap := []Ext{}
+	err := w.Get(extCustomerKey, &promap)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "Excel尚未定义")
 	}
@@ -98,7 +152,7 @@ func (w *Web) customerUp(c echo.Context) error {
 }
 
 // Excel 文件读取
-func readXlsx(file string, promap map[int]string) (cs []Customer, err error) {
+func readXlsx(file string, promap []Ext) (cs []Customer, err error) {
 	xlsx, err := excelize.OpenFile(file)
 	if err != nil {
 		return
@@ -134,10 +188,23 @@ func init() {
 	// customerProMap[12] = "Note"
 	args.Separator = " "
 }
-func NewCustomer(row []string, customerProMap map[int]string) (c Customer, err error) {
-	err = goutils.Parse(row, customerProMap, &c)
+func NewCustomer(row []string, ext []Ext) (c Customer, err error) {
+	customerProMap := make(map[int]string)
+	for _, e := range ext {
+		i, erro := strconv.Atoi(e.Value)
+		if erro == nil {
+			customerProMap[i] = e.Key
+		}
+	}
+	p, err := goutils.Parse(row, customerProMap, &c)
 	if err != nil {
 		return
+	}
+	for _, e := range ext {
+		v, ok := p[e.Key]
+		if ok {
+			c.Extend = append(c.Extend, Ext{Key: e.Key, Value: v})
+		}
 	}
 	if c.Name == "" {
 		err = errors.New("姓名为空")

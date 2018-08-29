@@ -1,4 +1,6 @@
-TAG = $(shell git tag)
+# 获取最后的tag
+TAG = $(shell git tag | tail -n 1)
+
 all: web generate build pack
 
 web:
@@ -19,15 +21,19 @@ build:
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o rich-darwin main.go
 
 pack:
-	@echo 打包
-	zip rich-386.zip rich-386.exe
-	rm rich-386.exe
-	zip rich-amd64.zip rich-amd64.exe
-	rm rich-amd64.exe
-	zip rich-linux.zip rich-linux
-	rm rich-linux
-	zip rich-darwin.zip rich-darwin
-	rm rich-darwin
+	@echo 打包 $(TAG)
+	mv rich-386.exe go-rich.exe
+	zip rich-$(TAG)-windows_386.zip go-rich.exe
+	rm go-rich.exe
+	mv rich-amd64.exe go-rich.exe
+	zip rich-$(TAG)-windows_amd64.zip go-rich.exe
+	rm go-rich.exe
+	mv rich-linux go-rich
+	zip rich-$(TAG)-linux_amd64.zip go-rich
+	rm go-rich
+	mv rich-darwin go-rich
+	zip rich-$(TAG)-darwin_amd64.zip go-rich
+	rm go-rich
 
 todo:
 	@echo 寻找未完成代码

@@ -1,7 +1,8 @@
 package rich
 
 const (
-	TradeIdPrefix    byte = 'T'
-	ItemIdPrefix     byte = 'I'
-	CustomerIdPrefix byte = 'C'
+	CustomerIdPrefix byte = 'C' // 客户
+	UserIdPrefix     byte = 'U' // 用户
+	TradeIdPrefix    byte = 'T' // 订单
+	ItemIdPrefix     byte = 'I' // 商品
 )

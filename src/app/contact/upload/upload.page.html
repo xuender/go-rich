@@ -34,10 +34,10 @@
   </ion-list>
   <ion-list-header>
     扩展信息
-    <ion-button color="secondary" (click)="exp.push({})" size="small" *ngIf="isEdit">增加</ion-button>
+    <ion-button color="secondary" (click)="ext.push({})" size="small" *ngIf="isEdit">增加</ion-button>
   </ion-list-header>
-  <ion-item *ngFor="let e of exp">
-    <ion-input type="text" placeholder="扩展信息名称" [(ngModel)]="e.name" maxlength="20" minlength="1" [disabled]="!isEdit"></ion-input>
+  <ion-item *ngFor="let e of ext">
+    <ion-input type="text" placeholder="扩展信息名称" [(ngModel)]="e.key" maxlength="20" minlength="1" [disabled]="!isEdit"></ion-input>
     <ion-input type="number" placeholder="扩展信息所在列" [(ngModel)]="e.value" min="0" max="30" [disabled]="!isEdit"></ion-input>
     <ion-button color="danger" (click)="remove(e)" size="small" *ngIf="isEdit">删除</ion-button>
   </ion-item>

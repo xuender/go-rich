@@ -22,10 +22,13 @@ export class ExtService {
     this.customerExts = await this.http.get<Ext[]>(`${URL}/api/exts/E-C`).toPromise()
     return this.customerExts
   }
+  /**
+   * 修改
+   */
   putCustomerExts(exts: Ext[]) {
     this.http.put<Ext[]>(`${URL}/api/exts/E-C`, exts)
       .subscribe((s: Ext[]) => {
-        console.log('s', s)
+        this.getCustomerExts()
       })
   }
   async load() {
@@ -37,6 +40,7 @@ export class ExtService {
    * 客户扩展设置
    */
   async extCustomer() {
+    await this.getCustomerExts()
     const modal = await this.modalCtrl.create({
       component: ExtPage,
       componentProps: { exts: Object.assign([], this.customerExts) }

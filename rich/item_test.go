@@ -10,7 +10,7 @@ func TestItem(t *testing.T) {
 	Convey("NewItem", t, func() {
 		Convey("Item", func() {
 			item := NewItem()
-			item.Title = "BOOK"
+			item.Name = "BOOK"
 			So(len(item.Id), ShouldEqual, 18)
 		})
 	})

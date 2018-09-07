@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular'
 import { CustomerService } from '../api/customer.service';
 import { Customer } from '../api/customer';
-import { CustomerPage } from '../customer/customer.page';
+import { CustomerPage } from './customer/customer.page';
 import { UploadPage } from './upload/upload.page';
 import { GroupPage } from './group/group.page';
 
@@ -12,7 +12,7 @@ import { GroupPage } from './group/group.page';
   styleUrls: ['contact.page.scss']
 })
 export class ContactPage {
-  title : string=''
+  title: string = ''
   constructor(
     public customer: CustomerService,
     public modalCtrl: ModalController
@@ -21,16 +21,30 @@ export class ContactPage {
    * 编辑客户
    * @param c 客户
    */
-  async open(c: Customer) {
+  async update(c: Customer) {
     const modal = await this.modalCtrl.create({
       component: CustomerPage,
       componentProps: { customer: Object.assign({}, c) },
     });
     modal.onDidDismiss(d => {
       if (d.data) {
+        this.customer.put(d.data)
         Object.assign(c, d.data)
       }
     })
+    return await modal.present()
+  }
+  async create() {
+    const modal = await this.modalCtrl.create({
+      component: CustomerPage,
+      componentProps: {
+        customer: {
+          name: '',
+          extend: {}
+        }
+      }
+    });
+    modal.onDidDismiss(d => this.customer.post(d.data))
     return await modal.present()
   }
   /**
@@ -50,7 +64,6 @@ export class ContactPage {
    * 分组
    */
   async group() {
-    console.log('分组')
     const modal = await this.modalCtrl.create({
       component: GroupPage,
     });

@@ -6,12 +6,9 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item>
-      <img src="{{url}}/qr">
-    </ion-item>
-    <ion-item>
-      <ion-icon name="help-circle" color="primary" item-start></ion-icon>
-      手机扫描, 打开管理界面
+    <ion-item button href="/tabs/(about:setting)">
+      设置
+      <ion-router-outlet name="setting"></ion-router-outlet>
     </ion-item>
   </ion-list>
 </ion-content>

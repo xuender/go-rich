@@ -1,5 +1,10 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="create()">
+        新建
+      </ion-button>
+    </ion-buttons>
     <ion-title>
       联系人
     </ion-title>
@@ -22,7 +27,7 @@
       <h1>{{ title }}</h1>
     </ion-list-header>
     <ion-item-sliding *ngFor="let c of customer.customers">
-      <ion-item button (click)="open(c)">
+      <ion-item button (click)="update(c)">
         <!-- <ion-avatar slot="start">
           <img src="/assets/img/contact.png">
         </ion-avatar> -->

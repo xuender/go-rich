@@ -6,6 +6,8 @@ import (
 	"net"
 	"os"
 	"strings"
+
+	"github.com/mozillazg/go-slugify"
 )
 
 // 获取网址
@@ -14,7 +16,7 @@ func GetUrl(port string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("http://%s%s", ip, port), nil
+	return fmt.Sprintf("https://%s%s", ip, port), nil
 }
 
 // 获取IP地址
@@ -39,4 +41,11 @@ func mkdir(path string) {
 	if os.IsNotExist(err) {
 		os.MkdirAll(path, 0777)
 	}
+}
+
+func init() {
+	slugify.Separator = " "
+}
+func py(str string) string {
+	return slugify.Slugify(str)
 }

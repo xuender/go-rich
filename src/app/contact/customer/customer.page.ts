@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
-import { map } from 'lodash-es'
-import { Customer, Ext} from '../api/customer';
+import { Customer } from '../../api/customer';
 
 @Component({
   selector: 'app-customer',
@@ -11,10 +10,13 @@ import { Customer, Ext} from '../api/customer';
 export class CustomerPage implements OnInit {
   customer: Customer
   constructor(
-    public modalCtrl: ModalController,
+    private modalCtrl: ModalController,
     private navParams: NavParams
   ) {
     this.customer = this.navParams.get('customer')
+    if(!this.customer.extend){
+      this.customer.extend = {}
+    }
   }
   cancel() {
     this.modalCtrl.dismiss();

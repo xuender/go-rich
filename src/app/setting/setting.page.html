@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button href="/tabs/(about:about)">
+        后退
+      </ion-button>
+    </ion-buttons>
+    <ion-title>设置</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item button (click)="setting.users()">
+      用户列表
+    </ion-item>
+    <ion-item button (click)="ext.extCustomer()">
+      客户扩展
+    </ion-item>
+    <ion-item button (click)="setting.xlsxes()">
+      Excel定义
+    </ion-item>
+  </ion-list>
+</ion-content>

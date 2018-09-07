@@ -1,14 +1,14 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="ok()">
-        保存
+      <ion-button (click)="cancel()">
+        取消
       </ion-button>
     </ion-buttons>
     <ion-title>{{ customer.name }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="cancel()">
-        取消
+      <ion-button (click)="ok()">
+        保存
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -28,12 +28,6 @@
       <ion-label fixed>备注</ion-label>
       <ion-input type="text" placeholder="备注信息" [(ngModel)]="customer.note"></ion-input>
     </ion-item>
-    <ion-list-header>
-      扩展信息
-    </ion-list-header>
-    <ion-item *ngFor="let p of customer.extend">
-      <ion-label fixed>{{ p.key }}</ion-label>
-      <ion-input type="text" [(ngModel)]="p.value" placeholder="扩展信息" maxlength="20" minlength="1"></ion-input>
-    </ion-item>
   </ion-list>
+  <rich-ext [type]="'c'" [data]="customer.extend"></rich-ext>
 </ion-content>

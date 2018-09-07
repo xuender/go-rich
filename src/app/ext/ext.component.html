@@ -1,0 +1,10 @@
+<ion-list>
+  <ion-list-header>
+    扩展信息
+    <ion-button color="secondary" (click)="ext.extCustomer()" size="small">设置</ion-button>
+  </ion-list-header>
+  <ion-item *ngFor="let e of ext.customerExts">
+    <ion-label fixed>{{ e.key }}</ion-label>
+    <ion-input type="text" [placeholder]="e.value" [(ngModel)]="data[e.key]"></ion-input>
+  </ion-item>
+</ion-list>

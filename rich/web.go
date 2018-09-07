@@ -2,6 +2,7 @@ package rich
 
 import (
 	"crypto/rsa"
+	"crypto/tls"
 	"io"
 	"log"
 	"net/http"
@@ -25,6 +26,7 @@ type Web struct {
 	Port string      // 端口号
 	Temp string      // 临时文件目录
 	Db   string      // 数据库目录
+	Dev  bool        // 开发模式
 	db   *leveldb.DB // 数据库
 	days Days        // 文件日期列表
 }
@@ -58,12 +60,10 @@ func (w *Web) Init() error {
 		return err
 	}
 	// 数据库初始化
-	db, err := leveldb.OpenFile(w.Db, nil)
+	w.db, err = leveldb.OpenFile(w.Db, nil)
 	if err != nil {
 		return err
 	}
-	// 数据库链接
-	w.db = db
 	// 用户初始化
 	w.UserInit()
 	// 每日帐目初始化
@@ -72,36 +72,67 @@ func (w *Web) Init() error {
 }
 
 // 启动服务
-func (w *Web) Run() {
+func (w *Web) Run() (err error) {
 	e := echo.New()
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	// 跨域访问
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{"http://localhost:8100"},
-		AllowMethods:     []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
-		AllowCredentials: true,
-	}))
-	e.GET("/qr", w.qrcode)
-	e.POST("/login", w.login)
+	// 开发模式
+	if w.Dev {
+		e.Use(middleware.Recover())
+		e.Use(middleware.Logger())
+		// 跨域访问
+		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+			AllowOrigins:     []string{"*"},
+			AllowMethods:     []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
+			AllowCredentials: true,
+		}))
+	}
+	e.GET("/qr", w.qrcode)                   // 二维码访问
+	e.GET("/info", w.info)                   // 协议等
+	e.POST("/login", w.login)                // 登录
+	api := e.Group("/api")                   // API
+	w.customerRoute(api.Group("/customers")) // 客户
+	w.groupsRoute(api.Group("/groups"))      // 客户分组
+	w.extsRoute(api.Group("/exts"))          // 扩展定义
+	w.xlsxRoute(api.Group("/xlsxes"))        // Excel定义
+	w.userRoute(api.Group("/users"))         // 用户
+
 	// 需要身份认证
-	api := e.Group("/api")
 	// api.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 	// 	SigningKey:    verifyKey,
 	// 	SigningMethod: "RS256",
 	// }))
-	// 客户
-	w.customerRoute(api.Group("/c"))
-	// 用户
-	w.userRoute(api.Group("/u"))
+
 	// 静态资源
-	if false {
+	if w.Dev {
 		e.Static("/", "www")
 	} else {
 		e.Use(static.ServeRoot("/", getAssets("www")))
 	}
-	// 启动服务
-	e.Start(w.Port)
+	// HTTP/2.0 启动
+	return w.start(e)
+}
+
+// 启动服务
+func (w *Web) start(e *echo.Echo) error {
+	s := e.TLSServer
+	s.TLSConfig = new(tls.Config)
+	s.TLSConfig.Certificates = make([]tls.Certificate, 1)
+	cert, err := keys.Asset("keys/cert.pem")
+	if err != nil {
+		return err
+	}
+	keys, err := keys.Asset("keys/key.pem")
+	if err != nil {
+		return err
+	}
+	s.TLSConfig.Certificates[0], err = tls.X509KeyPair(cert, keys)
+	if err != nil {
+		return err
+	}
+	s.Addr = w.Port
+	if !e.DisableHTTP2 {
+		s.TLSConfig.NextProtos = append(s.TLSConfig.NextProtos, "h2")
+	}
+	return e.StartServer(e.TLSServer)
 }
 
 // 关闭服务
@@ -128,10 +159,10 @@ func (w *Web) Put(key []byte, p interface{}) error {
 }
 
 // 迭代获取数据
-func (w *Web) Iterator(prefix []byte, f func(bs []byte)) error {
+func (w *Web) Iterator(prefix []byte, f func(key, value []byte)) error {
 	iter := w.db.NewIterator(util.BytesPrefix(prefix), nil)
 	for iter.Next() {
-		f(iter.Value())
+		f(iter.Key(), iter.Value())
 	}
 	iter.Release()
 	return iter.Error()
@@ -191,6 +222,16 @@ func (w *Web) qrcode(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "QR码生成错误")
 	}
 	return c.Blob(http.StatusOK, "image/png", code.PNG())
+}
+func (w *Web) info(c echo.Context) error {
+	req := c.Request()
+	m := make(map[string]string)
+	m["Proto"] = req.Proto
+	m["Host"] = req.Host
+	m["RemoteAddr"] = req.RemoteAddr
+	m["Method"] = req.Method
+	m["Path"] = req.URL.Path
+	return c.JSON(http.StatusOK, m)
 }
 
 // 上传文件临时保存

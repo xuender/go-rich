@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">
+        取消
+      </ion-button>
+    </ion-buttons>
+    <ion-title>扩展</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()">
+        保存
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-list-header>
+      扩展信息
+      <ion-button color="secondary" (click)="exts.push({key:'', value:''})" size="small">增加</ion-button>
+    </ion-list-header>
+    <ion-item *ngFor="let e of exts">
+      <ion-input type="text" placeholder="扩展信息名称" [(ngModel)]="e.key" maxlength="20" minlength="1"></ion-input>
+      <ion-input type="text" placeholder="扩展信息说明" [(ngModel)]="e.value" minlength="1" maxlength="30"></ion-input>
+      <ion-button color="danger" (click)="remove(e)" size="small">删除</ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>

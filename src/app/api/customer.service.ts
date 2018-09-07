@@ -1,31 +1,29 @@
 import { Injectable } from '@angular/core'
 import { ActionSheetController } from '@ionic/angular'
-import { Customer, Ext } from './customer'
+import { Customer } from './customer'
 import { pull } from 'lodash'
 import { HttpClient } from '@angular/common/http';
+import { URL } from './init'
+import { Ext } from './ext';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
-  static URL = ''
-  // static URL = 'http://localhost:6181'
   customers: Customer[] = []
-  groups: string[] = []
 
   constructor(
     private http: HttpClient,
     private actionSheetCtrl: ActionSheetController
   ) {
-    this.loadGroup()
   }
-  loadGroup() {
-    this.http.get<string[]>(`${CustomerService.URL}/api/c/groups`)
-      .subscribe(gs => this.groups = gs)
+  // 加载分组
+  groups() {
+    return this.http.get<string[]>(`${URL}/api/groups`)
   }
   // 加载客户
   load(g: string) {
-    this.http.get<Customer[]>(`${CustomerService.URL}/api/c/g/${g}`)
+    this.http.get<Customer[]>(`${URL}/api/groups/${g}`)
       .subscribe((cs: Customer[]) => {
         this.customers = cs
       })
@@ -33,7 +31,7 @@ export class CustomerService {
   // 上传定义
   ext(): Promise<any> {
     return new Promise<Ext[]>(resolve => {
-      this.http.get<Ext[]>(`${CustomerService.URL}/api/c/ext`)
+      this.http.get<Ext[]>(`${URL}/api/c/ext`)
         .subscribe(es => {
           for (const e of es) {
             e.value = `${parseInt(`${e.value}`) + 1}`
@@ -47,7 +45,7 @@ export class CustomerService {
     for (const e of es) {
       e.value = `${parseInt(`${e.value}`) - 1}`
     }
-    return this.http.put<Ext[]>(`${CustomerService.URL}/api/c/ext`, es)
+    return this.http.put<Ext[]>(`${URL}/api/c/ext`, es)
   }
   // 删除客户
   async del(c: Customer) {
@@ -58,7 +56,7 @@ export class CustomerService {
         role: 'destructive',
         icon: 'trash',
         handler: () => {
-          this.http.delete(`${CustomerService.URL}/api/c/${c.id}`)
+          this.http.delete(`${URL}/api/customers/${c.id}`)
             .subscribe(r => {
               pull(this.customers, c)
             })
@@ -70,5 +68,19 @@ export class CustomerService {
       }]
     });
     await actionSheet.present();
+  }
+  // 创建客户
+  post(c: Customer) {
+    if (c) {
+      this.http.post<Customer>(`${URL}/api/customers`, c)
+        .subscribe((nc: Customer) => this.customers.push(nc))
+    }
+  }
+  // 修改客户
+  put(c: Customer) {
+    if (c && c.id) {
+      this.http.put<Customer>(`${URL}/api/customers/${c.id}`, c)
+        .subscribe((nc: Customer) => Object.assign(c, nc))
+    }
   }
 }

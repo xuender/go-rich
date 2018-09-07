@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">
+        取消
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ xlsx.name }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="ok()">
+        保存
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label fixed>名称</ion-label>
+      <ion-input required type="text" placeholder="定义姓名" [(ngModel)]="xlsx.name"></ion-input>
+    </ion-item>
+    <ion-list-header>
+      Excel列定义
+      <ion-button color="secondary" (click)="ext.extCustomer()" size="small">设置</ion-button>
+    </ion-list-header>
+    <ion-item>
+      <ion-label fixed>姓名</ion-label>
+      <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="xlsx.map['Name']">
+        <ion-select-option [value]="i" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>电话</ion-label>
+      <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="xlsx.map['Phone']">
+        <ion-select-option [value]="i" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>备注</ion-label>
+      <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="xlsx.map['Note']">
+        <ion-select-option [value]="i" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngFor="let e of ext.customerExts">
+      <ion-label fixed>{{ e.key }}</ion-label>
+      <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="xlsx.map[e.key]">
+        <ion-select-option [value]="i" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+</ion-content>

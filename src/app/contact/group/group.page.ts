@@ -8,11 +8,10 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./group.page.scss'],
 })
 export class GroupPage implements OnInit {
-
-  group
+  groups: string[] = []
   constructor(
     private modalCtrl: ModalController,
-    public customer: CustomerService
+    private customer: CustomerService
   ) { }
 
   select(g: string) {
@@ -21,8 +20,8 @@ export class GroupPage implements OnInit {
   cancel() {
     this.modalCtrl.dismiss();
   }
-
   ngOnInit() {
+    this.customer.groups()
+      .subscribe(gs => this.groups = gs)
   }
-
 }

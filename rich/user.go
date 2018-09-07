@@ -19,18 +19,17 @@ type User struct {
 
 // 用户路由
 func (w *Web) userRoute(c *echo.Group) {
-	// excel 格式定义
-	c.GET("/all", w.userAll)
+	c.GET("", w.usersGet) // 全部用户
 }
 
 // 获取全部用户
-func (w *Web) userAll(c echo.Context) error {
+func (w *Web) usersGet(c echo.Context) error {
 	return c.JSON(http.StatusOK, w.users())
 }
 
 func (w *Web) users() []User {
 	us := []User{}
-	w.Iterator([]byte{UserIdPrefix, '-'}, func(data []byte) {
+	w.Iterator([]byte{UserIdPrefix, '-'}, func(key, data []byte) {
 		u := User{}
 		goutils.Decode(data, &u)
 		us = append(us, u)

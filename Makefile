@@ -23,16 +23,16 @@ build:
 pack:
 	@echo 打包 $(TAG)
 	mv rich-386.exe go-rich.exe
-	zip rich-$(TAG)-windows_386.zip go-rich.exe
+	zip go-rich-$(TAG)-windows_386.zip go-rich.exe
 	rm go-rich.exe
 	mv rich-amd64.exe go-rich.exe
-	zip rich-$(TAG)-windows_amd64.zip go-rich.exe
+	zip go-rich-$(TAG)-windows_amd64.zip go-rich.exe
 	rm go-rich.exe
 	mv rich-linux go-rich
-	zip rich-$(TAG)-linux_amd64.zip go-rich
+	zip go-rich-$(TAG)-linux_amd64.zip go-rich
 	rm go-rich
 	mv rich-darwin go-rich
-	zip rich-$(TAG)-darwin_amd64.zip go-rich
+	zip go-rich-$(TAG)-darwin_amd64.zip go-rich
 	rm go-rich
 
 todo:

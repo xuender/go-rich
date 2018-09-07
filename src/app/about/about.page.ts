@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { CustomerService } from '../api/customer.service';
 
 @Component({
   selector: 'app-about',
@@ -7,8 +6,6 @@ import { CustomerService } from '../api/customer.service';
   styleUrls: ['about.page.scss']
 })
 export class AboutPage {
-  url: string
   constructor() {
-    this.url=CustomerService.URL
   }
 }

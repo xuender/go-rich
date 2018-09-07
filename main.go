@@ -16,14 +16,16 @@ import (
 
 //go:generate openssl genrsa -out keys/private.rsa 1024
 //go:generate openssl rsa -in keys/private.rsa -pubout -out keys/public.rsa.pub
-//go:generate go-bindata -nomemcopy -pkg keys -o ./keys/bindata.go keys/private.rsa keys/public.rsa.pub
+//go:generate go run $GOROOT/src/crypto/tls/generate_cert.go --host=localhost
+//go:generate mv cert.pem key.pem keys
+//go:generate go-bindata -nomemcopy -pkg keys -o ./keys/bindata.go keys/private.rsa keys/public.rsa.pub keys/cert.pem keys/key.pem
 //go:generate go-bindata -nomemcopy -pkg rich -o ./rich/bindata.go www/...
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "rich"
-	app.Usage = "Rich 小商家服务"
-	app.Version = "0.0.1"
+	app.Name = "Go Rich"
+	app.Usage = "服务小商家"
+	app.Version = "v0.0.3"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "db,b",
@@ -44,6 +46,10 @@ func main() {
 			Name:  "no-open,n",
 			Usage: "启动不打开浏览器",
 		},
+		cli.BoolFlag{
+			Name:  "develop-mode,d",
+			Usage: "开发模式: 静态资源读自www目录,支持跨域访问,web日志输出",
+		},
 	}
 	app.Action = runAction
 	err := app.Run(os.Args)
@@ -60,6 +66,7 @@ func runAction(c *cli.Context) error {
 		Port: port,
 		Temp: c.String("t"),
 		Db:   c.String("b"),
+		Dev:  c.Bool("d"),
 	}
 	// 初始化
 	err := web.Init()
@@ -70,7 +77,7 @@ func runAction(c *cli.Context) error {
 	if !c.Bool("n") {
 		url, err := rich.GetUrl(port)
 		if err == nil {
-			goutils.Open(url)
+			goutils.Open(url + "/qr")
 		}
 	}
 	// 退出

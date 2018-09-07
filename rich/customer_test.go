@@ -1,8 +1,6 @@
 package rich
 
 import (
-	"encoding/json"
-	"fmt"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -27,8 +25,8 @@ func TestCustomer(t *testing.T) {
 				Ext{Key: "Note", Value: "12"},
 			}
 			cs, err := readXlsx("./客户档案.xlsx", ext)
-			b, _ := json.Marshal(cs)
-			fmt.Println(string(b))
+			// b, _ := json.Marshal(cs)
+			// fmt.Println(string(b))
 			So(err, ShouldBeNil)
 			So(len(cs), ShouldEqual, 1008)
 		})

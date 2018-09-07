@@ -107,8 +107,9 @@ func (w *Web) Run() (err error) {
 	} else {
 		e.Use(static.ServeRoot("/", getAssets("www")))
 	}
+	return e.Start(w.Port)
 	// HTTP/2.0 启动
-	return w.start(e)
+	// return w.start(e)
 }
 
 // 启动服务

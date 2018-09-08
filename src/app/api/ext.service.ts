@@ -40,8 +40,8 @@ export class ExtService {
     const modal = await this.modalCtrl.create({
       component: ExtPage,
       componentProps: { exts: Object.assign([], this.customerExts) }
-    });
-    modal.onDidDismiss(d => {
+    })
+    modal.onDidDismiss().then(d => {
       if (d.data) {
         this.putCustomerExts(d.data)
       }

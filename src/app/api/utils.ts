@@ -5,6 +5,7 @@ import toPairs from 'lodash-es/toPairs'
 import orderBy from 'lodash-es/orderBy'
 import groupBy from 'lodash-es/groupBy'
 import sortBy from 'lodash-es/sortBy'
+import { LoDashExplicitWrapper } from 'lodash'
 const chainableFunctions = {
   map,
   filter,
@@ -26,5 +27,5 @@ export const chain = <T>(input: T) => {
     ),
     value: () => value,
   };
-  return wrapper as _.LoDashExplicitWrapper<T>;
+  return wrapper as LoDashExplicitWrapper<T>;
 };

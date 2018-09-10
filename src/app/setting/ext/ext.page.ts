@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 import { Ext } from '../../api/ext';
-import {remove} from 'lodash'
+import { remove } from 'lodash'
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-ext',
@@ -10,7 +11,7 @@ import {remove} from 'lodash'
 })
 export class ExtPage implements OnInit {
 
-  exts: Ext[] = []
+  exts: Ext[]
   constructor(
     private modalCtrl: ModalController,
     private navParams: NavParams
@@ -26,7 +27,7 @@ export class ExtPage implements OnInit {
   cancel() {
     this.modalCtrl.dismiss();
   }
-  remove(e: Ext){
+  remove(e: Ext) {
     remove(this.exts, e)
   }
 }

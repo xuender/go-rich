@@ -16,7 +16,7 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item-sliding *ngFor="let x of xlsx.xlsxes">
+    <ion-item-sliding *ngFor="let x of xlsxes | async">
       <ion-item button (click)="update(x)">
         <ion-label>
           {{ x.name }}

@@ -14,7 +14,7 @@
     <ion-item>
       <ion-label fixed>Excel定义</ion-label>
       <ion-select ok-text="选择" cancel-text="取消" [(ngModel)]="header.value">
-        <ion-select-option [value]="x.id" *ngFor="let x of xlsx.xlsxes">{{ x.name }}</ion-select-option>
+        <ion-select-option [value]="x.id" *ngFor="let x of xlsx.xlsxes | async">{{ x.name }}</ion-select-option>
       </ion-select>
       <ion-button color="secondary" (click)="setting.xlsxes()">
         设置

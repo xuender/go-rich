@@ -42,7 +42,10 @@
         <ion-select-option [value]="i" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
       </ion-select>
     </ion-item>
-    <ion-item *ngFor="let e of ext.customerExts">
+  </ion-list>
+  <ng-template #loading>加载中...</ng-template>
+  <ion-list *ngIf="ext.extsByCustomer | async as exts; else loading">
+    <ion-item *ngFor="let e of exts">
       <ion-label fixed>{{ e.key }}</ion-label>
       <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="xlsx.map[e.key]">
         <ion-select-option [value]="i" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CustomerService } from '../../api/customer.service';
 import { ModalController } from '@ionic/angular';
 
@@ -7,11 +7,10 @@ import { ModalController } from '@ionic/angular';
   templateUrl: './group.page.html',
   styleUrls: ['./group.page.scss'],
 })
-export class GroupPage implements OnInit {
-  groups: string[] = []
+export class GroupPage {
   constructor(
     private modalCtrl: ModalController,
-    private customer: CustomerService
+    public customer: CustomerService
   ) { }
 
   select(g: string) {
@@ -19,9 +18,5 @@ export class GroupPage implements OnInit {
   }
   cancel() {
     this.modalCtrl.dismiss();
-  }
-  ngOnInit() {
-    this.customer.groups()
-      .subscribe(gs => this.groups = gs)
   }
 }

@@ -4,50 +4,37 @@ import { Ext } from './ext';
 import { URL } from './init'
 import { ModalController } from '@ionic/angular';
 import { ExtPage } from '../setting/ext/ext.page';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExtService {
 
-  customerExts: Ext[] = []
-  itemExts: Ext[] = []
+  extsByCustomer: Observable<Ext[]>
+  extsByItem: Observable<Ext[]>
   constructor(
     private modalCtrl: ModalController,
     private http: HttpClient
   ) {
-    this.load()
-  }
-  async getCustomerExts() {
-    this.customerExts = await this.http.get<Ext[]>(`${URL}/api/exts/E-C`).toPromise()
-    return this.customerExts
-  }
-  /**
-   * 修改
-   */
-  putCustomerExts(exts: Ext[]) {
-    this.http.put<Ext[]>(`${URL}/api/exts/E-C`, exts)
-      .subscribe((s: Ext[]) => {
-        this.getCustomerExts()
-      })
-  }
-  async load() {
-    this.customerExts = await this.http.get<Ext[]>(`${URL}/api/exts/E-C`).toPromise()
-    this.itemExts = await this.http.get<Ext[]>(`${URL}/api/exts/E-I`).toPromise()
-    return true
+    this.extsByCustomer = this.http.get<Ext[]>(`${URL}/api/exts/E-C`)
+    this.extsByItem = this.http.get<Ext[]>(`${URL}/api/exts/E-I`)
   }
   /**
    * 客户扩展设置
    */
   async extCustomer() {
-    await this.getCustomerExts()
+    const exts = await this.extsByCustomer.toPromise()
     const modal = await this.modalCtrl.create({
       component: ExtPage,
-      componentProps: { exts: Object.assign([], this.customerExts) }
+      componentProps: {
+        exts: exts,
+      },
     })
     modal.onDidDismiss().then(d => {
+      console.log('data', d.data)
       if (d.data) {
-        this.putCustomerExts(d.data)
+        this.http.put<Ext[]>(`${URL}/api/exts/E-C`, d.data).subscribe()
       }
     })
     return await modal.present()

@@ -3,6 +3,7 @@ import { XlsxService } from '../../api/xlsx.service';
 import { ModalController } from '@ionic/angular';
 import { XlsxPage } from './xlsx/xlsx.page';
 import { Xlsx } from '../../api/xlsx';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-xlsxes',
@@ -10,10 +11,12 @@ import { Xlsx } from '../../api/xlsx';
   styleUrls: ['./xlsxes.page.scss'],
 })
 export class XlsxesPage implements OnInit {
+  xlsxes: Observable<Xlsx[]>
   constructor(
-    public xlsx: XlsxService,
+    private xlsx: XlsxService,
     private modalCtrl: ModalController,
   ) {
+    this.xlsxes = xlsx.xlsesx
   }
 
   cancel() {
@@ -32,7 +35,14 @@ export class XlsxesPage implements OnInit {
         }
       }
     });
-    modal.onDidDismiss().then(d => this.xlsx.post(d.data))
+    modal.onDidDismiss().then(d => {
+      if (d.data) {
+        this.xlsx.post(d.data)
+          .subscribe(() => {
+            this.xlsxes = this.xlsx.xlsesx
+          })
+      }
+    })
     return await modal.present()
   }
   async update(x: Xlsx) {
@@ -43,7 +53,7 @@ export class XlsxesPage implements OnInit {
     modal.onDidDismiss().then(d => {
       if (d.data) {
         this.xlsx.put(d.data)
-          .then(nx => {
+          .subscribe(nx => {
             Object.assign(x, nx)
           })
       }

@@ -10,8 +10,9 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-list>
-    <ion-item *ngFor="let u of user.users">
+  <ng-template #loading>加载中...</ng-template>
+  <ion-list *ngIf="user.users | async as users; else loading">
+    <ion-item *ngFor="let u of users; count as count">
       <ion-label>{{ u.nick }}</ion-label>
     </ion-item>
   </ion-list>

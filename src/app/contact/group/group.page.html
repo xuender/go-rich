@@ -10,5 +10,5 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-button *ngFor="let g of groups" (click)="select(g)" size="large">{{ g }}</ion-button>
+  <ion-button *ngFor="let g of customer.groups | async" (click)="select(g)" size="large">{{ g }}</ion-button>
 </ion-content>

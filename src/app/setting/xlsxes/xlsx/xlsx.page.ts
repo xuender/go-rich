@@ -5,6 +5,7 @@ import { invert } from 'lodash'
 import { Xlsx } from '../../../api/xlsx';
 import { Ext } from '../../../api/ext';
 import { ExtService } from '../../../api/ext.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-xlsx',
@@ -13,7 +14,6 @@ import { ExtService } from '../../../api/ext.service';
 })
 export class XlsxPage {
   xlsx: Xlsx
-  exts: Ext[] = []
   abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
   constructor(
     private modalCtrl: ModalController,

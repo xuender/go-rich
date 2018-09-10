@@ -51,6 +51,7 @@ func (w *Web) extGet(c echo.Context) error {
 
 // 扩展定义修改
 func (w *Web) extPut(c echo.Context) error {
+	log.Println("ext put ....")
 	id := c.Param("id")
 	ext := w.getExtById(id)
 	idBs := []byte(id)

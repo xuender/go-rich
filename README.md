@@ -17,7 +17,6 @@ go get github.com/Code-Hex/echo-static
 go get github.com/dgrijalva/jwt-go
 go get github.com/elazarl/go-bindata-assetfs
 go get github.com/labstack/echo
-go get github.com/labstack/echo/middleware
 go get github.com/mozillazg/go-slugify
 go get github.com/syndtr/goleveldb/leveldb
 go get github.com/urfave/cli

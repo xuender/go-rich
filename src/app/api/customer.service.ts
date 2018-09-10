@@ -5,6 +5,7 @@ import { pull } from 'lodash'
 import { HttpClient } from '@angular/common/http';
 import { URL } from './init'
 import { Ext } from './ext';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,14 +13,12 @@ import { Ext } from './ext';
 export class CustomerService {
   customers: Customer[] = []
 
+  groups: Observable<string[]>
   constructor(
     private http: HttpClient,
     private actionSheetCtrl: ActionSheetController
   ) {
-  }
-  // 加载分组
-  groups() {
-    return this.http.get<string[]>(`${URL}/api/groups`)
+    this.groups = this.http.get<string[]>(`${URL}/api/groups`)
   }
   // 加载客户
   load(g: string) {
@@ -27,25 +26,6 @@ export class CustomerService {
       .subscribe((cs: Customer[]) => {
         this.customers = cs
       })
-  }
-  // 上传定义
-  ext(): Promise<any> {
-    return new Promise<Ext[]>(resolve => {
-      this.http.get<Ext[]>(`${URL}/api/c/ext`)
-        .subscribe(es => {
-          for (const e of es) {
-            e.value = `${parseInt(`${e.value}`) + 1}`
-          }
-          resolve(es)
-        })
-    })
-  }
-  // 修改上传定义
-  saveExt(es: Ext[]) {
-    for (const e of es) {
-      e.value = `${parseInt(`${e.value}`) - 1}`
-    }
-    return this.http.put<Ext[]>(`${URL}/api/c/ext`, es)
   }
   // 删除客户
   async del(c: Customer) {

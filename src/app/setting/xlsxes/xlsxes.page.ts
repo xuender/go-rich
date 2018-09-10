@@ -32,7 +32,7 @@ export class XlsxesPage implements OnInit {
         }
       }
     });
-    modal.onDidDismiss(d => this.xlsx.post(d.data))
+    modal.onDidDismiss().then(d => this.xlsx.post(d.data))
     return await modal.present()
   }
   async update(x: Xlsx) {
@@ -40,7 +40,7 @@ export class XlsxesPage implements OnInit {
       component: XlsxPage,
       componentProps: { xlsx: Object.assign({}, x) },
     });
-    modal.onDidDismiss(d => {
+    modal.onDidDismiss().then(d => {
       if (d.data) {
         this.xlsx.put(d.data)
           .then(nx => {

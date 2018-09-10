@@ -26,7 +26,7 @@ export class ContactPage {
       component: CustomerPage,
       componentProps: { customer: Object.assign({}, c) },
     });
-    modal.onDidDismiss(d => {
+    modal.onDidDismiss().then(d => {
       if (d.data) {
         this.customer.put(d.data)
         Object.assign(c, d.data)
@@ -44,7 +44,7 @@ export class ContactPage {
         }
       }
     });
-    modal.onDidDismiss(d => this.customer.post(d.data))
+    modal.onDidDismiss().then(d => this.customer.post(d.data))
     return await modal.present()
   }
   /**
@@ -54,7 +54,7 @@ export class ContactPage {
     const modal = await this.modalCtrl.create({
       component: UploadPage,
     });
-    modal.onDidDismiss(d => {
+    modal.onDidDismiss().then(d => {
       if (d.data) {
       }
     })
@@ -67,7 +67,7 @@ export class ContactPage {
     const modal = await this.modalCtrl.create({
       component: GroupPage,
     });
-    modal.onDidDismiss(d => {
+    modal.onDidDismiss().then(d => {
       if (d.data) {
         this.title = d.data
         this.customer.load(d.data)

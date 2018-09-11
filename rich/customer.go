@@ -12,8 +12,9 @@ import (
 	"github.com/xuender/goutils"
 )
 
+// Customer 客户
 type Customer struct {
-	Id     goutils.ID        `json:"id"`               // 主键
+	ID     goutils.ID        `json:"id"`               // 主键
 	Name   string            `json:"name"`             // 姓名
 	Pinyin string            `json:"pinyin"`           // 拼音
 	Phone  string            `json:"phone,omitempty"`  // 电话
@@ -41,7 +42,7 @@ func (w *Web) customersGet(c echo.Context) error {
 // 客户列表
 func (w *Web) customers() []Customer {
 	cs := []Customer{}
-	w.Iterator([]byte{CustomerIdPrefix, '-'}, func(key, value []byte) {
+	w.Iterator([]byte{CustomerIDPrefix, '-'}, func(key, value []byte) {
 		c := Customer{}
 		if goutils.Decode(value, &c) == nil {
 			cs = append(cs, c)
@@ -61,10 +62,10 @@ func (w *Web) customerPost(c echo.Context) error {
 	if cu.Name == "" {
 		return errors.New("姓名不能为空")
 	}
-	cu.Id = goutils.NewId(CustomerIdPrefix)
+	cu.ID = goutils.NewId(CustomerIDPrefix)
 	cu.Pinyin = py(cu.Name)
 	cu.Ca = time.Now()
-	w.Put(cu.Id[:], cu)
+	w.Put(cu.ID[:], cu)
 	return c.JSON(http.StatusOK, cu)
 }
 
@@ -83,9 +84,9 @@ func (w *Web) customerPut(c echo.Context) error {
 	if cu.Name == "" {
 		return errors.New("姓名不能为空")
 	}
-	cu.Id = *id
+	cu.ID = *id
 	cu.Pinyin = py(cu.Name)
-	w.Put(cu.Id[:], cu)
+	w.Put(cu.ID[:], cu)
 	return c.JSON(http.StatusOK, cu)
 }
 
@@ -102,7 +103,7 @@ func (w *Web) customerDelete(c echo.Context) error {
 
 // 清除用户
 func (w *Web) customersDelete(c echo.Context) error {
-	w.Iterator([]byte{CustomerIdPrefix, '-'}, func(key, value []byte) {
+	w.Iterator([]byte{CustomerIDPrefix, '-'}, func(key, value []byte) {
 		w.Delete(key)
 	})
 	return c.JSON(http.StatusOK, "清除完毕")
@@ -127,7 +128,7 @@ func (w *Web) customersFile(c echo.Context) error {
 	if err == nil {
 		for _, c := range cs {
 			// log.Println(c.Name)
-			w.Put(c.Id[:], c)
+			w.Put(c.ID[:], c)
 		}
 		os.Remove(file)
 		return c.String(http.StatusOK, "ok")
@@ -167,7 +168,7 @@ func newCustomer(row []string, m map[int]string) (c Customer, err error) {
 		err = errors.New("姓名为姓名")
 		return
 	}
-	c.Id = goutils.NewId(CustomerIdPrefix)
+	c.ID = goutils.NewId(CustomerIDPrefix)
 	c.Pinyin = py(row[0])
 	c.Ca = time.Now()
 	return

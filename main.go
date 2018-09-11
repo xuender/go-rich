@@ -75,7 +75,7 @@ func runAction(c *cli.Context) error {
 	}
 	// 打开浏览器
 	if !c.Bool("n") {
-		url, err := rich.GetUrl(port)
+		url, err := rich.GetURL(port)
 		if err == nil {
 			goutils.Open(url + "/qr")
 		}

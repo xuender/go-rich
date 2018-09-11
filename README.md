@@ -21,6 +21,7 @@ go get github.com/mozillazg/go-slugify
 go get github.com/syndtr/goleveldb/leveldb
 go get github.com/urfave/cli
 go get github.com/xuender/goutils
+go get github.com/smartystreets/goconvey
 go get rsc.io/qr
 ```
 ### 编译

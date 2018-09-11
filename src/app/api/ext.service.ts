@@ -32,7 +32,6 @@ export class ExtService {
       },
     })
     modal.onDidDismiss().then(d => {
-      console.log('data', d.data)
       if (d.data) {
         this.http.put<Ext[]>(`${URL}/api/exts/E-C`, d.data).subscribe()
       }

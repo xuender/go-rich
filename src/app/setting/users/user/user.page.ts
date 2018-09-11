@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController, NavParams } from '@ionic/angular';
+import { User } from '../../../api/user';
 
 @Component({
   selector: 'app-user',
@@ -6,10 +8,22 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./user.page.scss'],
 })
 export class UserPage implements OnInit {
-
-  constructor() { }
+  user: User
+  constructor(
+    private modalCtrl: ModalController,
+    private navParams: NavParams
+  ) {
+    this.user = this.navParams.get('user')
+  }
 
   ngOnInit() {
   }
 
+  cancel() {
+    this.modalCtrl.dismiss();
+  }
+
+  ok() {
+    this.modalCtrl.dismiss(this.user);
+  }
 }

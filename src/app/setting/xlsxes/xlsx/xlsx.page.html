@@ -27,19 +27,22 @@
     <ion-item>
       <ion-label fixed>姓名</ion-label>
       <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="xlsx.map['Name']">
-        <ion-select-option [value]="i" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+        <ion-select-option [value]="0">无</ion-select-option>
+        <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item>
       <ion-label fixed>电话</ion-label>
       <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="xlsx.map['Phone']">
-        <ion-select-option [value]="i" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+        <ion-select-option [value]="0">无</ion-select-option>
+        <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item>
       <ion-label fixed>备注</ion-label>
       <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="xlsx.map['Note']">
-        <ion-select-option [value]="i" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+        <ion-select-option [value]="0">无</ion-select-option>
+        <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
       </ion-select>
     </ion-item>
   </ion-list>
@@ -48,7 +51,8 @@
     <ion-item *ngFor="let e of exts">
       <ion-label fixed>{{ e.key }}</ion-label>
       <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="xlsx.map[e.key]">
-        <ion-select-option [value]="i" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+        <ion-select-option [value]="0">无</ion-select-option>
+        <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
       </ion-select>
     </ion-item>
   </ion-list>

@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CustomerService } from '../../api/customer.service';
 import { ModalController } from '@ionic/angular';
 import { FileUploader, FileItem, Headers } from 'ng2-file-upload';
+import { HttpClient } from '@angular/common/http';
 import { URL } from '../../api/init'
-import { XlsxService } from '../../api/xlsx.service';
 import { SettingService } from '../../api/setting.service';
 import { Xlsx } from '../../api/xlsx';
-import { XlsxesPage } from '../../setting/xlsxes/xlsxes.page';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-upload',
@@ -21,12 +21,14 @@ export class UploadPage implements OnInit {
   headers: Headers[] = [this.header]
   uploader: FileUploader = new FileUploader({ url: `${URL}/api/customers/file`, headers: this.headers });
   select: Xlsx
+  xlsxes: Observable<Xlsx[]>
   constructor(
+    private http: HttpClient,
     public modalCtrl: ModalController,
     public customer: CustomerService,
     public setting: SettingService,
-    public xlsx: XlsxService
   ) {
+    this.xlsxes = this.http.get<Xlsx[]>(`${URL}/api/xlsxes`)
     this.uploader.onCompleteItem = (item: FileItem, r: string, status: number) => {
       if (status !== 200) {
         // TOOD 服务器错误

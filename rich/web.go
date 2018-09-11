@@ -22,6 +22,7 @@ import (
 	"github.com/xuender/goutils"
 )
 
+// Web 网络服务
 type Web struct {
 	Port string      // 端口号
 	Temp string      // 临时文件目录
@@ -31,14 +32,14 @@ type Web struct {
 	days Days        // 文件日期列表
 }
 
-// 文件日期列表主键
-var DAYS_KEY = []byte("days")
-
+// DaysKey 文件日期列表主键
+var DaysKey = []byte("days")
 var (
 	verifyKey *rsa.PublicKey
 	signKey   *rsa.PrivateKey
 )
 
+// Init 初始化.
 func (w *Web) Init() error {
 	// 日志初始化
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
@@ -67,13 +68,14 @@ func (w *Web) Init() error {
 	// 用户初始化
 	w.UserInit()
 	// 每日帐目初始化
-	w.Get(DAYS_KEY, &w.days)
+	w.Get(DaysKey, &w.days)
 	return nil
 }
 
-// 启动服务
+// Run 启动服务
 func (w *Web) Run() (err error) {
 	e := echo.New()
+	e.HTTPErrorHandler = w.httpErrorHandler
 	// 开发模式
 	if w.Dev {
 		e.Use(middleware.Recover())
@@ -111,6 +113,23 @@ func (w *Web) Run() (err error) {
 	// HTTP/2.0 启动
 	return w.start(e)
 }
+func (w *Web) httpErrorHandler(err error, c echo.Context) {
+	var code = http.StatusInternalServerError
+
+	if !c.Response().Committed {
+		if c.Request().Method == echo.HEAD {
+			err := c.NoContent(code)
+			if err != nil {
+				c.Logger().Error(err)
+			}
+		} else {
+			err := c.JSON(code, newHTTPError(err))
+			if err != nil {
+				c.Logger().Error(err)
+			}
+		}
+	}
+}
 
 // 启动服务
 func (w *Web) start(e *echo.Echo) error {
@@ -136,12 +155,12 @@ func (w *Web) start(e *echo.Echo) error {
 	return e.StartServer(e.TLSServer)
 }
 
-// 关闭服务
+// Close 关闭服务
 func (w *Web) Close() {
 	w.db.Close()
 }
 
-// 数据库数据读取
+// Get 数据库数据读取
 func (w *Web) Get(key []byte, p interface{}) error {
 	data, err := w.db.Get(key, nil)
 	if err != nil {
@@ -150,7 +169,7 @@ func (w *Web) Get(key []byte, p interface{}) error {
 	return goutils.Decode(data, p)
 }
 
-// 数据库数据保存
+// Put 数据库数据保存
 func (w *Web) Put(key []byte, p interface{}) error {
 	bs, err := goutils.Encode(p)
 	if err != nil {
@@ -159,7 +178,7 @@ func (w *Web) Put(key []byte, p interface{}) error {
 	return w.db.Put(key, bs, nil)
 }
 
-// 迭代获取数据
+// Iterator 迭代获取数据
 func (w *Web) Iterator(prefix []byte, f func(key, value []byte)) error {
 	iter := w.db.NewIterator(util.BytesPrefix(prefix), nil)
 	for iter.Next() {
@@ -169,7 +188,7 @@ func (w *Web) Iterator(prefix []byte, f func(key, value []byte)) error {
 	return iter.Error()
 }
 
-// 删除
+// Delete 删除
 func (w *Web) Delete(key []byte) error {
 	return w.db.Delete(key, nil)
 }
@@ -214,7 +233,7 @@ func (w *Web) login(c echo.Context) error {
 
 // QR码
 func (w *Web) qrcode(c echo.Context) error {
-	url, err := GetUrl(w.Port)
+	url, err := GetURL(w.Port)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}

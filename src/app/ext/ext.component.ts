@@ -4,7 +4,7 @@ import { ExtService } from '../api/ext.service';
 @Component({
   selector: 'rich-ext',
   templateUrl: './ext.component.html',
-  styleUrls: ['./ext.component.scss']
+  styleUrls: ['./ext.component.scss'],
 })
 export class ExtComponent implements OnInit {
   @Input()
@@ -17,6 +17,7 @@ export class ExtComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('type', this.type)
   }
 
 }

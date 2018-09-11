@@ -1,5 +1,6 @@
 package rich
 
+// TradeStatus 订单状态
 type TradeStatus int
 
 const (

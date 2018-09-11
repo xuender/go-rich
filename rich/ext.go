@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-// 扩展定义
+// Ext 扩展定义
 type Ext struct {
 	Key   string `json:"key"`   // 键
 	Value string `json:"value"` // 值
@@ -20,7 +20,7 @@ func (w *Web) extsRoute(c *echo.Group) {
 	c.PUT("/:id", w.extPut) // 修改扩展
 }
 
-var extKeys []string = []string{
+var extKeys = []string{
 	"E-C", // 客户扩展数据
 	"E-I", // 商品扩展数据
 }
@@ -30,13 +30,13 @@ func (w *Web) extsGet(c echo.Context) error {
 	log.Println("extsGet")
 	ret := make(map[string][]Ext)
 	for _, key := range extKeys {
-		ret[key] = w.getExtById(key)
+		ret[key] = w.getExtByID(key)
 	}
 	return c.JSON(http.StatusOK, ret)
 }
 
 // 根据id获取扩展定义
-func (w *Web) getExtById(id string) []Ext {
+func (w *Web) getExtByID(id string) []Ext {
 	ret := []Ext{}
 	w.Get([]byte(id), &ret)
 	return ret
@@ -46,14 +46,14 @@ func (w *Web) getExtById(id string) []Ext {
 func (w *Web) extGet(c echo.Context) error {
 	id := c.Param("id")
 	log.Printf("extGet %s\n", id)
-	return c.JSON(http.StatusOK, w.getExtById(id))
+	return c.JSON(http.StatusOK, w.getExtByID(id))
 }
 
 // 扩展定义修改
 func (w *Web) extPut(c echo.Context) error {
 	log.Println("ext put ....")
 	id := c.Param("id")
-	ext := w.getExtById(id)
+	ext := w.getExtByID(id)
 	idBs := []byte(id)
 	w.Get(idBs, &ext)
 	if err := c.Bind(&ext); err != nil {

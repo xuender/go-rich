@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { XlsxService } from '../../api/xlsx.service';
-import { ModalController } from '@ionic/angular';
+import { Component, OnInit, NgZone } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { URL } from '../../api/init'
+import { ModalController, ActionSheetController } from '@ionic/angular';
 import { XlsxPage } from './xlsx/xlsx.page';
 import { Xlsx } from '../../api/xlsx';
 import { Observable } from 'rxjs';
@@ -13,10 +14,15 @@ import { Observable } from 'rxjs';
 export class XlsxesPage implements OnInit {
   xlsxes: Observable<Xlsx[]>
   constructor(
-    private xlsx: XlsxService,
-    private modalCtrl: ModalController,
+    private http: HttpClient,
+    private actionSheetCtrl: ActionSheetController,
+    private ngZone: NgZone,
+    private modalCtrl: ModalController
   ) {
-    this.xlsxes = xlsx.xlsesx
+    this.load()
+  }
+  load() {
+    this.xlsxes = this.http.get<Xlsx[]>(`${URL}/api/xlsxes`)
   }
 
   cancel() {
@@ -37,9 +43,9 @@ export class XlsxesPage implements OnInit {
     });
     modal.onDidDismiss().then(d => {
       if (d.data) {
-        this.xlsx.post(d.data)
+        this.http.post<Xlsx>(`${URL}/api/xlsxes`, d.data)
           .subscribe(() => {
-            this.xlsxes = this.xlsx.xlsesx
+            this.load()
           })
       }
     })
@@ -52,12 +58,35 @@ export class XlsxesPage implements OnInit {
     });
     modal.onDidDismiss().then(d => {
       if (d.data) {
-        this.xlsx.put(d.data)
+        this.http.put<Xlsx>(`${URL}/api/xlsxes/${x.id}`, d.data)
           .subscribe(nx => {
             Object.assign(x, nx)
           })
       }
     })
     return await modal.present()
+  }
+  async del(x: Xlsx) {
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: `确认删除Excel定义 [ ${x.name} ] ?`,
+      buttons: [{
+        text: '删除',
+        role: 'destructive',
+        icon: 'trash',
+        handler: () => {
+          this.http.delete(`${URL}/api/xlsxes/${x.id}`)
+            .subscribe((r) => {
+              this.load()
+              // 强制刷新
+              this.ngZone.run(() => false)
+            })
+        }
+      }, {
+        text: '取消',
+        icon: 'close',
+        role: 'cancel',
+      }]
+    });
+    await actionSheet.present();
   }
 }

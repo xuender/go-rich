@@ -3,9 +3,7 @@ import { NavParams, ModalController } from '@ionic/angular';
 import { invert } from 'lodash'
 
 import { Xlsx } from '../../../api/xlsx';
-import { Ext } from '../../../api/ext';
 import { ExtService } from '../../../api/ext.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-xlsx',
@@ -22,6 +20,11 @@ export class XlsxPage {
   ) {
     this.xlsx = this.navParams.get('xlsx')
     this.xlsx.map = invert(this.xlsx.map)
+    for (const k in this.xlsx.map) {
+      if (this.xlsx.map[k]) {
+        this.xlsx.map[k] = parseInt(this.xlsx.map[k]) + 1
+      }
+    }
   }
 
   cancel() {
@@ -29,6 +32,13 @@ export class XlsxPage {
   }
 
   ok() {
+    for (const k in this.xlsx.map) {
+      if (!this.xlsx.map[k]) {
+        delete this.xlsx.map[k]
+      } else {
+        this.xlsx.map[k] = this.xlsx.map[k] - 1
+      }
+    }
     this.xlsx.map = invert(this.xlsx.map)
     this.modalCtrl.dismiss(this.xlsx);
   }

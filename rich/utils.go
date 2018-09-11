@@ -10,17 +10,17 @@ import (
 	"github.com/mozillazg/go-slugify"
 )
 
-// 获取网址
-func GetUrl(port string) (string, error) {
-	ip, err := GetIp()
+// GetURL 获取网址
+func GetURL(port string) (string, error) {
+	ip, err := GetIP()
 	if err != nil {
 		return "", err
 	}
 	return fmt.Sprintf("https://%s%s", ip, port), nil
 }
 
-// 获取IP地址
-func GetIp() (string, error) {
+// GetIP 获取IP地址
+func GetIP() (string, error) {
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
 		return "", err

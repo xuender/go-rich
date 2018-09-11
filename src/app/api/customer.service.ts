@@ -4,7 +4,6 @@ import { Customer } from './customer'
 import { pull } from 'lodash'
 import { HttpClient } from '@angular/common/http';
 import { URL } from './init'
-import { Ext } from './ext';
 import { Observable } from 'rxjs';
 
 @Injectable({

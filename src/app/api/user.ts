@@ -1,9 +1,11 @@
+import { Ext } from "./ext";
+
 // 扩展数据
 export interface User {
-  key: string
-  value: string
-  id: string
+  id?: string
   nick: string
-  phone: string
-  ca: Date
+  phone?: string
+  note?: string
+  ca?: Date
+  extend: any // 扩展属性
 }

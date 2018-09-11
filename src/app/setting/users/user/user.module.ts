@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { UserPage } from './user.page';
+import { ExtComponent } from '../../../ext/ext.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [UserPage]
+  declarations: [
+    UserPage,
+  ]
 })
 export class UserPageModule {}

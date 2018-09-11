@@ -24,7 +24,7 @@ func (w *Web) groupsGet(c echo.Context) error {
 		}
 	}
 	ret := []string{}
-	for item, _ := range m {
+	for item := range m {
 		ret = append(ret, item)
 	}
 	sort.Strings(ret)

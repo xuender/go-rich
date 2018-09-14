@@ -59,14 +59,21 @@ func (w *Web) objPost(c echo.Context, o interface{}, check func() error) error {
 	return c.JSON(http.StatusOK, o)
 }
 
-// 对象获取
-func (w *Web) objGet(c echo.Context, o interface{}) error {
+// 对象加载
+func (w *Web) objLoad(c echo.Context, o interface{}) error {
 	id := new(goutils.ID)
 	err := id.Parse(c.Param("id"))
 	if err != nil {
 		return err
 	}
-	w.Get(id[:], o)
+	return w.Get(id[:], o)
+}
+
+// 对象获取
+func (w *Web) objGet(c echo.Context, o interface{}) error {
+	if err := w.objLoad(c, o); err != nil {
+		return err
+	}
 	return c.JSON(http.StatusOK, o)
 }
 

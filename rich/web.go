@@ -3,6 +3,7 @@ package rich
 import (
 	"crypto/rsa"
 	"crypto/tls"
+	"errors"
 	"io"
 	"log"
 	"net/http"
@@ -83,25 +84,26 @@ func (w *Web) Run() (err error) {
 		// 跨域访问
 		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 			AllowOrigins:     []string{"*"},
-			AllowMethods:     []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
+			AllowMethods:     []string{echo.GET, echo.PUT, echo.POST, echo.DELETE, echo.PATCH},
 			AllowCredentials: true,
 		}))
 	}
-	e.GET("/qr", w.qrcode)                   // 二维码访问
-	e.GET("/info", w.info)                   // 协议等
-	e.POST("/login", w.login)                // 登录
-	api := e.Group("/api")                   // API
+	e.GET("/qr", w.qrcode)   // 二维码访问
+	e.GET("/info", w.info)   // 协议等
+	e.GET("/login", w.login) // 登录
+	api := e.Group("/api")   // API
+	// 需要身份认证
+	api.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+		SigningKey:    verifyKey,
+		SigningMethod: "RS256",
+	}))
+
 	w.customerRoute(api.Group("/customers")) // 客户
 	w.groupsRoute(api.Group("/groups"))      // 客户分组
 	w.extsRoute(api.Group("/exts"))          // 扩展定义
 	w.xlsxRoute(api.Group("/xlsxes"))        // Excel定义
 	w.userRoute(api.Group("/users"))         // 用户
-
-	// 需要身份认证
-	// api.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-	// 	SigningKey:    verifyKey,
-	// 	SigningMethod: "RS256",
-	// }))
+	w.profileRoute(api.Group("/profile"))    // 账户
 
 	// 静态资源
 	if w.Dev {
@@ -118,14 +120,18 @@ func (w *Web) httpErrorHandler(err error, c echo.Context) {
 
 	if !c.Response().Committed {
 		if c.Request().Method == echo.HEAD {
-			err := c.NoContent(code)
-			if err != nil {
+			if err := c.NoContent(code); err != nil {
 				c.Logger().Error(err)
 			}
 		} else {
-			err := c.JSON(code, newHTTPError(err))
-			if err != nil {
-				c.Logger().Error(err)
+			if es, ok := err.(*echo.HTTPError); ok {
+				if err := c.JSON(es.Code, newHTTPError(es)); err != nil {
+					c.Logger().Error(err)
+				}
+			} else {
+				if err := c.JSON(code, newHTTPError(err)); err != nil {
+					c.Logger().Error(err)
+				}
 			}
 		}
 	}
@@ -206,27 +212,34 @@ func getAssets(root string) *assetfs.AssetFS {
 // 登录
 func (w *Web) login(c echo.Context) error {
 	// 登录信息绑定
-	u := new(User)
-	if err := c.Bind(u); err != nil {
-		return err
+	nick := c.QueryParam("nick")
+	pass := c.QueryParam("pass")
+	if nick == "" {
+		return errors.New("昵称或电话不能为空")
 	}
-	// TODO 身份认证
-	if u.Phone == "139" && u.Pass == "123" {
-		// 创建令牌
-		token := jwt.New(jwt.SigningMethodRS256)
-		// 设置用户信息
-		claims := token.Claims.(jwt.MapClaims)
-		claims["nick"] = "测试"
-		claims["admin"] = true
-		claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-		// 生成令牌
-		t, err := token.SignedString(signKey)
-		if err != nil {
-			return err
+	if pass == "" {
+		return errors.New("密码不能为空")
+	}
+	pass = Pass(pass)
+	for _, u := range w.users() {
+		// 身份认证
+		if u.Nick == nick || u.Phone == nick || pass == u.Pass {
+			// 创建令牌
+			token := jwt.New(jwt.SigningMethodRS256)
+			// 设置用户信息
+			claims := token.Claims.(jwt.MapClaims)
+			claims["id"] = u.ID
+			// 有效期 1 年
+			claims["exp"] = time.Now().Add(time.Hour * 24 * 365).Unix()
+			// 生成令牌
+			t, err := token.SignedString(signKey)
+			if err != nil {
+				return err
+			}
+			return c.JSON(http.StatusOK, map[string]string{
+				"token": t,
+			})
 		}
-		return c.JSON(http.StatusOK, map[string]string{
-			"token": t,
-		})
 	}
 	return echo.ErrUnauthorized
 }

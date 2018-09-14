@@ -15,6 +15,8 @@ import { XlsxesPageModule } from './setting/xlsxes/xlsxes.module';
 import { UsersPageModule } from './setting/users/users.module';
 import { FormsModule } from '@angular/forms';
 import { ErrorInterceptor } from './api/error.interceptor';
+import { JWTInterceptor } from './api/jwt.interceptor';
+import { ProfilePageModule } from './setting/profile/profile.module';
 
 @NgModule({
   declarations: [
@@ -30,13 +32,15 @@ import { ErrorInterceptor } from './api/error.interceptor';
     ExtPageModule,
     XlsxesPageModule,
     UsersPageModule,
+    ProfilePageModule,
     FormsModule,
   ],
   providers: [
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor,multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true },
   ],
   bootstrap: [
     AppComponent,

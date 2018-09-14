@@ -30,4 +30,7 @@
       </ion-item>
     </ion-list>
   </form>
+  <ion-list>
+    <ion-button *ngIf="user.id" (click)="pass()">重置密码</ion-button>
+  </ion-list>
 </ion-content>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
 import { User } from '../../api/user';
 import { Observable } from 'rxjs';

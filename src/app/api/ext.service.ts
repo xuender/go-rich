@@ -17,8 +17,11 @@ export class ExtService {
     private modalCtrl: ModalController,
     private http: HttpClient
   ) {
-    this.extsByCustomer = this.http.get<Ext[]>(`${URL}/api/exts/E-C`)
+    this.loadCustomer()
     this.extsByItem = this.http.get<Ext[]>(`${URL}/api/exts/E-I`)
+  }
+  loadCustomer() {
+    this.extsByCustomer = this.http.get<Ext[]>(`${URL}/api/exts/E-C`)
   }
   /**
    * 客户扩展设置
@@ -33,7 +36,10 @@ export class ExtService {
     })
     modal.onDidDismiss().then(d => {
       if (d.data) {
-        this.http.put<Ext[]>(`${URL}/api/exts/E-C`, d.data).subscribe()
+        this.http.put<Ext[]>(`${URL}/api/exts/E-C`, d.data)
+          .subscribe(() => {
+            this.loadCustomer()
+          })
       }
     })
     return await modal.present()

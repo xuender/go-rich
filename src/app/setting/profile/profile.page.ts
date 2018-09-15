@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { URL } from '../../api/init'
 import { ProfileService } from '../../api/profile.service';
+import { ModalController } from '@ionic/angular';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
@@ -11,11 +12,12 @@ export class ProfilePage implements OnInit {
 
   user: any = { id: '', nick: '' }
   constructor(
+    private modalCtrl: ModalController,
     private profile: ProfileService,
     private http: HttpClient
   ) {
     this.http.get<any>(`${URL}/api/profile`)
-      .subscribe(p => this.user= p)
+      .subscribe(p => this.user = p)
   }
 
   ngOnInit() {
@@ -23,5 +25,8 @@ export class ProfilePage implements OnInit {
   logout() {
     this.profile.logout()
     this.profile.login()
+  }
+  cancel() {
+    this.modalCtrl.dismiss();
   }
 }

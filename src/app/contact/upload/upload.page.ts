@@ -19,7 +19,11 @@ export class UploadPage implements OnInit {
     value: '',
   }
   headers: Headers[] = [this.header]
-  uploader: FileUploader = new FileUploader({ url: `${URL}/api/customers/file`, headers: this.headers });
+  uploader: FileUploader = new FileUploader({
+    url: `${URL}/api/customers/file`,
+    headers: this.headers,
+    authToken: `Bearer ${localStorage.getItem("token")}`
+  })
   select: Xlsx
   xlsxes: Observable<Xlsx[]>
   constructor(

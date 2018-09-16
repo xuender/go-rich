@@ -75,4 +75,8 @@ export class ContactPage {
     })
     return await modal.present()
   }
+  search(event: CustomEvent){
+    this.title = `查找 ${event.detail.value}`
+    this.customer.search(event.detail.value)
+  }
 }

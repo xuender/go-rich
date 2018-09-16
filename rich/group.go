@@ -44,7 +44,7 @@ func (w *Web) groupGet(c echo.Context) error {
 		}
 	}
 	sort.Slice(ret, func(i int, j int) bool {
-		return ret[i].Pinyin > ret[j].Pinyin
+		return ret[i].Name > ret[j].Name
 	})
 	return c.JSON(http.StatusOK, ret)
 }

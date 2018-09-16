@@ -29,4 +29,7 @@ export class ProfilePage implements OnInit {
   cancel() {
     this.modalCtrl.dismiss();
   }
+  pass() {
+    // TODO 修改密码
+  }
 }

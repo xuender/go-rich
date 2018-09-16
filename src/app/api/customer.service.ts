@@ -26,6 +26,14 @@ export class CustomerService {
         this.customers = cs
       })
   }
+  search(txt: string) {
+    if (txt && txt.length > 1) {
+    this.http.get<Customer[]>(`${URL}/api/customers/search?txt=${txt}`)
+      .subscribe((cs: Customer[]) => {
+        this.customers = cs
+      })
+    }
+  }
   // 删除客户
   async del(c: Customer) {
     const actionSheet = await this.actionSheetCtrl.create({

@@ -15,15 +15,15 @@ generate:
 
 build:
 	@echo 交叉编译
-	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o rich-386.exe main.go
+	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o rich-i386.exe main.go
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o rich-amd64.exe main.go
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o rich-linux main.go
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o rich-darwin main.go
 
 pack:
 	@echo 打包 $(TAG)
-	mv rich-386.exe go-rich.exe
-	zip go-rich-$(TAG)-windows_386.zip go-rich.exe
+	mv rich-i386.exe go-rich.exe
+	zip go-rich-$(TAG)-windows_i386.zip go-rich.exe
 	rm go-rich.exe
 	mv rich-amd64.exe go-rich.exe
 	zip go-rich-$(TAG)-windows_amd64.zip go-rich.exe

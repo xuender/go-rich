@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="create()">
+        新建
+      </ion-button>
+    </ion-buttons>
+    <ion-title>商品</ion-title>
+    <ion-searchbar placeholder="搜索" (ionChange)="search($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list *ngIf="items$ | async as items; else loading" #il>
+    <ion-list-header>
+      <h1>
+        {{ title }}
+      </h1>
+      <ion-badge color="primary" *ngIf="hasItem(items)">{{ items.length }}</ion-badge>
+    </ion-list-header>
+    <ion-item-sliding *ngFor="let i of items">
+      <ion-item button (click)="update(i)">
+        <ion-label>
+          <h2>{{ i.name }}</h2>
+        </ion-label>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option (click)="del(i, il)" color="danger">删除</ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ng-template #loading>Loading...</ng-template>
+</ion-content>

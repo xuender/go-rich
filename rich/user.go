@@ -12,7 +12,6 @@ import (
 // User 用户
 type User struct {
 	Obj
-	Nick   string            `json:"nick"`   // 昵称
 	Phone  string            `json:"phone"`  // 电话
 	Pass   string            `json:"-"`      // 密码
 	Admin  bool              `json:"admin"`  // 管理员
@@ -36,7 +35,7 @@ func (w *Web) userPass(c echo.Context) error {
 		return errors.New("密码不能为空")
 	}
 	u := &User{}
-	if err := w.objLoad(c, u); err != nil {
+	if err := w.ObjLoad(c, u); err != nil {
 		return err
 	}
 	u.Pass = Pass(pass)
@@ -61,33 +60,23 @@ func (w *Web) users() []User {
 
 // 用户创建
 func (w *Web) userPost(c echo.Context) error {
-	u := User{}
-	return w.objPost(c, &u, func() error {
-		if u.Nick == "" {
-			return errors.New("昵称不能为空")
-		}
-		u.Init(UserIDPrefix)
-		w.Put(u.ID[:], u)
-		return nil
-	})
+	return w.ObjPost(c, &User{}, UserIDPrefix, func() error { return nil })
 }
 
 // 用户获取
 func (w *Web) userGet(c echo.Context) error {
-	u := User{}
-	return w.objGet(c, &u)
+	return w.ObjGet(c, &User{})
 }
 
 // 用户修改
 func (w *Web) userPut(c echo.Context) error {
 	// TODO 昵称/电话重复检查
-	u := User{}
-	return w.objPut(c, &u)
+	return w.ObjPut(c, &User{}, UserIDPrefix, func() error { return nil })
 }
 
 // 用户删除
 func (w *Web) userDelete(c echo.Context) error {
-	return w.objDelete(c, UserIDPrefix)
+	return w.ObjDelete(c, UserIDPrefix)
 }
 
 // UserInit 用户初始化
@@ -96,10 +85,10 @@ func (w *Web) UserInit() {
 	if len(us) == 0 {
 		u := User{
 			Obj: Obj{
-				ID: goutils.NewId(UserIDPrefix),
-				Ca: time.Now(),
+				ID:   goutils.NewID(UserIDPrefix),
+				Name: "admin",
+				Ca:   time.Now(),
 			},
-			Nick:  "admin",
 			Phone: "admin",
 			Pass:  Pass("6181"),
 		}

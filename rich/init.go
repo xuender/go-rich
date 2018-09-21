@@ -13,4 +13,6 @@ const (
 	ExtIDPrefix byte = 'E'
 	// XlsxIDPrefix Excel定义前缀
 	XlsxIDPrefix byte = 'X'
+	// TagIDPrefix 标签前缀
+	TagIDPrefix byte = 'A'
 )

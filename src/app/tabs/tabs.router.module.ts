@@ -2,10 +2,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { TabsPage } from './tabs.page';
-import { AboutPage } from '../about/about.page';
 import { ContactPage } from '../contact/contact.page';
 import { SettingPage } from '../setting/setting.page';
 import { HomePage } from '../home/home.page';
+import { ItemsPage } from '../items/items.page';
+import { AboutPage } from '../about/about.page';
 
 const routes: Routes = [
   {
@@ -25,7 +26,12 @@ const routes: Routes = [
       {
         path: 'about',
         outlet: 'about',
-        component: AboutPage
+        component: AboutPage,
+      },
+      {
+        path: 'items',
+        outlet: 'items',
+        component: ItemsPage
       },
       {
         path: 'contact',

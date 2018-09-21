@@ -1,7 +1,6 @@
 package rich
 
 import (
-	"errors"
 	"log"
 	"net/http"
 
@@ -12,8 +11,7 @@ import (
 // Xlsx Excel定义
 type Xlsx struct {
 	Obj
-	Name string         `json:"name"` // 名称
-	Map  map[int]string `json:"map"`  // 列定义
+	Map map[int]string `json:"map"` // 列定义
 }
 
 // Excel定义路由
@@ -27,7 +25,6 @@ func (w *Web) xlsxRoute(c *echo.Group) {
 
 // 全部Excel定义获取
 func (w *Web) xlsxesGet(c echo.Context) error {
-	log.Println("xlsxesGet")
 	xs := []Xlsx{}
 	w.Iterator([]byte{XlsxIDPrefix, '-'}, func(key, value []byte) {
 		x := Xlsx{}
@@ -42,32 +39,22 @@ func (w *Web) xlsxesGet(c echo.Context) error {
 
 // Excle定义创建
 func (w *Web) xlsxPost(c echo.Context) error {
-	x := Xlsx{}
-	return w.objPost(c, &x, func() error {
-		if x.Name == "" {
-			return errors.New("名程不能为空")
-		}
-		x.Init(XlsxIDPrefix)
-		w.Put(x.ID[:], x)
-		return nil
-	})
+	return w.ObjPost(c, &Xlsx{}, XlsxIDPrefix, func() error { return nil })
 }
 
 // Excel定义获取
 func (w *Web) xlsxGet(c echo.Context) error {
-	x := Xlsx{}
-	return w.objGet(c, &x)
+	return w.ObjGet(c, &Xlsx{})
 }
 
 // Excel定义修改
 func (w *Web) xlsxPut(c echo.Context) error {
-	x := Xlsx{}
-	return w.objPut(c, &x)
+	return w.ObjPut(c, &Xlsx{}, XlsxIDPrefix, func() error { return nil })
 }
 
 // Excel定义删除
 func (w *Web) xlsxDelete(c echo.Context) error {
-	return w.objDelete(c, XlsxIDPrefix)
+	return w.ObjDelete(c, XlsxIDPrefix)
 }
 
 // customerProMap = make(map[int]string)

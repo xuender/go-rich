@@ -104,6 +104,8 @@ func (w *Web) Run() (err error) {
 	w.xlsxRoute(api.Group("/xlsxes"))        // Excel定义
 	w.userRoute(api.Group("/users"))         // 用户
 	w.profileRoute(api.Group("/profile"))    // 账户
+	w.itemRoute(api.Group("/items"))         // 商品
+	w.tagRoute(api.Group("/tags"))         // 标签
 
 	// 静态资源
 	if w.Dev {
@@ -223,7 +225,7 @@ func (w *Web) login(c echo.Context) error {
 	pass = Pass(pass)
 	for _, u := range w.users() {
 		// 身份认证
-		if u.Nick == nick || u.Phone == nick || pass == u.Pass {
+		if u.Name == nick || u.Phone == nick || pass == u.Pass {
 			// 创建令牌
 			token := jwt.New(jwt.SigningMethodRS256)
 			// 设置用户信息

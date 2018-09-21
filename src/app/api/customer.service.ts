@@ -28,10 +28,10 @@ export class CustomerService {
   }
   search(txt: string) {
     if (txt && txt.length > 1) {
-    this.http.get<Customer[]>(`${URL}/api/customers/search?txt=${txt}`)
-      .subscribe((cs: Customer[]) => {
-        this.customers = cs
-      })
+      this.http.get<Customer[]>(`${URL}/api/customers?search=${txt}`)
+        .subscribe((cs: Customer[]) => {
+          this.customers = cs
+        })
     }
   }
   // 删除客户

@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">
+        取消
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ item.name }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="ok()">
+        保存
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label fixed>商品名称</ion-label>
+      <ion-input required type="text" placeholder="商品名称" [(ngModel)]="item.name"></ion-input>
+    </ion-item>
+  </ion-list>
+</ion-content>

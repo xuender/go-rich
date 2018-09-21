@@ -1,6 +1,6 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NgModule, } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule, RouteReuseStrategy } from '@angular/router';
+import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 
@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { ErrorInterceptor } from './api/error.interceptor';
 import { JWTInterceptor } from './api/jwt.interceptor';
 import { ProfilePageModule } from './setting/profile/profile.module';
+import { TagsPageModule } from './setting/tags/tags.module';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { ProfilePageModule } from './setting/profile/profile.module';
     UsersPageModule,
     ProfilePageModule,
     FormsModule,
+    TagsPageModule,
   ],
   providers: [
     StatusBar,

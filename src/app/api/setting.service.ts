@@ -3,6 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { XlsxesPage } from '../setting/xlsxes/xlsxes.page';
 import { UsersPage } from '../setting/users/users.page';
 import { ProfilePage } from '../setting/profile/profile.page';
+import { TagsPage } from '../setting/tags/tags.page';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,13 @@ export class SettingService {
   async profile() {
     const modal = await this.modalCtrl.create({
       component: ProfilePage,
+    });
+    return await modal.present()
+  }
+  // 标签
+  async tags() {
+    const modal = await this.modalCtrl.create({
+      component: TagsPage,
     });
     return await modal.present()
   }

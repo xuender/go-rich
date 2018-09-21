@@ -19,7 +19,7 @@ type Trade struct {
 // NewTrade 创建订单
 func NewTrade(orders []Order) *Trade {
 	t := &Trade{
-		ID:     goutils.NewId(TradeIDPrefix),
+		ID:     goutils.NewID(TradeIDPrefix),
 		Ca:     time.Now(),
 		Status: 预订,
 		Orders: orders,

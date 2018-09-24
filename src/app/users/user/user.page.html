@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">
+        取消
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ obj.name }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="userForm.valid && save()" [disabled]="userForm.invalid">
+        保存
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form #userForm="ngForm">
+    <ion-list>
+      <ion-item-group>
+        <ion-item [class.error]="name.invalid && name.touched">
+          <ion-label fixed>昵称</ion-label>
+          <ion-input #name="ngModel" [(ngModel)]="obj.name" name="name" type="text" placeholder="昵称最长20" maxlength="20"
+            required></ion-input>
+        </ion-item>
+        <ion-item color="danger" *ngIf="name.invalid && name.touched">
+          <p [hidden]="!name.errors?.required">请输入昵称</p>
+          <p [hidden]="!name.errors?.maxlength">昵称最长20</p>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item [class.error]="phone.invalid && phone.touched">
+          <ion-label fixed>电话</ion-label>
+          <ion-input #phone="ngModel" [(ngModel)]="obj.phone" name="phone" type="text" placeholder="电话最长20" maxlength="20"
+            required></ion-input>
+        </ion-item>
+        <ion-item color="danger" *ngIf="phone.invalid && phone.touched">
+          <p [hidden]="!phone.errors?.required">请输入电话</p>
+          <p [hidden]="!phone.errors?.maxlength">电话最长20</p>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item [class.error]="note.invalid && note.touched">
+          <ion-textarea #note="ngModel" [(ngModel)]="obj.note" name="note" rows="5" placeholder="标签备注最长100" maxlength="100"></ion-textarea>
+        </ion-item>
+        <ion-item color="danger" *ngIf="note.invalid && note.touched">
+          <p [hidden]="!note.errors?.maxlength">标签备注最长100</p>
+        </ion-item>
+      </ion-item-group>
+    </ion-list>
+  </form>
+  <ion-list>
+    <ion-button *ngIf="obj.id" (click)="pass()">重置密码</ion-button>
+  </ion-list>
+</ion-content>

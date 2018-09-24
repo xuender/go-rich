@@ -24,3 +24,15 @@ func (t Tags) Sort() {
 		return t[i] < t[j]
 	})
 }
+
+// Includes 包含
+func (t Tags) Includes(tags []string) bool {
+	for _, tag := range tags {
+		for _, o := range t {
+			if tag == o {
+				return true
+			}
+		}
+	}
+	return false
+}

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ExtService } from '../api/ext.service';
+import { ExtService } from './ext.service';
+import { Ext } from './ext';
 
 @Component({
   selector: 'rich-ext',
@@ -11,13 +12,27 @@ export class ExtComponent implements OnInit {
   type: string
   @Input()
   data: any
+  exts: Ext[] = []
   constructor(
-    public ext: ExtService
+    private extService: ExtService
   ) {
   }
 
   ngOnInit() {
-    console.log('type', this.type)
+    if (this.type === 'C') {
+      this.extService.extsByCustomer$.subscribe((exts) => this.exts = exts)
+    } else {
+      this.extService.extsByItem$.subscribe((exts) => this.exts = exts)
+    }
   }
 
+  async edit() {
+    if (this.type === 'C') {
+      await this.extService.extCustomer()
+      this.exts = await this.extService.extsByCustomer$.toPromise()
+    } else {
+      await this.extService.extItem()
+      this.exts = await this.extService.extsByItem$.toPromise()
+    }
+  }
 }

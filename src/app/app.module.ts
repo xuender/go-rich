@@ -1,4 +1,4 @@
-import { NgModule, } from '@angular/core';
+import { NgModule  } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -10,20 +10,22 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ExtPageModule } from './setting/ext/ext.module';
+import { ExtPageModule } from './ext/ext.module';
 import { XlsxesPageModule } from './setting/xlsxes/xlsxes.module';
-import { UsersPageModule } from './setting/users/users.module';
 import { FormsModule } from '@angular/forms';
 import { ErrorInterceptor } from './api/error.interceptor';
 import { JWTInterceptor } from './api/jwt.interceptor';
 import { ProfilePageModule } from './setting/profile/profile.module';
-import { TagsPageModule } from './setting/tags/tags.module';
+import { TagsPageModule } from './tags/tags.module';
+import { SelectPageModule } from './tags/select/select.module';
+import { UsersPageModule } from './users/users.module';
 
 @NgModule({
   declarations: [
     AppComponent,
   ],
-  entryComponents: [],
+  entryComponents: [
+  ],
   imports: [
     HttpClientModule,
     BrowserModule,
@@ -36,6 +38,7 @@ import { TagsPageModule } from './setting/tags/tags.module';
     ProfilePageModule,
     FormsModule,
     TagsPageModule,
+    SelectPageModule,
   ],
   providers: [
     StatusBar,
@@ -46,6 +49,6 @@ import { TagsPageModule } from './setting/tags/tags.module';
   ],
   bootstrap: [
     AppComponent,
-  ]
+  ],
 })
 export class AppModule { }

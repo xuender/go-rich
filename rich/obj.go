@@ -1,17 +1,14 @@
 package rich
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"strings"
 	"time"
 
-	"github.com/go-playground/locales/zh"
-	ut "github.com/go-playground/universal-translator"
 	"github.com/labstack/echo"
 	"github.com/xuender/goutils"
-	"gopkg.in/go-playground/validator.v9"
-	zh_translations "gopkg.in/go-playground/validator.v9/translations/zh"
 )
 
 // Obj 基础对象
@@ -31,14 +28,12 @@ type Binder interface {
 
 // Puter 对象修改
 type Puter interface {
-	Binder
 	// BeforePut 修改前
 	BeforePut(id goutils.ID)
 }
 
 // Poster 新对象操作
 type Poster interface {
-	Binder
 	// BeforePost 保存前
 	BeforePost(key byte) goutils.ID
 }
@@ -46,6 +41,11 @@ type Poster interface {
 // Matcher 对象比较
 type Matcher interface {
 	Match(txt string) bool
+}
+
+// Includeser 包含
+type Includeser interface {
+	Includes(tags []string) bool
 }
 
 // BeforePut 修改对象
@@ -61,30 +61,14 @@ func (o *Obj) BeforePost(key byte) goutils.ID {
 	return o.ID
 }
 
-// Bind 对象绑定
-func (o *Obj) Bind(c echo.Context) error {
-	// 数据绑定
-	if err := c.Bind(o); err != nil {
-		return err
-	}
-	// 校验
-	if err := validate.Struct(o); err != nil {
-		if errs, ok := err.(validator.ValidationErrors); ok {
-			ret := ""
-			for _, v := range errs.Translate(trans) {
-				ret = v + "\n"
-			}
-			return errors.New(ret)
-		}
-		return errors.New("校验失败")
-	}
-	return nil
-}
-
 // ObjPut 对象修改
-func (w *Web) ObjPut(c echo.Context, p Puter, key byte, check func() error) error {
+func (w *Web) ObjPut(c echo.Context, p Puter, key byte, bind func() error, check func() error) error {
+	idstr := c.Param("id")
+	if idstr == "" {
+		return errors.New("id为空")
+	}
 	id := new(goutils.ID)
-	err := id.Parse(c.Param("id"))
+	err := id.Parse(idstr)
 	if err != nil {
 		return err
 	}
@@ -92,11 +76,13 @@ func (w *Web) ObjPut(c echo.Context, p Puter, key byte, check func() error) erro
 		return errors.New("前缀错误")
 	}
 	w.Get(id[:], p)
-	if err := p.Bind(c); err != nil {
+	if err := bind(); err != nil {
 		return err
 	}
-	if err := check(); err != nil {
-		return err
+	if check != nil {
+		if err := check(); err != nil {
+			return err
+		}
 	}
 	p.BeforePut(*id)
 	w.Put(id[:], p)
@@ -104,12 +90,14 @@ func (w *Web) ObjPut(c echo.Context, p Puter, key byte, check func() error) erro
 }
 
 // ObjPost 对象新增
-func (w *Web) ObjPost(c echo.Context, p Poster, key byte, check func() error) error {
-	if err := p.Bind(c); err != nil {
+func (w *Web) ObjPost(c echo.Context, p Poster, key byte, bind func() error, check func() error) error {
+	if err := bind(); err != nil {
 		return err
 	}
-	if err := check(); err != nil {
-		return err
+	if check != nil {
+		if err := check(); err != nil {
+			return err
+		}
 	}
 	id := p.BeforePost(key)
 	w.Put(id[:], p)
@@ -132,6 +120,19 @@ func (w *Web) ObjSearch(c echo.Context, i interface{}) (interface{}, error) {
 	if txt != "" {
 		return goutils.Filter(i, func(m Matcher) bool {
 			return m.Match(txt)
+		})
+	}
+	return i, nil
+}
+
+// ObjSelect 对象选择
+func (w *Web) ObjSelect(c echo.Context, i interface{}) (interface{}, error) {
+	str := c.QueryParam("tags")
+	if str != "" {
+		tags := []string{}
+		json.Unmarshal([]byte(str), &tags)
+		return goutils.Filter(i, func(m Includeser) bool {
+			return m.Includes(tags)
 		})
 	}
 	return i, nil
@@ -173,20 +174,4 @@ func (o Obj) Match(txt string) bool {
 		}
 	}
 	return strings.Contains(string(s), strings.ToLower(txt))
-}
-
-// Validate 校验
-var (
-	uni      *ut.UniversalTranslator
-	validate *validator.Validate
-	trans    ut.Translator
-)
-
-func init() {
-	// 多国语言
-	zhl := zh.New()
-	uni = ut.New(zhl, zhl)
-	trans, _ = uni.GetTranslator("zh")
-	validate = validator.New()
-	zh_translations.RegisterDefaultTranslations(validate, trans)
 }

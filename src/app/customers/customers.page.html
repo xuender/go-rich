@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="create()">
+        新建
+      </ion-button>
+    </ion-buttons>
+    <ion-title>客户</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="upload()">
+        上传
+      </ion-button>
+    </ion-buttons>
+    <ion-searchbar placeholder="搜索" (ionChange)="search($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-fab vertical="center" horizontal="end" edge slot="fixed">
+    <ion-fab-button (click)="select()" color="light">
+      <ion-icon name="pricetags"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-list *ngIf="customers$ | async as customers; else loading" #il>
+    <ion-item-divider>
+      <ion-label>
+        <ion-badge color="primary" *ngFor="let t of tags" (click)="removeTag(t)">{{ t }}</ion-badge>
+      </ion-label>
+      <ion-badge color="primary" *ngIf="customerService.has(customers)">{{ customers.length }}</ion-badge>
+    </ion-item-divider>
+    <ion-item-sliding *ngFor="let c of customers">
+      <ion-item button (click)="update(c)">
+        <ion-label>{{ c.name }}</ion-label>
+        <ion-badge *ngFor="let t of c.tags" [color]="hasTag(t)? 'primary' : 'light'">{{ t }}</ion-badge>
+        <ion-badge *ngIf="c.trades">{{ c.trades.length }}</ion-badge>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option (click)="del(c, il)" color="danger">删除</ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
+
+<ng-template #loading>
+  <ion-spinner></ion-spinner>
+  加载中...
+</ng-template>

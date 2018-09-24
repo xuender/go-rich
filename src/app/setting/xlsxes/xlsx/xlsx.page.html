@@ -5,9 +5,9 @@
         取消
       </ion-button>
     </ion-buttons>
-    <ion-title>{{ xlsx.name }}</ion-title>
+    <ion-title>{{ obj.name }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="ok()">
+      <ion-button (click)="xlsxForm.valid && save()" [disabled]="xlsxForm.invalid">
         保存
       </ion-button>
     </ion-buttons>
@@ -15,45 +15,58 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-list>
-    <ion-item>
-      <ion-label fixed>名称</ion-label>
-      <ion-input required type="text" placeholder="定义姓名" [(ngModel)]="xlsx.name"></ion-input>
-    </ion-item>
-    <ion-list-header>
-      Excel列定义
-      <ion-button color="secondary" (click)="ext.extCustomer()" size="small">设置</ion-button>
-    </ion-list-header>
-    <ion-item>
-      <ion-label fixed>姓名</ion-label>
-      <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="xlsx.map['Name']">
-        <ion-select-option [value]="0">无</ion-select-option>
-        <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-item>
-      <ion-label fixed>电话</ion-label>
-      <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="xlsx.map['Phone']">
-        <ion-select-option [value]="0">无</ion-select-option>
-        <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-item>
-      <ion-label fixed>备注</ion-label>
-      <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="xlsx.map['Note']">
-        <ion-select-option [value]="0">无</ion-select-option>
-        <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
-      </ion-select>
-    </ion-item>
-  </ion-list>
-  <ng-template #loading>加载中...</ng-template>
-  <ion-list *ngIf="ext.extsByCustomer | async as exts; else loading">
-    <ion-item *ngFor="let e of exts">
-      <ion-label fixed>{{ e.key }}</ion-label>
-      <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="xlsx.map[e.key]">
-        <ion-select-option [value]="0">无</ion-select-option>
-        <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
-      </ion-select>
-    </ion-item>
-  </ion-list>
+  <form #xlsxForm="ngForm">
+    <ion-list>
+      <ion-item-group>
+        <ion-item [class.error]="name.invalid && name.touched">
+          <ion-label fixed>名称</ion-label>
+          <ion-input #name="ngModel" [(ngModel)]="obj.name" name="name" type="text" placeholder="名称最长20" maxlength="20"
+            required></ion-input>
+        </ion-item>
+        <ion-item color="danger" *ngIf="name.invalid && name.touched">
+          <p [hidden]="!name.errors?.required">请输入名称</p>
+          <p [hidden]="!name.errors?.maxlength">名称最长20</p>
+        </ion-item>
+      </ion-item-group>
+      <ion-item>
+        <ion-label fixed>姓名</ion-label>
+        <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map['Name']" name="ename">
+          <ion-select-option [value]="0">无</ion-select-option>
+          <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label fixed>电话</ion-label>
+        <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map['Phone']" name="phone">
+          <ion-select-option [value]="0">无</ion-select-option>
+          <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label fixed>备注</ion-label>
+        <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map['Note']" name="note">
+          <ion-select-option [value]="0">无</ion-select-option>
+          <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item-divider>
+        <ion-label>客户扩展</ion-label>
+        <ion-button (click)="edit()">设置</ion-button>
+      </ion-item-divider>
+      <ion-item-group *ngIf="extsByCustomer$ | async as exts; else loading">
+        <ion-item *ngFor="let e of exts">
+          <ion-label fixed>{{ e.key }}</ion-label>
+          <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map[e.key]" [name]="e.key">
+            <ion-select-option [value]="0">无</ion-select-option>
+            <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-item-group>
+    </ion-list>
+  </form>
 </ion-content>
+
+<ng-template #loading>
+  <ion-spinner></ion-spinner>
+  加载中...
+</ng-template>

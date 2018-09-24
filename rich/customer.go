@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sort"
+	"strings"
 	"time"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
@@ -18,6 +20,17 @@ type Customer struct {
 	Phone  string            `json:"phone,omitempty"`  // 电话
 	Trades []goutils.ID      `json:"trades,omitempty"` // 消费记录
 	Extend map[string]string `json:"extend"`           // 扩展属性
+	Tags   Tags              `json:"tags"`             // 标签
+}
+
+// Includes 包含
+func (c Customer) Includes(tags []string) bool {
+	return c.Tags.Includes(tags)
+}
+
+// Match 匹配
+func (c Customer) Match(txt string) bool {
+	return c.Obj.Match(txt) || strings.Contains(c.Phone, txt)
 }
 
 // 客户路由
@@ -30,10 +43,14 @@ func (w *Web) customerRoute(c *echo.Group) {
 	c.POST("/file", w.customersFile)   // 上传客户文件
 }
 
-// 获取全部客户
+// 客户列表
 func (w *Web) customersGet(c echo.Context) error {
 	customers := w.customers()
 	w.ObjSearch(c, &customers)
+	w.ObjSelect(c, &customers)
+	if len(customers) > 20 {
+		return c.JSON(http.StatusOK, customers[:20])
+	}
 	return c.JSON(http.StatusOK, customers)
 }
 
@@ -48,17 +65,22 @@ func (w *Web) customers() []Customer {
 			log.Printf("客户信息解析失败 %x \n", key)
 		}
 	})
+	sort.Slice(cs, func(i int, j int) bool {
+		return cs[i].Name < cs[j].Name
+	})
 	return cs
 }
 
 // 客户创建
 func (w *Web) customerPost(c echo.Context) error {
-	return w.ObjPost(c, &Customer{}, CustomerIDPrefix, func() error { return nil })
+	cu := Customer{}
+	return w.ObjPost(c, &cu, CustomerIDPrefix, func() error { return w.Bind(c, &cu) }, nil)
 }
 
 // 客户修改
 func (w *Web) customerPut(c echo.Context) error {
-	return w.ObjPut(c, &Customer{}, CustomerIDPrefix, func() error { return nil })
+	cu := Customer{}
+	return w.ObjPut(c, &cu, CustomerIDPrefix, func() error { return w.Bind(c, &cu) }, nil)
 }
 
 // 删除用户

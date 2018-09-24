@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">
+        取消
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ obj.name }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="customerForm.valid && save()" [disabled]="customerForm.invalid">
+        保存
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form #customerForm="ngForm">
+    <ion-list>
+      <ion-item-group>
+        <ion-item [class.error]="name.invalid && name.touched">
+          <ion-label fixed>客户姓名</ion-label>
+          <ion-input #name="ngModel" [(ngModel)]="obj.name" name="name" type="text" placeholder="客户姓名最长30"
+            maxlength="30" required></ion-input>
+        </ion-item>
+        <ion-item color="danger" *ngIf="name.invalid && name.touched">
+          <p [hidden]="!name.errors?.required">请输入客户姓名</p>
+          <p [hidden]="!name.errors?.maxlength">客户姓名最长30</p>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item [class.error]="phone.invalid && phone.touched">
+          <ion-label fixed>联系方式</ion-label>
+          <ion-input #phone="ngModel" [(ngModel)]="obj.phone" name="phone" type="text" placeholder="联系方式最长30"
+            maxlength="30"></ion-input>
+        </ion-item>
+        <ion-item color="danger" *ngIf="phone.invalid && phone.touched">
+          <p [hidden]="!phone.errors?.maxlength">联系方式最长30</p>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item [class.error]="note.invalid && note.touched">
+          <ion-textarea #note="ngModel" [(ngModel)]="obj.note" name="note" rows="5" placeholder="备注最长100"
+            maxlength="100"></ion-textarea>
+        </ion-item>
+        <ion-item color="danger" *ngIf="note.invalid && note.touched">
+          <p [hidden]="!note.errors?.maxlength">备注最长100</p>
+        </ion-item>
+      </ion-item-group>
+      <rich-ext [type]="'C'" [data]="obj.extend"></rich-ext>
+      <rich-tags key="tag-C" [tags]="obj.tags"></rich-tags>
+    </ion-list>
+  </form>
+</ion-content>

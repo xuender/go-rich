@@ -1,10 +1,15 @@
-<ion-list>
-  <ion-list-header>
-    扩展信息
-    <ion-button color="secondary" (click)="ext.extCustomer()" size="small">设置</ion-button>
-  </ion-list-header>
-  <ion-item *ngFor="let e of ext.extsByCustomer | async">
-    <ion-label fixed>{{ e.key }}</ion-label>
-    <ion-input type="text" [placeholder]="e.value" [(ngModel)]="data[e.key]"></ion-input>
-  </ion-item>
-</ion-list>
+<ion-item-group>
+  <ion-item-divider>
+    <ion-label>扩展信息</ion-label>
+    <ion-button (click)="edit()">设置</ion-button>
+  </ion-item-divider>
+  <ng-container *ngFor="let e of exts;let i=index">
+    <ion-item>
+      <ion-label fixed>{{ e.key }}</ion-label>
+      <ion-input #ext="ngModel" [(ngModel)]="data[e.key]" [name]="e.key+i" type="text" [placeholder]="e.value" maxleng="100"></ion-input>
+    </ion-item>
+    <ion-item color="danger" *ngIf="ext.invalid && ext.touched">
+      <p [hidden]="!ext.errors?.maxlength">扩展信息最长100</p>
+    </ion-item>
+  </ng-container>
+</ion-item-group>

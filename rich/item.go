@@ -13,6 +13,12 @@ type Item struct {
 	Obj
 	Price  int64             `json:"price"`  // 价格,单位分
 	Extend map[string]string `json:"extend"` // 扩展属性
+	Tags   Tags              `json:"tags"`   // 标签
+}
+
+// Includes 包含
+func (i Item) Includes(tags []string) bool {
+	return i.Tags.Includes(tags)
 }
 
 // 商品路由
@@ -29,6 +35,7 @@ func (w *Web) itemRoute(c *echo.Group) {
 func (w *Web) itemsGet(c echo.Context) error {
 	items := w.items()
 	w.ObjSearch(c, &items)
+	w.ObjSelect(c, &items)
 	return c.JSON(http.StatusOK, items)
 }
 
@@ -48,12 +55,14 @@ func (w *Web) items() []Item {
 
 // 商品创建
 func (w *Web) itemPost(c echo.Context) error {
-	return w.ObjPost(c, &Item{}, ItemIDPrefix, func() error { return nil })
+	i := Item{}
+	return w.ObjPost(c, &i, ItemIDPrefix, func() error { return w.Bind(c, &i) }, nil)
 }
 
 // 商品修改
 func (w *Web) itemPut(c echo.Context) error {
-	return w.ObjPut(c, &Item{}, ItemIDPrefix, func() error { return nil })
+	i := Item{}
+	return w.ObjPut(c, &i, ItemIDPrefix, func() error { return w.Bind(c, &i) }, nil)
 }
 
 // 商品删除

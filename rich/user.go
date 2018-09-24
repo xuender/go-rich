@@ -60,7 +60,12 @@ func (w *Web) users() []User {
 
 // 用户创建
 func (w *Web) userPost(c echo.Context) error {
-	return w.ObjPost(c, &User{}, UserIDPrefix, func() error { return nil })
+	u := User{}
+	return w.ObjPost(c, &u, UserIDPrefix, func() error { return w.Bind(c, &u) },
+		func() error {
+			// TODO 新增用户校验
+			return nil
+		})
 }
 
 // 用户获取
@@ -70,8 +75,12 @@ func (w *Web) userGet(c echo.Context) error {
 
 // 用户修改
 func (w *Web) userPut(c echo.Context) error {
-	// TODO 昵称/电话重复检查
-	return w.ObjPut(c, &User{}, UserIDPrefix, func() error { return nil })
+	u := User{}
+	return w.ObjPut(c, &u, UserIDPrefix, func() error { return w.Bind(c, &u) },
+		func() error {
+			// TODO 昵称/电话重复检查
+			return nil
+		})
 }
 
 // 用户删除

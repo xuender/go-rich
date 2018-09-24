@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">
+        取消
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ tag.name }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="tagForm.valid && save()" [disabled]="tagForm.invalid">
+        保存
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form #tagForm="ngForm">
+    <ion-list>
+      <ion-item-group>
+        <ion-item [class.error]="name.invalid && name.touched">
+          <ion-label fixed>名称</ion-label>
+          <ion-input #name="ngModel" [(ngModel)]="tag.name" name="name" type="text" placeholder="标签名称长度2-10" minlength="2"
+            maxlength="10" required></ion-input>
+        </ion-item>
+        <ion-item color="danger" *ngIf="name.invalid && name.touched">
+          <p [hidden]="!name.errors?.required">请输入标签名称</p>
+          <p [hidden]="!name.errors?.maxlength">标签名称最长10</p>
+          <p [hidden]="!name.errors?.minlength">标签名称最短2</p>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item *ngFor="let k of tagService.keys">
+          <ion-label>{{ k.name }}</ion-label>
+          <ion-toggle [(ngModel)]="tag.use[k.key]" [name]="k.key"></ion-toggle>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item [class.error]="note.invalid && note.touched">
+          <ion-textarea #note="ngModel" [(ngModel)]="tag.note" name="note" rows="5" placeholder="标签备注最长100" maxlength="100"></ion-textarea>
+        </ion-item>
+        <ion-item color="danger" *ngIf="note.invalid && note.touched">
+          <p [hidden]="!note.errors?.maxlength">标签备注最长100</p>
+        </ion-item>
+      </ion-item-group>
+    </ion-list>
+  </form>
+</ion-content>

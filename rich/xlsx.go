@@ -1,6 +1,7 @@
 package rich
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -16,15 +17,14 @@ type Xlsx struct {
 
 // Excel定义路由
 func (w *Web) xlsxRoute(c *echo.Group) {
-	c.GET("", w.xlsxesGet)         // 列表
-	c.POST("", w.xlsxPost)         // 创建
-	c.GET("/:id", w.xlsxGet)       // 获取
-	c.PUT("/:id", w.xlsxPut)       // 修改
-	c.DELETE("/:id", w.xlsxDelete) // 删除
+	c.GET("", func(c echo.Context) error { return c.JSON(http.StatusOK, w.xlsxes()) })   // 列表
+	c.GET("/:id", func(c echo.Context) error { return w.ObjGet(c, &Xlsx{}) })            // 获取
+	c.POST("", w.xlsxPost)                                                               // 创建
+	c.PUT("/:id", w.xlsxPut)                                                             // 修改
+	c.DELETE("/:id", func(c echo.Context) error { return w.ObjDelete(c, XlsxIDPrefix) }) // 删除
 }
 
-// 全部Excel定义获取
-func (w *Web) xlsxesGet(c echo.Context) error {
+func (w *Web) xlsxes() []Xlsx {
 	xs := []Xlsx{}
 	w.Iterator([]byte{XlsxIDPrefix, '-'}, func(key, value []byte) {
 		x := Xlsx{}
@@ -34,27 +34,35 @@ func (w *Web) xlsxesGet(c echo.Context) error {
 			log.Printf("Excel定义解析失败 %x \n", key)
 		}
 	})
-	return c.JSON(http.StatusOK, xs)
+	return xs
 }
 
 // Excle定义创建
 func (w *Web) xlsxPost(c echo.Context) error {
-	return w.ObjPost(c, &Xlsx{}, XlsxIDPrefix, func() error { return nil })
-}
-
-// Excel定义获取
-func (w *Web) xlsxGet(c echo.Context) error {
-	return w.ObjGet(c, &Xlsx{})
+	x := Xlsx{}
+	return w.ObjPost(c, &x, XlsxIDPrefix, func() error { return w.Bind(c, &x) },
+		func() error {
+			for _, o := range w.xlsxes() {
+				if o.Name == x.Name {
+					return errors.New("名称重复")
+				}
+			}
+			return nil
+		})
 }
 
 // Excel定义修改
 func (w *Web) xlsxPut(c echo.Context) error {
-	return w.ObjPut(c, &Xlsx{}, XlsxIDPrefix, func() error { return nil })
-}
-
-// Excel定义删除
-func (w *Web) xlsxDelete(c echo.Context) error {
-	return w.ObjDelete(c, XlsxIDPrefix)
+	x := Xlsx{}
+	return w.ObjPut(c, &x, XlsxIDPrefix, func() error { return w.Bind(c, &x) },
+		func() error {
+			for _, o := range w.xlsxes() {
+				if o.Name == x.Name && o.ID != x.ID {
+					return errors.New("名称重复")
+				}
+			}
+			return nil
+		})
 }
 
 // customerProMap = make(map[int]string)

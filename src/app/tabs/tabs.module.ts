@@ -6,8 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { TabsPageRoutingModule } from './tabs.router.module';
 
 import { TabsPage } from './tabs.page';
-import { ContactPageModule } from '../contact/contact.module';
-import { AboutPageModule } from '../about/about.module';
+import { ContactPageModule } from '../customers/customers.module';
 import { SettingPageModule } from '../setting/setting.module';
 import { HomePageModule } from '../home/home.module';
 import { ItemsPageModule } from '../items/items.module';
@@ -18,7 +17,6 @@ import { ItemsPageModule } from '../items/items.module';
     CommonModule,
     FormsModule,
     TabsPageRoutingModule,
-    AboutPageModule,
     SettingPageModule,
     ContactPageModule,
     HomePageModule,

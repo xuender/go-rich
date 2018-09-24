@@ -1,0 +1,10 @@
+<ion-item-group>
+  <ion-item-divider>
+    <ion-label>标签</ion-label>
+    <ion-button (click)="edit()">设置</ion-button>
+  </ion-item-divider>
+  <ion-item *ngFor="let t of tags$ | async">
+    <ion-label>{{ t.name }}</ion-label>
+    <ion-toggle (ionChange)="change(t.name)" [checked]="has(t.name)"></ion-toggle>
+  </ion-item>
+</ion-item-group>

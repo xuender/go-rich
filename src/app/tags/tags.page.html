@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">
+        取消
+      </ion-button>
+    </ion-buttons>
+    <ion-title>标签</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="create()">
+        新建
+      </ion-button>
+    </ion-buttons>
+    <ion-searchbar placeholder="搜索" (ionChange)="search($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list *ngIf="tags$ | async as tags; else loading" #il>
+    <ion-item-divider>
+      <ion-label>{{ title }}</ion-label>
+      <ion-badge color="primary" *ngIf="tagService.has(tags)">{{ tags.length }}</ion-badge>
+    </ion-item-divider>
+    <ion-item-sliding *ngFor="let t of tags">
+      <ion-item button (click)="update(t)">
+        <ion-label>{{ t.name }}</ion-label>
+        <ng-container *ngFor="let k of tagService.keys">
+          <ion-badge [color]="k.color" *ngIf="t.use[k.key]">{{ k.name }}</ion-badge>
+        </ng-container>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option (click)="del(t, il)" color="danger">删除</ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
+
+<ng-template #loading>
+  <ion-spinner></ion-spinner>
+  加载中...
+</ng-template>

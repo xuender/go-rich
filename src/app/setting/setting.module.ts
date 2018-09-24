@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { SettingPage } from './setting.page';
 import { XlsxesPageModule } from './xlsxes/xlsxes.module';
-import { UsersPageModule } from './users/users.module';
+import { UsersPageModule } from '../users/users.module';
 
 const routes: Routes = [
   {

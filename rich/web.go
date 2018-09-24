@@ -10,17 +10,15 @@ import (
 	"os"
 	"time"
 
-	"../keys"
-	"rsc.io/qr"
-
 	static "github.com/Code-Hex/echo-static"
 	jwt "github.com/dgrijalva/jwt-go"
 	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/syndtr/goleveldb/leveldb/util"
-	"github.com/xuender/goutils"
+	"rsc.io/qr"
+
+	"../keys"
 )
 
 // Web 网络服务
@@ -105,7 +103,7 @@ func (w *Web) Run() (err error) {
 	w.userRoute(api.Group("/users"))         // 用户
 	w.profileRoute(api.Group("/profile"))    // 账户
 	w.itemRoute(api.Group("/items"))         // 商品
-	w.tagRoute(api.Group("/tags"))         // 标签
+	w.tagRoute(api.Group("/tags"))           // 标签
 
 	// 静态资源
 	if w.Dev {
@@ -113,7 +111,6 @@ func (w *Web) Run() (err error) {
 	} else {
 		e.Use(static.ServeRoot("/", getAssets("www")))
 	}
-	// return e.Start(w.Port)
 	// HTTP/2.0 启动
 	return w.start(e)
 }
@@ -166,39 +163,6 @@ func (w *Web) start(e *echo.Echo) error {
 // Close 关闭服务
 func (w *Web) Close() {
 	w.db.Close()
-}
-
-// Get 数据库数据读取
-func (w *Web) Get(key []byte, p interface{}) error {
-	data, err := w.db.Get(key, nil)
-	if err != nil {
-		return err
-	}
-	return goutils.Decode(data, p)
-}
-
-// Put 数据库数据保存
-func (w *Web) Put(key []byte, p interface{}) error {
-	bs, err := goutils.Encode(p)
-	if err != nil {
-		return err
-	}
-	return w.db.Put(key, bs, nil)
-}
-
-// Iterator 迭代获取数据
-func (w *Web) Iterator(prefix []byte, f func(key, value []byte)) error {
-	iter := w.db.NewIterator(util.BytesPrefix(prefix), nil)
-	for iter.Next() {
-		f(iter.Key(), iter.Value())
-	}
-	iter.Release()
-	return iter.Error()
-}
-
-// Delete 删除
-func (w *Web) Delete(key []byte) error {
-	return w.db.Delete(key, nil)
 }
 
 // 静态资源

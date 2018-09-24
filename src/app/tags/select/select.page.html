@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">
+        取消
+      </ion-button>
+    </ion-buttons>
+    <ion-title>选择标签</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="select()">
+        选择
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col *ngFor="let t of tags$ | async">
+        <ion-label>
+          {{ t.name }}
+        </ion-label>
+        <ion-toggle (ionChange)="change(t.name)" [checked]="has(t.name)"></ion-toggle>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

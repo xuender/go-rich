@@ -11,23 +11,32 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-fab vertical="center" horizontal="end" edge slot="fixed">
+    <ion-fab-button (click)="select()" color="light">
+      <ion-icon name="pricetags"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
   <ion-list *ngIf="items$ | async as items; else loading" #il>
-    <ion-list-header>
-      <h1>
-        {{ title }}
-      </h1>
-      <ion-badge color="primary" *ngIf="hasItem(items)">{{ items.length }}</ion-badge>
-    </ion-list-header>
+    <ion-item-divider>
+      <ion-label>
+        <ion-badge color="primary" *ngFor="let t of tags" (click)="removeTag(t)">{{ t }}</ion-badge>
+      </ion-label>
+      <ion-badge color="primary" *ngIf="itemService.has(items)">{{ items.length }}</ion-badge>
+    </ion-item-divider>
     <ion-item-sliding *ngFor="let i of items">
       <ion-item button (click)="update(i)">
-        <ion-label>
-          <h2>{{ i.name }}</h2>
-        </ion-label>
+        <ion-label>{{ i.name }}</ion-label>
+        <ion-badge *ngFor="let t of i.tags" [color]="hasTag(t)? 'primary' : 'light'">{{ t }}</ion-badge>
+        <ion-badge color="warning">{{ i.price / 100 | currency:'￥' }}</ion-badge>
       </ion-item>
       <ion-item-options side="end">
         <ion-item-option (click)="del(i, il)" color="danger">删除</ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
-  <ng-template #loading>Loading...</ng-template>
 </ion-content>
+
+<ng-template #loading>
+  <ion-spinner></ion-spinner>
+  加载中...
+</ng-template>

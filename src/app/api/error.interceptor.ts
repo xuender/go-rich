@@ -12,10 +12,10 @@ export class ErrorInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(tap((event: HttpEvent<any>) => { }, (err: any) => {
       switch (err.status) {
-        case 400:
         case 401:
           this.profile.login()
           break
+        case 400:
         default:
           this.profile.error(err.error.message)
       }

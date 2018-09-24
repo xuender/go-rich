@@ -2,11 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { TabsPage } from './tabs.page';
-import { ContactPage } from '../contact/contact.page';
+import { CustomersPage } from '../customers/customers.page';
 import { SettingPage } from '../setting/setting.page';
 import { HomePage } from '../home/home.page';
 import { ItemsPage } from '../items/items.page';
-import { AboutPage } from '../about/about.page';
 
 const routes: Routes = [
   {
@@ -15,8 +14,13 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: '/tabs/(contact:contact)',
+        redirectTo: '/tabs/(customers:customers)',
         pathMatch: 'full',
+      },
+      {
+        path: 'customers',
+        outlet: 'customers',
+        component: CustomersPage
       },
       {
         path: 'home',
@@ -24,30 +28,20 @@ const routes: Routes = [
         component: HomePage
       },
       {
-        path: 'about',
-        outlet: 'about',
-        component: AboutPage,
-      },
-      {
         path: 'items',
         outlet: 'items',
         component: ItemsPage
       },
       {
-        path: 'contact',
-        outlet: 'contact',
-        component: ContactPage
-      },
-      {
         path: 'setting',
-        outlet: 'about',
+        outlet: 'setting',
         component: SettingPage,
       },
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/(contact:contact)',
+    redirectTo: '/tabs/(customers:customers)',
     pathMatch: 'full'
   },
 ];

@@ -5,9 +5,9 @@
         取消
       </ion-button>
     </ion-buttons>
-    <ion-title>{{ item.name }}</ion-title>
+    <ion-title>{{ obj.name }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="ok()">
+      <ion-button (click)="itemForm.valid && save()" [disabled]="itemForm.invalid">
         保存
       </ion-button>
     </ion-buttons>
@@ -15,10 +15,40 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-list>
-    <ion-item>
-      <ion-label fixed>商品名称</ion-label>
-      <ion-input required type="text" placeholder="商品名称" [(ngModel)]="item.name"></ion-input>
-    </ion-item>
-  </ion-list>
+  <form #itemForm="ngForm">
+    <ion-list>
+      <ion-item-group>
+        <ion-item [class.error]="name.invalid && name.touched">
+          <ion-label fixed>商品名称</ion-label>
+          <ion-input #name="ngModel" [(ngModel)]="obj.name" name="name" type="text" placeholder="商品名称最长50" maxlength="50"
+            required></ion-input>
+        </ion-item>
+        <ion-item color="danger" *ngIf="name.invalid && name.touched">
+          <p [hidden]="!name.errors?.required">请输入商品名称</p>
+          <p [hidden]="!name.errors?.maxlength">商品名称最长50</p>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item [class.error]="price.invalid && price.touched">
+          <ion-label fixed>商品价格</ion-label>
+          <ion-input #price="ngModel" [(ngModel)]="itemPrice" name="price" type="number" min="0" max="99999999999" step="0.01"
+            placeholder="商品价格单位元"></ion-input>
+        </ion-item>
+        <ion-item color="danger" *ngIf="price.invalid && price.touched">
+          <p [hidden]="!price.errors?.min">商品价格最小0</p>
+          <p [hidden]="!price.errors?.max">商品价格最大99999999999</p>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item [class.error]="note.invalid && note.touched">
+          <ion-textarea #note="ngModel" [(ngModel)]="obj.note" name="note" rows="5" placeholder="商品备注最长100" maxlength="100"></ion-textarea>
+        </ion-item>
+        <ion-item color="danger" *ngIf="note.invalid && note.touched">
+          <p [hidden]="!note.errors?.maxlength">商品备注最长100</p>
+        </ion-item>
+      </ion-item-group>
+      <rich-ext [type]="'I'" [data]="obj.extend"></rich-ext>
+      <rich-tags key="tag-I" [tags]="obj.tags"></rich-tags>
+    </ion-list>
+  </form>
 </ion-content>

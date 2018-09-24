@@ -1,30 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
-import { Item } from '../../api/item';
+
+import { Item } from '../item';
+import { ItemService } from '../item.service';
+import { ObjPage } from '../../api/obj.page';
 
 @Component({
   selector: 'app-item',
   templateUrl: './item.page.html',
   styleUrls: ['./item.page.scss'],
 })
-export class ItemPage implements OnInit {
-
-  item: Item
+export class ItemPage extends ObjPage<Item> {
   constructor(
-    private modalCtrl: ModalController,
-    private navParams: NavParams
+    private itemService: ItemService,
+    protected modalCtrl: ModalController,
+    protected navParams: NavParams
   ) {
-    this.item = this.navParams.get('item')
+    super(modalCtrl, navParams)
+    if (!this.obj.extend) { this.obj.extend = {} }
+    if (!this.obj.tags) { this.obj.tags = [] }
   }
 
-  ngOnInit() {
+  get service() { return this.itemService }
+
+  get itemPrice() {
+    return this.obj.price / 100
   }
 
-  cancel() {
-    this.modalCtrl.dismiss();
-  }
-
-  ok() {
-    this.modalCtrl.dismiss(this.item);
+  set itemPrice(price: number) {
+    this.obj.price = Math.ceil(price * 100)
   }
 }

@@ -9,7 +9,6 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
-
   user: any = { id: '', nick: '' }
   constructor(
     private modalCtrl: ModalController,

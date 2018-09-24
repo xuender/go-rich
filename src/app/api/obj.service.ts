@@ -4,11 +4,15 @@ import { find, pull } from 'lodash'
 
 import { Obj } from './obj';
 import { URL } from './init'
+import { Paging } from './paging';
+import { InfiniteScroll } from '@ionic/angular';
+import { Observable } from 'rxjs';
 
 export abstract class ObjService<T extends Obj> {
   private datas: T[] = []
   private txt: string = ''
   private tags: string[] = []
+  private page = 0
   constructor(
     protected http: HttpClient,
     protected ngZone: NgZone,
@@ -17,7 +21,16 @@ export abstract class ObjService<T extends Obj> {
   abstract path(): string
 
   get all$() {
-    return this.http.get<T[]>(`${URL}${this.path()}`)
+    return this.http.get<T[]>(`${URL}${this.path()}`, { params: this.params })
+  }
+
+  get paging$() {
+    return this.http.get<Paging<T>>(`${URL}${this.path()}`, { params: this.params })
+  }
+
+  get nextPaging$() {
+    this.page += 1
+    return this.paging$
   }
 
   has(datas: T[]): boolean {
@@ -48,15 +61,28 @@ export abstract class ObjService<T extends Obj> {
 
   search(txt: string) {
     this.txt = txt
-    return this.query$()
+    return this.all$
   }
 
   select(tags: string[]) {
     this.tags = tags
-    return this.query$()
+    return this.all$
   }
 
-  private query$() {
+  searchPaging(txt: string) {
+    this.page = 0
+    this.txt = txt
+    return this.paging$
+  }
+
+  selectPaging(tags: string[]) {
+    this.page = 0
+    this.tags = tags
+    return this.paging$
+  }
+
+
+  private get params() {
     const params = {}
     if (this.txt) {
       params['search'] = this.txt
@@ -64,6 +90,9 @@ export abstract class ObjService<T extends Obj> {
     if (this.tags && this.tags.length > 0) {
       params['tags'] = JSON.stringify(this.tags)
     }
-    return this.http.get<T[]>(`${URL}${this.path()}`, { params: params })
+    if (this.page > 0) {
+      params['page'] = this.page
+    }
+    return params
   }
 }

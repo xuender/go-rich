@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"reflect"
+	"strconv"
 	"strings"
 	"time"
 
@@ -136,6 +138,45 @@ func (w *Web) ObjSelect(c echo.Context, i interface{}) (interface{}, error) {
 		})
 	}
 	return i, nil
+}
+
+// ObjPaging 分页
+func (w *Web) ObjPaging(c echo.Context, i interface{}) error {
+	rv := reflect.ValueOf(i)
+	err := errors.New("分页对象必须是slice或array")
+	if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
+		return err
+	}
+	s := c.QueryParam("size")
+	p := c.QueryParam("page")
+	size := 20
+	page := 0
+	if s != "" {
+		size, err = strconv.Atoi(s)
+		if err != nil {
+			return err
+		}
+	}
+	if p != "" {
+		page, err = strconv.Atoi(p)
+		if err != nil {
+			return err
+		}
+	}
+	start := page * size
+	if start > rv.Len() {
+		return c.JSON(http.StatusOK, []int{})
+	}
+	end := start + size
+	if end > rv.Len() {
+		end = rv.Len()
+	}
+	t := rv.Type().Elem()
+	out := reflect.MakeSlice(reflect.SliceOf(t), 0, end-start)
+	for i := start; i < end; i++ {
+		out = reflect.Append(out, rv.Index(i))
+	}
+	return c.JSON(http.StatusOK, Paging{Data: out.Interface(), Total: rv.Len()})
 }
 
 // ObjGet 对象获取

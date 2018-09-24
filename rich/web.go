@@ -16,6 +16,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/syndtr/goleveldb/leveldb"
+	"github.com/xuender/goutils"
 	"rsc.io/qr"
 
 	"../keys"
@@ -23,12 +24,13 @@ import (
 
 // Web 网络服务
 type Web struct {
-	Port string      // 端口号
-	Temp string      // 临时文件目录
-	Db   string      // 数据库目录
-	Dev  bool        // 开发模式
-	db   *leveldb.DB // 数据库
-	days Days        // 文件日期列表
+	Port  string         // 端口号
+	Temp  string         // 临时文件目录
+	Db    string         // 数据库目录
+	Dev   bool           // 开发模式
+	db    *leveldb.DB    // 数据库
+	days  Days           // 文件日期列表
+	cache *goutils.Cache // 缓存
 }
 
 // DaysKey 文件日期列表主键
@@ -68,6 +70,8 @@ func (w *Web) Init() error {
 	w.UserInit()
 	// 每日帐目初始化
 	w.Get(DaysKey, &w.days)
+	// 缓存初始化
+	w.cache = goutils.NewCache(time.Hour * 2)
 	return nil
 }
 

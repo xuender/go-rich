@@ -2,7 +2,6 @@ package rich
 
 import (
 	"log"
-	"net/http"
 
 	"github.com/labstack/echo"
 	"github.com/xuender/goutils"
@@ -36,7 +35,7 @@ func (w *Web) itemsGet(c echo.Context) error {
 	items := w.items()
 	w.ObjSearch(c, &items)
 	w.ObjSelect(c, &items)
-	return c.JSON(http.StatusOK, items)
+	return w.ObjPaging(c, items)
 }
 
 // 商品列表

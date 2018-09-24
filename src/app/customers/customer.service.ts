@@ -14,6 +14,7 @@ export class CustomerService extends ObjService<Customer> {
   ) {
     super(http, ngZone)
   }
+  get isPaging() { return true }
 
   path() { return '/api/customers' }
 }

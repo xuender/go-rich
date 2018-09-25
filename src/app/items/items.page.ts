@@ -1,56 +1,33 @@
 import { Component } from '@angular/core';
 import { ModalController, ActionSheetController } from '@ionic/angular';
-import { Observable } from 'rxjs';
-import { pull, includes } from 'lodash'
 
 import { Item } from './item';
+import { Paging } from '../api/paging';
 import { ItemPage } from './item/item.page';
 import { ItemService } from './item.service';
 import { TagService } from '../tags/tag.service';
-import { ObjsPage } from '../api/objs.page';
+import { ObjsPlusPage } from '../api/objs.puls.page';
 
 @Component({
   selector: 'app-items',
   templateUrl: './items.page.html',
   styleUrls: ['./items.page.scss'],
 })
-export class ItemsPage extends ObjsPage<Item> {
-  items$: Observable<Item[]>
+export class ItemsPage extends ObjsPlusPage<Item> {
   tags: string[] = []
+  paging: Paging<Item> = { data: [], total: 0 }
   constructor(
     public itemService: ItemService,
-    private tagService: TagService,
+    protected tagService: TagService,
     protected modalCtrl: ModalController,
     protected actionSheetCtrl: ActionSheetController,
   ) {
-    super(modalCtrl, actionSheetCtrl)
-    this.items$ = this.itemService.all$
+    super(tagService, modalCtrl, actionSheetCtrl)
   }
 
+  get tagKey() { return 'tag-I' };
   get service() { return this.itemService }
   get page() { return ItemPage }
   get newObj() { return { name: '', price: 0, extend: {}, tags: [] } }
   get title() { return '商品' }
-
-  search(event: CustomEvent) {
-    const txt = event.detail.value
-    this.items$ = this.itemService.search(txt)
-  }
-
-  async select() {
-    const tags = await this.tagService.select('tag-I')
-    if (tags) {
-      this.tags = tags
-      this.items$ = this.itemService.select(this.tags)
-    }
-  }
-
-  hasTag(tag: string): boolean {
-    return includes(this.tags, tag)
-  }
-
-  removeTag(tag: string) {
-    pull(this.tags, tag)
-    this.items$ = this.itemService.select(this.tags)
-  }
 }

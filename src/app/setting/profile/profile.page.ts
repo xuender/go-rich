@@ -1,8 +1,9 @@
+import { ModalController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+
 import { URL } from '../../api/init'
 import { ProfileService } from '../../api/profile.service';
-import { ModalController } from '@ionic/angular';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',

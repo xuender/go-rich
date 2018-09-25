@@ -16,14 +16,14 @@
       <ion-icon name="pricetags"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-  <ion-list *ngIf="items$ | async as items; else loading" #il>
+  <ion-list #il>
     <ion-item-divider>
       <ion-label>
         <ion-badge color="primary" *ngFor="let t of tags" (click)="removeTag(t)">{{ t }}</ion-badge>
       </ion-label>
-      <ion-badge color="primary" *ngIf="itemService.has(items)">{{ items.length }}</ion-badge>
+      <ion-badge color="primary" *ngIf="itemService.has(paging.data)">{{ paging.total }}</ion-badge>
     </ion-item-divider>
-    <ion-item-sliding *ngFor="let i of items">
+    <ion-item-sliding *ngFor="let i of paging.data">
       <ion-item button (click)="update(i)">
         <ion-label>{{ i.name }}</ion-label>
         <ion-badge *ngFor="let t of i.tags" [color]="hasTag(t)? 'primary' : 'light'">{{ t }}</ion-badge>
@@ -35,8 +35,3 @@
     </ion-item-sliding>
   </ion-list>
 </ion-content>
-
-<ng-template #loading>
-  <ion-spinner></ion-spinner>
-  加载中...
-</ng-template>

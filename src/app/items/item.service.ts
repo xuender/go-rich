@@ -1,8 +1,8 @@
 import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Item } from './item';
 import { ObjService } from '../api/obj.service';
+import { Item } from './item';
 
 @Injectable({
   providedIn: 'root'

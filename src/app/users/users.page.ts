@@ -3,9 +3,9 @@ import { ModalController, ActionSheetController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
 import { User } from './user';
+import { ObjsPage } from '../api/objs.page';
 import { UserPage } from './user/user.page';
 import { UserService } from './user.service';
-import { ObjsPage } from '../api/objs.page';
 
 @Component({
   selector: 'app-users',

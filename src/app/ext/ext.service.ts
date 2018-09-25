@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
-import { Observable } from 'rxjs';
 
 import { Ext } from './ext';
 import { URL } from '../api/init'

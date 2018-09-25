@@ -23,5 +23,10 @@ func TestTags(t *testing.T) {
 			t.Sort()
 			So(t[0], ShouldEqual, "1")
 		})
+		Convey("DelPy", func() {
+			t := Tags{"11", "1", "22", "2"}
+			t.DelPy()
+			So(len(t), ShouldEqual, 2)
+		})
 	})
 }

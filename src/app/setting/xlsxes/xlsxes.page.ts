@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { ModalController, ActionSheetController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
-import { ObjsPage } from '../../api/objs.page';
 import { Xlsx } from './xlsx';
-import { XlsxService } from './xlsx.service';
 import { XlsxPage } from './xlsx/xlsx.page';
+import { XlsxService } from './xlsx.service';
+import { ObjsPage } from '../../api/objs.page';
 
 @Component({
   selector: 'app-xlsxes',

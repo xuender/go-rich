@@ -18,14 +18,37 @@ type Tag struct {
 	Nums  map[string]int  `json:"nums"`  // 数量
 }
 
-func (t *Tag) Bind(c echo.Context) error {
-	return nil
-}
-
 // TagKeys 标签键值
 var TagKeys = []string{
 	"tag-C", // 客户标签数据
 	"tag-I", // 商品标签数据
+}
+
+func (w *Web) addTags(key string, tags Tags) error {
+	for _, n := range tags {
+		noHas := true
+		for _, t := range w.tags() {
+			if t.Name == n {
+				t.Use[key] = true
+				if err := w.Put(t.ID[:], t); err != nil {
+					return err
+				}
+				noHas = false
+				break
+			}
+		}
+		if noHas {
+			t := Tag{
+				Obj: Obj{Name: n},
+				Use: map[string]bool{key: true},
+			}
+			t.BeforePost(TagIDPrefix)
+			if err := w.Put(t.ID[:], t); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // 标签路由
@@ -76,6 +99,7 @@ func (w *Web) tagsGet(c echo.Context) error {
 	ret := w.tags()
 	// 搜索
 	w.ObjSearch(c, &ret)
+	goutils.Filter(&ret, func(t Tag) bool { return len(t.Name) > 1 })
 	// 数据库标签使用情况
 	// m := map[string]map[string]int{}
 	// for _, key := range TagKeys {

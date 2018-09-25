@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { SettingService } from './setting.service';
 import { ExtService } from '../ext/ext.service';
+import { SettingService } from './setting.service';
 
 @Component({
   selector: 'app-setting',

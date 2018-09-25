@@ -23,6 +23,24 @@ type Customer struct {
 	Tags   Tags              `json:"tags"`             // 标签
 }
 
+// BeforePost 创建前设置拼音标签
+func (c *Customer) BeforePost(key byte) goutils.ID {
+	c.Obj.BeforePost(key)
+	if len(c.Pinyin) > 0 {
+		c.Tags.Add(strings.ToUpper(string(c.Pinyin[0])))
+	}
+	return c.ID
+}
+
+// BeforePut 修改前设置拼音标签
+func (c *Customer) BeforePut(id goutils.ID) {
+	c.Obj.BeforePut(id)
+	c.Tags.DelPy() // 删除原拼音标签
+	if len(c.Pinyin) > 0 {
+		c.Tags.Add(strings.ToUpper(string(c.Pinyin[0])))
+	}
+}
+
 // Includes 包含
 func (c Customer) Includes(tags []string) bool {
 	return c.Tags.Includes(tags)
@@ -76,14 +94,14 @@ func (w *Web) customers() []Customer {
 func (w *Web) customerPost(c echo.Context) error {
 	w.cache.Remove(CustomerIDPrefix)
 	cu := Customer{}
-	return w.ObjPost(c, &cu, CustomerIDPrefix, func() error { return w.Bind(c, &cu) }, nil)
+	return w.ObjPost(c, &cu, CustomerIDPrefix, func() error { return w.Bind(c, &cu) }, func() error { return w.addTags("tag-C", cu.Tags) })
 }
 
 // 客户修改
 func (w *Web) customerPut(c echo.Context) error {
 	w.cache.Remove(CustomerIDPrefix)
 	cu := Customer{}
-	return w.ObjPut(c, &cu, CustomerIDPrefix, func() error { return w.Bind(c, &cu) }, nil)
+	return w.ObjPut(c, &cu, CustomerIDPrefix, func() error { return w.Bind(c, &cu) }, func() error { return w.addTags("tag-C", cu.Tags) })
 }
 
 // 删除用户

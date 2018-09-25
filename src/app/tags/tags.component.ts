@@ -26,10 +26,10 @@ export class TagsComponent implements OnInit {
     this.tags$ = this.tagService.tagsByKey(this.key)
   }
 
-  change(tag:string) {
-    if(this.has(tag)){
+  change(tag: string) {
+    if (this.has(tag)) {
       pull(this.tags, tag)
-    }else {
+    } else {
       this.tags.push(tag)
     }
   }
@@ -37,7 +37,7 @@ export class TagsComponent implements OnInit {
   has(tag: string) {
     return includes(this.tags, tag)
   }
-  async edit(){
+  async edit() {
     await this.settingService.tags()
     this.tags$ = this.tagService.tagsByKey(this.key)
   }

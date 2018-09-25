@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Routes, RouterModule } from '@angular/router';
 
 import { ItemsPage } from './items.page';
-import { ItemPageModule } from './item/item.module';
 import { PipeModule } from '../pipe/pipe.module';
+import { ItemPageModule } from './item/item.module';
 import { SelectPageModule } from '../tags/select/select.module';
 
 const routes: Routes = [
@@ -30,4 +30,4 @@ const routes: Routes = [
     ItemsPage,
   ]
 })
-export class ItemsPageModule {}
+export class ItemsPageModule { }

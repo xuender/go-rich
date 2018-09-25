@@ -1,11 +1,9 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
-
 import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { Routes, RouterModule } from '@angular/router';
 import { FileUploadModule } from 'ng2-file-upload'
-
 
 import { UploadPage } from './upload.page';
 
@@ -26,4 +24,4 @@ const routes: Routes = [
   ],
   declarations: [UploadPage]
 })
-export class UploadPageModule {}
+export class UploadPageModule { }

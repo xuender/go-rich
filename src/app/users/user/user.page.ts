@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { ModalController, NavParams, AlertController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
+import { ModalController, NavParams, AlertController } from '@ionic/angular';
 
-import { URL } from '../../api/init'
 import { User } from '../user';
-import { UserService } from '../user.service';
+import { URL } from '../../api/init'
 import { ObjPage } from '../../api/obj.page';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-user',

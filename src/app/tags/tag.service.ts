@@ -1,11 +1,11 @@
-import { Injectable, NgZone } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, NgZone } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { pull, find } from 'lodash'
 
-import { URL } from '../api/init'
 import { Tag } from './tag';
 import { Key } from '../api/key';
+import { URL } from '../api/init'
 import { SelectPage } from '../tags/select/select.page';
 
 @Injectable({

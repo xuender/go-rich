@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 
 import { Item } from '../item';
-import { ItemService } from '../item.service';
 import { ObjPage } from '../../api/obj.page';
+import { ItemService } from '../item.service';
 
 @Component({
   selector: 'app-item',

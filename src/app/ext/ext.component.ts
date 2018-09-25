@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ExtService } from './ext.service';
+
 import { Ext } from './ext';
+import { ExtService } from './ext.service';
 
 @Component({
   selector: 'rich-ext',

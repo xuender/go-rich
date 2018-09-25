@@ -3,10 +3,10 @@ import { ModalController } from '@ionic/angular';
 import { FileUploader, FileItem, Headers } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
 
-import { CustomerService } from '../customer.service';
 import { URL } from '../../api/init'
-import { SettingService } from '../../setting/setting.service';
 import { Xlsx } from '../../setting/xlsxes/xlsx';
+import { CustomerService } from '../customer.service';
+import { SettingService } from '../../setting/setting.service';
 import { XlsxService } from '../../setting/xlsxes/xlsx.service';
 
 @Component({

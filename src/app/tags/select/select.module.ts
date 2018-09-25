@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
-
 import { IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Routes, RouterModule } from '@angular/router';
 
 import { SelectPage } from './select.page';
 
@@ -23,4 +22,4 @@ const routes: Routes = [
   ],
   declarations: [SelectPage]
 })
-export class SelectPageModule {}
+export class SelectPageModule { }

@@ -53,6 +53,7 @@ type Includeser interface {
 // BeforePut 修改对象
 func (o *Obj) BeforePut(id goutils.ID) {
 	o.ID = id
+	o.Pinyin = py(o.Name)
 }
 
 // BeforePost 对象新建前
@@ -81,12 +82,12 @@ func (w *Web) ObjPut(c echo.Context, p Puter, key byte, bind func() error, check
 	if err := bind(); err != nil {
 		return err
 	}
+	p.BeforePut(*id)
 	if check != nil {
 		if err := check(); err != nil {
 			return err
 		}
 	}
-	p.BeforePut(*id)
 	w.Put(id[:], p)
 	return c.JSON(http.StatusOK, p)
 }
@@ -96,12 +97,12 @@ func (w *Web) ObjPost(c echo.Context, p Poster, key byte, bind func() error, che
 	if err := bind(); err != nil {
 		return err
 	}
+	id := p.BeforePost(key)
 	if check != nil {
 		if err := check(); err != nil {
 			return err
 		}
 	}
-	id := p.BeforePost(key)
 	w.Put(id[:], p)
 	return c.JSON(http.StatusOK, p)
 }

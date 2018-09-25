@@ -1,15 +1,14 @@
-import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-
-import { TabsPageRoutingModule } from './tabs.router.module';
+import { CommonModule } from '@angular/common';
 
 import { TabsPage } from './tabs.page';
-import { ContactPageModule } from '../customers/customers.module';
-import { SettingPageModule } from '../setting/setting.module';
 import { HomePageModule } from '../home/home.module';
 import { ItemsPageModule } from '../items/items.module';
+import { TabsPageRoutingModule } from './tabs.router.module';
+import { SettingPageModule } from '../setting/setting.module';
+import { ContactPageModule } from '../customers/customers.module';
 
 @NgModule({
   imports: [

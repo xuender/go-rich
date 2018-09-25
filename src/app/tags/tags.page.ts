@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { ModalController, ActionSheetController, List } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
-import { URL } from '../api/init'
 import { Tag } from './tag';
 import { TagPage } from './tag/tag.page';
 import { TagService } from './tag.service';

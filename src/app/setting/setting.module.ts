@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { IonicModule } from '@ionic/angular';
-
 import { SettingPage } from './setting.page';
-import { XlsxesPageModule } from './xlsxes/xlsxes.module';
 import { UsersPageModule } from '../users/users.module';
+import { XlsxesPageModule } from './xlsxes/xlsxes.module';
 
 const routes: Routes = [
   {
@@ -27,4 +26,4 @@ const routes: Routes = [
   ],
   declarations: [SettingPage]
 })
-export class SettingPageModule {}
+export class SettingPageModule { }

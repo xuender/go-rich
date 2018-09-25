@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { IonicModule } from '@ionic/angular';
-
 import { UserPage } from './user.page';
-import { ExtComponent } from '../../ext/ext.component';
 
 const routes: Routes = [
   {
@@ -26,4 +24,4 @@ const routes: Routes = [
     UserPage,
   ]
 })
-export class UserPageModule {}
+export class UserPageModule { }

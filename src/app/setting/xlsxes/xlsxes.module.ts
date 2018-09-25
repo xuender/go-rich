@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
-
 import { IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Routes, RouterModule } from '@angular/router';
 
 import { XlsxesPage } from './xlsxes.page';
 import { XlsxPageModule } from './xlsx/xlsx.module';
@@ -25,4 +24,4 @@ const routes: Routes = [
   ],
   declarations: [XlsxesPage]
 })
-export class XlsxesPageModule {}
+export class XlsxesPageModule { }

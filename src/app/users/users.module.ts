@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
-
 import { IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Routes, RouterModule } from '@angular/router';
 
 import { UsersPage } from './users.page';
 import { UserPageModule } from './user/user.module';
@@ -25,4 +24,4 @@ const routes: Routes = [
   ],
   declarations: [UsersPage]
 })
-export class UsersPageModule {}
+export class UsersPageModule { }

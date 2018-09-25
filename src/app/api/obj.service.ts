@@ -1,12 +1,10 @@
-import { NgZone, Injectable } from '@angular/core';
+import { NgZone } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { find, pull } from 'lodash'
 
 import { Obj } from './obj';
 import { URL } from './init'
 import { Paging } from './paging';
-import { InfiniteScroll } from '@ionic/angular';
-import { Observable } from 'rxjs';
 
 export abstract class ObjService<T extends Obj> {
   private datas: T[] = []

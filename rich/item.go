@@ -2,6 +2,8 @@ package rich
 
 import (
 	"log"
+	"sort"
+	"strings"
 
 	"github.com/labstack/echo"
 	"github.com/xuender/goutils"
@@ -13,6 +15,24 @@ type Item struct {
 	Price  int64             `json:"price"`  // 价格,单位分
 	Extend map[string]string `json:"extend"` // 扩展属性
 	Tags   Tags              `json:"tags"`   // 标签
+}
+
+// BeforePost 创建前设置拼音标签
+func (i *Item) BeforePost(key byte) goutils.ID {
+	i.Obj.BeforePost(key)
+	if len(i.Pinyin) > 0 {
+		i.Tags.Add(strings.ToUpper(string(i.Pinyin[0])))
+	}
+	return i.ID
+}
+
+// BeforePut 修改前设置拼音标签
+func (i *Item) BeforePut(id goutils.ID) {
+	i.Obj.BeforePut(id)
+	i.Tags.DelPy() // 删除原拼音标签
+	if len(i.Pinyin) > 0 {
+		i.Tags.Add(strings.ToUpper(string(i.Pinyin[0])))
+	}
 }
 
 // Includes 包含
@@ -40,6 +60,9 @@ func (w *Web) itemsGet(c echo.Context) error {
 
 // 商品列表
 func (w *Web) items() []Item {
+	if cs, ok := w.cache.Get(ItemIDPrefix); ok {
+		return cs.([]Item)
+	}
 	cs := []Item{}
 	w.Iterator([]byte{ItemIDPrefix, '-'}, func(key, value []byte) {
 		c := Item{}
@@ -49,22 +72,29 @@ func (w *Web) items() []Item {
 			log.Printf("商品解析失败 %x \n", key)
 		}
 	})
+	sort.Slice(cs, func(i int, j int) bool {
+		return cs[i].Name < cs[j].Name
+	})
+	w.cache.Put(ItemIDPrefix, cs)
 	return cs
 }
 
 // 商品创建
 func (w *Web) itemPost(c echo.Context) error {
+	w.cache.Remove(ItemIDPrefix)
 	i := Item{}
-	return w.ObjPost(c, &i, ItemIDPrefix, func() error { return w.Bind(c, &i) }, nil)
+	return w.ObjPost(c, &i, ItemIDPrefix, func() error { return w.Bind(c, &i) }, func() error { return w.addTags("tag-I", i.Tags) })
 }
 
 // 商品修改
 func (w *Web) itemPut(c echo.Context) error {
+	w.cache.Remove(ItemIDPrefix)
 	i := Item{}
-	return w.ObjPut(c, &i, ItemIDPrefix, func() error { return w.Bind(c, &i) }, nil)
+	return w.ObjPut(c, &i, ItemIDPrefix, func() error { return w.Bind(c, &i) }, func() error { return w.addTags("tag-I", i.Tags) })
 }
 
 // 商品删除
 func (w *Web) itemDelete(c echo.Context) error {
+	w.cache.Remove(ItemIDPrefix)
 	return w.ObjDelete(c, ItemIDPrefix)
 }

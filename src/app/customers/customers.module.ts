@@ -3,9 +3,10 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { UploadPageModule } from './upload/upload.module';
+
 import { CustomersPage } from './customers.page';
 import { CustomerPageModule } from './customer/customer.module';
-import { UploadPageModule } from './upload/upload.module';
 
 @NgModule({
   imports: [
@@ -18,4 +19,4 @@ import { UploadPageModule } from './upload/upload.module';
   ],
   declarations: [CustomersPage]
 })
-export class ContactPageModule {}
+export class ContactPageModule { }

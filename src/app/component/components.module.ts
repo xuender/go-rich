@@ -1,9 +1,10 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { IonicModule, } from '@ionic/angular';
-import { TagsComponent } from '../tags/tags.component';
-import { CommonModule } from '@angular/common';
-import { ExtComponent } from '../ext/ext.component';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
+import { ExtComponent } from '../ext/ext.component';
+import { TagsComponent } from '../tags/tags.component';
 
 const components = [
   TagsComponent,

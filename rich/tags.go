@@ -2,6 +2,8 @@ package rich
 
 import (
 	"sort"
+
+	"github.com/xuender/goutils"
 )
 
 // Tags 标签
@@ -16,6 +18,11 @@ func (t *Tags) Add(tag string) {
 	}
 	*t = append(*t, tag)
 	t.Sort()
+}
+
+// DelPy 删除拼音标签
+func (t *Tags) DelPy() {
+	goutils.Remove(t, func(s string) bool { return len(s) == 1 })
 }
 
 // Sort 标签排序

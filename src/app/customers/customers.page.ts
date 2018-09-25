@@ -22,6 +22,7 @@ export class CustomersPage extends ObjsPlusPage<Customer>{
   ) {
     super(tagService, modalCtrl, actionSheetCtrl)
   }
+
   get tagKey() { return 'tag-C' };
   get service() { return this.customerService }
   get page() { return CustomerPage }

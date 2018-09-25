@@ -1,8 +1,7 @@
 import { ModalController, List, ActionSheetController } from '@ionic/angular';
-import { Observable } from 'rxjs';
-import { ObjService } from './obj.service';
+
 import { Obj } from './obj';
-import { ComponentRef } from '@angular/core';
+import { ObjService } from './obj.service';
 
 export abstract class ObjsPage<T extends Obj>{
   constructor(

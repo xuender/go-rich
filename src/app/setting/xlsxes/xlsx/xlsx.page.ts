@@ -3,12 +3,11 @@ import { NavParams, ModalController } from '@ionic/angular';
 import { invert } from 'lodash'
 
 import { Xlsx } from '../xlsx';
-import { ExtService } from '../../../ext/ext.service';
-import { XlsxService } from '../xlsx.service';
 import { Observable } from 'rxjs';
 import { Ext } from '../../../ext/ext';
+import { XlsxService } from '../xlsx.service';
 import { ObjPage } from '../../../api/obj.page';
-
+import { ExtService } from '../../../ext/ext.service';
 
 @Component({
   selector: 'app-xlsx',

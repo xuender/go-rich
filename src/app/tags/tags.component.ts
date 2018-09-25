@@ -23,7 +23,7 @@ export class TagsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.tags$ = this.tagService.tagsByKey(this.key)
+    this.tags$ = this.tagService.tagsByKey(this.key, false)
   }
 
   change(tag: string) {

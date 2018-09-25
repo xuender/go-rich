@@ -29,8 +29,8 @@ export class TagService {
     return this.http.get<Tag[]>(`${URL}/api/tags`)
   }
 
-  tagsByKey(key: string) {
-    return this.http.get<Tag[]>(`${URL}/api/tags/${key}`)
+  tagsByKey(key: string, all = true) {
+    return this.http.get<Tag[]>(`${URL}/api/tags/${key}?all=${all}`)
   }
 
   search(txt: string) {

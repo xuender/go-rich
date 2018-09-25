@@ -59,7 +59,8 @@ func (w *Web) tagRoute(c *echo.Group) {
 	c.GET("/:id", func(c echo.Context) error {
 		key := c.Param("id")
 		ret := w.tags()
-		goutils.Filter(&ret, func(t Tag) bool { return t.Use[key] })
+		all := c.QueryParam("all") == "true"
+		goutils.Filter(&ret, func(t Tag) bool { return t.Use[key] && (all || len(t.Name) > 1) })
 		return c.JSON(http.StatusOK, ret)
 	})
 	// 标签创建

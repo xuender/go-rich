@@ -7,7 +7,6 @@ import (
 	"os"
 	"sort"
 	"strings"
-	"time"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/labstack/echo"
@@ -138,7 +137,8 @@ func (w *Web) customersFile(c echo.Context) error {
 	// log.Printf("size: %d %s\n", len(cs), promap)
 	if err == nil {
 		for _, c := range cs {
-			// log.Println(c.Name)
+			c.BeforePost(CustomerIDPrefix)
+			w.addTags("tag-C", c.Tags)
 			w.Put(c.ID[:], c)
 		}
 		os.Remove(file)
@@ -179,8 +179,5 @@ func newCustomer(row []string, m map[int]string) (c Customer, err error) {
 		err = errors.New("姓名为姓名")
 		return
 	}
-	c.ID = goutils.NewID(CustomerIDPrefix)
-	c.Pinyin = py(row[0])
-	c.Ca = time.Now()
 	return
 }

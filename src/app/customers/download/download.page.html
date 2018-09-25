@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">
+        取消
+      </ion-button>
+    </ion-buttons>
+    <ion-title>客户档案下载</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="setup()">
+        设置
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label fixed>Excel定义</ion-label>
+      <ion-select ok-text="选择" cancel-text="取消" [(ngModel)]="params.excel">
+        <ion-select-option [value]="x.id" *ngFor="let x of xlsxes$ | async">{{ x.name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+  <ion-button *ngIf="params.excel" size="large" (click)="download()">
+    下载
+  </ion-button>
+</ion-content>
+
+<a class="download-zip-link" #downloadZipLink></a>

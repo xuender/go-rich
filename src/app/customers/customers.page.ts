@@ -7,6 +7,7 @@ import { UploadPage } from './upload/upload.page';
 import { ObjsPlusPage } from '../api/objs.puls.page';
 import { CustomerService } from './customer.service';
 import { CustomerPage } from './customer/customer.page';
+import { DownloadPage } from './download/download.page';
 
 @Component({
   selector: 'app-customers',
@@ -37,5 +38,13 @@ export class CustomersPage extends ObjsPlusPage<Customer>{
     await modal.present()
     await modal.onDidDismiss()
     await this.reset()
+  }
+
+  async download() {
+    const modal = await this.modalCtrl.create({
+      component: DownloadPage,
+    });
+    await modal.present()
+    await modal.onDidDismiss()
   }
 }

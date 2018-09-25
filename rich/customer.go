@@ -65,7 +65,54 @@ func (w *Web) customersGet(c echo.Context) error {
 	customers := w.customers()
 	w.ObjSearch(c, &customers)
 	w.ObjSelect(c, &customers)
+	excel := c.QueryParam("excel")
+	if excel != "" {
+		id := new(goutils.ID)
+		err := id.Parse(excel)
+		if err != nil {
+			return err
+		}
+		return w.excel(c, customers, id)
+	}
 	return w.ObjPaging(c, customers)
+}
+
+// 导出excel
+func (w *Web) excel(c echo.Context, cs []Customer, id *goutils.ID) error {
+	xlsx := Xlsx{}
+	w.Get(id[:], &xlsx)
+	// 生成xlsx
+	x := excelize.NewFile()
+	m := map[string]string{"Name": "姓名", "Phone": "联系方式", "Note": "备注"}
+	head, _ := x.NewStyle(`{"font":{"bold":true}}`)
+	for k, v := range xlsx.Map {
+		x.SetCellStyle("Sheet1", Axis(k, 0), Axis(k, 0), head)
+		if t, ok := m[v]; ok {
+			x.SetCellValue("Sheet1", Axis(k, 0), t)
+		} else {
+			x.SetCellValue("Sheet1", Axis(k, 0), v)
+		}
+	}
+	for i, c := range cs {
+		for k, v := range xlsx.Map {
+			if _, ok := m[v]; ok {
+				switch v {
+				case "Name":
+					x.SetCellValue("Sheet1", Axis(k, i+1), c.Name)
+					break
+				case "Phone":
+					x.SetCellValue("Sheet1", Axis(k, i+1), c.Phone)
+					break
+				case "Note":
+					x.SetCellValue("Sheet1", Axis(k, i+1), c.Note)
+					break
+				}
+			} else {
+				x.SetCellValue("Sheet1", Axis(k, i+1), c.Extend[v])
+			}
+		}
+	}
+	return x.Write(c.Response().Writer)
 }
 
 // 客户列表

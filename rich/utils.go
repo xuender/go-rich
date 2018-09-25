@@ -62,3 +62,8 @@ func Pass(str string) string {
 	h.Write(salt)
 	return hex.EncodeToString(h.Sum(nil))
 }
+
+// Axis 装环Excel坐标
+func Axis(col, row int) string {
+	return fmt.Sprintf("%c%d",col+65, row+1)
+}

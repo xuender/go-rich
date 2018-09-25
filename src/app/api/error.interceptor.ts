@@ -15,8 +15,12 @@ export class ErrorInterceptor implements HttpInterceptor {
         case 401:
           this.profile.login()
           break
+        case 204:
+        case 200:
+          break;
         case 400:
         default:
+          console.log(err.status)
           this.profile.error(err.error.message)
       }
     }))

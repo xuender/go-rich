@@ -7,6 +7,7 @@ import { UploadPageModule } from './upload/upload.module';
 
 import { CustomersPage } from './customers.page';
 import { CustomerPageModule } from './customer/customer.module';
+import { DownloadPageModule } from './download/download.module';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { CustomerPageModule } from './customer/customer.module';
     FormsModule,
     CustomerPageModule,
     UploadPageModule,
+    DownloadPageModule,
     RouterModule.forChild([{ path: '', component: CustomersPage }])
   ],
   declarations: [CustomersPage]

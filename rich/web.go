@@ -101,7 +101,6 @@ func (w *Web) Run() (err error) {
 	}))
 
 	w.customerRoute(api.Group("/customers")) // 客户
-	w.groupsRoute(api.Group("/groups"))      // 客户分组
 	w.extsRoute(api.Group("/exts"))          // 扩展定义
 	w.xlsxRoute(api.Group("/xlsxes"))        // Excel定义
 	w.userRoute(api.Group("/users"))         // 用户

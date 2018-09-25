@@ -12,7 +12,7 @@ import { TagService } from '../tag.service';
 export class TagPage {
   tag: Tag
   constructor(
-    private tagService: TagService,
+    public tagService: TagService,
     private modalCtrl: ModalController,
     private navParams: NavParams
   ) {

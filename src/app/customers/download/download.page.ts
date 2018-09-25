@@ -16,7 +16,7 @@ export class DownloadPage {
   @ViewChild('downloadZipLink')
   private downloadZipLink: ElementRef;
   xlsxes$: Observable<Xlsx[]>
-  params = {}
+  params = { excel: '' }
   constructor(
     private customerService: CustomerService,
     public modalCtrl: ModalController,

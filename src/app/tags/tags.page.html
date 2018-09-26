@@ -5,13 +5,12 @@
         取消
       </ion-button>
     </ion-buttons>
-    <ion-title>标签</ion-title>
+    <ion-searchbar placeholder="标签名称拼音或声母" (ionChange)="search($event)"></ion-searchbar>
     <ion-buttons slot="end">
       <ion-button (click)="create()">
         新建
       </ion-button>
     </ion-buttons>
-    <ion-searchbar placeholder="搜索" (ionChange)="search($event)"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 

@@ -13,12 +13,15 @@ import (
 )
 
 // GetURL 获取网址
-func GetURL(port string) (string, error) {
+func GetURL(port string, tls bool) (string, error) {
 	ip, err := GetIP()
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("https://%s%s", ip, port), nil
+	if tls {
+		return fmt.Sprintf("https://%s%s", ip, port), nil
+	}
+	return fmt.Sprintf("http://%s%s", ip, port), nil
 }
 
 // GetIP 获取IP地址
@@ -65,5 +68,5 @@ func Pass(str string) string {
 
 // Axis 装环Excel坐标
 func Axis(col, row int) string {
-	return fmt.Sprintf("%c%d",col+65, row+1)
+	return fmt.Sprintf("%c%d", col+65, row+1)
 }

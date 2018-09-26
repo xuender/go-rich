@@ -50,6 +50,11 @@ func main() {
 			Name:  "develop-mode,d",
 			Usage: "开发模式: 静态资源读自www目录,支持跨域访问,web日志输出",
 		},
+		cli.StringFlag{
+			Name:  "mode,m",
+			Value: "http",
+			Usage: "访问模式 http, https, auto",
+		},
 	}
 	app.Action = runAction
 	err := app.Run(os.Args)
@@ -67,6 +72,7 @@ func runAction(c *cli.Context) error {
 		Temp: c.String("t"),
 		Db:   c.String("b"),
 		Dev:  c.Bool("d"),
+		TLS:  !strings.EqualFold(c.String("m"), "http"),
 	}
 	// 初始化
 	err := web.Init()
@@ -75,7 +81,7 @@ func runAction(c *cli.Context) error {
 	}
 	// 打开浏览器
 	if !c.Bool("n") {
-		url, err := rich.GetURL(port)
+		url, err := rich.GetURL(port, web.TLS)
 		if err == nil {
 			goutils.Open(url + "/qr")
 		}
@@ -88,7 +94,7 @@ func runAction(c *cli.Context) error {
 		syscall.SIGHUP,
 	)
 	// 运行
-	go web.Run()
+	go web.Run(c.String("m"))
 	fmt.Println(<-quitChan)
 	web.Close()
 	log.Println("退出")

@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	static "github.com/Code-Hex/echo-static"
@@ -17,6 +18,7 @@ import (
 	"github.com/labstack/echo/middleware"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/xuender/goutils"
+	"golang.org/x/crypto/acme/autocert"
 	"rsc.io/qr"
 
 	"../keys"
@@ -28,6 +30,7 @@ type Web struct {
 	Temp  string         // 临时文件目录
 	Db    string         // 数据库目录
 	Dev   bool           // 开发模式
+	TLS   bool           // 加密协议
 	db    *leveldb.DB    // 数据库
 	days  Days           // 文件日期列表
 	cache *goutils.Cache // 缓存
@@ -76,7 +79,7 @@ func (w *Web) Init() error {
 }
 
 // Run 启动服务
-func (w *Web) Run() (err error) {
+func (w *Web) Run(mode string) (err error) {
 	e := echo.New()
 	e.HTTPErrorHandler = w.httpErrorHandler
 	// 开发模式
@@ -114,8 +117,14 @@ func (w *Web) Run() (err error) {
 	} else {
 		e.Use(static.ServeRoot("/", getAssets("www")))
 	}
-	// HTTP/2.0 启动
-	return w.start(e)
+	if strings.EqualFold("https", mode) {
+		return w.startTls(e)
+	}
+	if strings.EqualFold("auto", mode) {
+		e.AutoTLSManager.Cache = autocert.DirCache(w.Temp)
+		return e.StartAutoTLS(w.Port)
+	}
+	return e.Start(w.Port)
 }
 func (w *Web) httpErrorHandler(err error, c echo.Context) {
 	var code = http.StatusInternalServerError
@@ -139,8 +148,8 @@ func (w *Web) httpErrorHandler(err error, c echo.Context) {
 	}
 }
 
-// 启动服务
-func (w *Web) start(e *echo.Echo) error {
+// 启动Tls服务
+func (w *Web) startTls(e *echo.Echo) error {
 	s := e.TLSServer
 	s.TLSConfig = new(tls.Config)
 	s.TLSConfig.Certificates = make([]tls.Certificate, 1)
@@ -215,7 +224,7 @@ func (w *Web) login(c echo.Context) error {
 
 // QR码
 func (w *Web) qrcode(c echo.Context) error {
-	url, err := GetURL(w.Port)
+	url, err := GetURL(w.Port, w.TLS)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}

@@ -25,17 +25,30 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "Go Rich"
 	app.Usage = "服务小商家"
-	app.Version = "v0.0.3"
+	app.Version = "v0.0.4"
 	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "address,a",
+			Value: "6181",
+			Usage: "访问地址的端口号",
+		},
+		cli.StringFlag{
+			Name:  "protocol,p",
+			Value: "http",
+			Usage: "访问协议 http, TLS, AutoTLS",
+		},
+		cli.StringFlag{
+			Name:  "cert,c",
+			Usage: "TLS证书文件, 可省略",
+		},
+		cli.StringFlag{
+			Name:  "key,k",
+			Usage: "TLS密钥文件, 可省略",
+		},
 		cli.StringFlag{
 			Name:  "db,b",
 			Value: "db",
 			Usage: "数据库目录",
-		},
-		cli.StringFlag{
-			Name:  "port,p",
-			Value: "6181",
-			Usage: "访问端口",
 		},
 		cli.StringFlag{
 			Name:  "temp,t",
@@ -48,43 +61,32 @@ func main() {
 		},
 		cli.BoolFlag{
 			Name:  "develop-mode,d",
-			Usage: "开发模式: 静态资源读自www目录,支持跨域访问,web日志输出",
-		},
-		cli.StringFlag{
-			Name:  "mode,m",
-			Value: "http",
-			Usage: "访问模式 http, https, auto",
+			Usage: "开发模式: 静态资源读自www目录,支持跨域访问,访问日志输出",
 		},
 	}
 	app.Action = runAction
-	err := app.Run(os.Args)
-	if err != nil {
+	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
 }
 func runAction(c *cli.Context) error {
-	port := c.String("p")
-	if !strings.HasPrefix(port, ":") {
-		port = ":" + port
+	address := c.String("a")
+	if !strings.HasPrefix(address, ":") {
+		address = ":" + address
 	}
 	web := rich.Web{
-		Port: port,
 		Temp: c.String("t"),
 		Db:   c.String("b"),
 		Dev:  c.Bool("d"),
-		TLS:  !strings.EqualFold(c.String("m"), "http"),
 	}
-	// 初始化
-	err := web.Init()
-	if err != nil {
+	if url, err := rich.GetURL(address, !strings.EqualFold(c.String("m"), "http")); err == nil {
+		web.URL = url
+	} else {
 		return err
 	}
-	// 打开浏览器
-	if !c.Bool("n") {
-		url, err := rich.GetURL(port, web.TLS)
-		if err == nil {
-			goutils.Open(url + "/qr")
-		}
+	// 初始化
+	if err := web.Init(); err != nil {
+		return err
 	}
 	// 退出
 	quitChan := make(chan os.Signal)
@@ -94,7 +96,18 @@ func runAction(c *cli.Context) error {
 		syscall.SIGHUP,
 	)
 	// 运行
-	go web.Run(c.String("m"))
+	switch strings.ToLower(c.String("p")) {
+	case "tls":
+		go web.StartTLS(address, c.String("c"), c.String("k"))
+	case "autotls":
+		go web.StartAutoTLS(address)
+	default:
+		go web.Start(address)
+	}
+	// 打开浏览器
+	if !c.Bool("n") {
+		goutils.Open(web.URL + "/qr")
+	}
 	fmt.Println(<-quitChan)
 	web.Close()
 	log.Println("退出")

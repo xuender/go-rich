@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	static "github.com/Code-Hex/echo-static"
@@ -26,11 +25,10 @@ import (
 
 // Web 网络服务
 type Web struct {
-	Port  string         // 端口号
 	Temp  string         // 临时文件目录
 	Db    string         // 数据库目录
 	Dev   bool           // 开发模式
-	TLS   bool           // 加密协议
+	URL   string         // 网址
 	db    *leveldb.DB    // 数据库
 	days  Days           // 文件日期列表
 	cache *goutils.Cache // 缓存
@@ -78,8 +76,7 @@ func (w *Web) Init() error {
 	return nil
 }
 
-// Run 启动服务
-func (w *Web) Run(mode string) (err error) {
+func (w *Web) initEcho() *echo.Echo {
 	e := echo.New()
 	e.HTTPErrorHandler = w.httpErrorHandler
 	// 开发模式
@@ -110,21 +107,58 @@ func (w *Web) Run(mode string) (err error) {
 	w.profileRoute(api.Group("/profile"))    // 账户
 	w.itemRoute(api.Group("/items"))         // 商品
 	w.tagRoute(api.Group("/tags"))           // 标签
-
 	// 静态资源
 	if w.Dev {
 		e.Static("/", "www")
 	} else {
 		e.Use(static.ServeRoot("/", getAssets("www")))
 	}
-	if strings.EqualFold("https", mode) {
-		return w.startTls(e)
+	return e
+}
+
+// Start 启动WEB服务
+func (w *Web) Start(address string) error {
+	return w.initEcho().Start(address)
+}
+
+// StartTLS 启动TLS服务
+func (w *Web) StartTLS(address, certFile, keyFile string) error {
+	if certFile == "" || keyFile == "" {
+		return w.startTLS(address)
 	}
-	if strings.EqualFold("auto", mode) {
-		e.AutoTLSManager.Cache = autocert.DirCache(w.Temp)
-		return e.StartAutoTLS(w.Port)
+	return w.initEcho().StartTLS(address, certFile, keyFile)
+}
+
+// startTLS 启动缺省TLS服务
+func (w *Web) startTLS(address string) error {
+	e := w.initEcho()
+	s := e.TLSServer
+	s.TLSConfig = new(tls.Config)
+	s.TLSConfig.Certificates = make([]tls.Certificate, 1)
+	cert, err := keys.Asset("keys/cert.pem")
+	if err != nil {
+		return err
 	}
-	return e.Start(w.Port)
+	keys, err := keys.Asset("keys/key.pem")
+	if err != nil {
+		return err
+	}
+	s.TLSConfig.Certificates[0], err = tls.X509KeyPair(cert, keys)
+	if err != nil {
+		return err
+	}
+	s.Addr = address
+	if !e.DisableHTTP2 {
+		s.TLSConfig.NextProtos = append(s.TLSConfig.NextProtos, "h2")
+	}
+	return e.StartServer(e.TLSServer)
+}
+
+// StartAutoTLS 启动自动TLS
+func (w *Web) StartAutoTLS(address string) error {
+	e := w.initEcho()
+	e.AutoTLSManager.Cache = autocert.DirCache(w.Temp)
+	return e.StartAutoTLS(address)
 }
 func (w *Web) httpErrorHandler(err error, c echo.Context) {
 	var code = http.StatusInternalServerError
@@ -146,30 +180,6 @@ func (w *Web) httpErrorHandler(err error, c echo.Context) {
 			}
 		}
 	}
-}
-
-// 启动Tls服务
-func (w *Web) startTls(e *echo.Echo) error {
-	s := e.TLSServer
-	s.TLSConfig = new(tls.Config)
-	s.TLSConfig.Certificates = make([]tls.Certificate, 1)
-	cert, err := keys.Asset("keys/cert.pem")
-	if err != nil {
-		return err
-	}
-	keys, err := keys.Asset("keys/key.pem")
-	if err != nil {
-		return err
-	}
-	s.TLSConfig.Certificates[0], err = tls.X509KeyPair(cert, keys)
-	if err != nil {
-		return err
-	}
-	s.Addr = w.Port
-	if !e.DisableHTTP2 {
-		s.TLSConfig.NextProtos = append(s.TLSConfig.NextProtos, "h2")
-	}
-	return e.StartServer(e.TLSServer)
 }
 
 // Close 关闭服务
@@ -224,11 +234,7 @@ func (w *Web) login(c echo.Context) error {
 
 // QR码
 func (w *Web) qrcode(c echo.Context) error {
-	url, err := GetURL(w.Port, w.TLS)
-	if err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
-	}
-	code, err := qr.Encode(url, qr.Q)
+	code, err := qr.Encode(w.URL, qr.Q)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "QR码生成错误")
 	}

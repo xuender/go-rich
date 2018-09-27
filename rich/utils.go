@@ -13,15 +13,15 @@ import (
 )
 
 // GetURL 获取网址
-func GetURL(port string, tls bool) (string, error) {
+func GetURL(address string, tls bool) (string, error) {
 	ip, err := GetIP()
 	if err != nil {
 		return "", err
 	}
 	if tls {
-		return fmt.Sprintf("https://%s%s", ip, port), nil
+		return fmt.Sprintf("https://%s%s", ip, address), nil
 	}
-	return fmt.Sprintf("http://%s%s", ip, port), nil
+	return fmt.Sprintf("http://%s%s", ip, address), nil
 }
 
 // GetIP 获取IP地址

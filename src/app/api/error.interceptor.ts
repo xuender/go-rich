@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
+
 import { ProfileService } from "./profile.service";
 
 @Injectable()

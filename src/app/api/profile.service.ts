@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 
 import { URL } from './init'
@@ -11,7 +11,8 @@ export class ProfileService {
 
   constructor(
     private http: HttpClient,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private navCtrl: NavController,
   ) { }
   logout() {
     localStorage.setItem('token', '')
@@ -25,7 +26,7 @@ export class ProfileService {
           name: 'nick',
           label: '登录名',
           type: 'text',
-          placeholder: '昵称或手机号'
+          placeholder: '姓名或手机号'
         },
         {
           name: 'pass',
@@ -45,6 +46,7 @@ export class ProfileService {
             this.http.get<any>(`${URL}/login?nick=${v['nick']}&pass=${v['pass']}`)
               .subscribe(a => {
                 localStorage.setItem('token', a.token)
+                this.navCtrl.goBack()
               })
           }
         }

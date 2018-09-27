@@ -90,8 +90,14 @@ func (w *Web) initEcho() *echo.Echo {
 			AllowCredentials: true,
 		}))
 	}
-	e.GET("/qr", w.qrcode)   // 二维码访问
-	e.GET("/info", w.info)   // 协议等
+	// 二维码访问
+	e.GET("/qr", func(c echo.Context) error {
+		code, err := qr.Encode(w.URL, qr.Q)
+		if err != nil {
+			return c.String(http.StatusInternalServerError, "QR码生成错误: "+err.Error())
+		}
+		return c.Blob(http.StatusOK, "image/png", code.PNG())
+	})
 	e.GET("/login", w.login) // 登录
 	api := e.Group("/api")   // API
 	// 需要身份认证
@@ -101,12 +107,12 @@ func (w *Web) initEcho() *echo.Echo {
 	}))
 
 	w.customerRoute(api.Group("/customers")) // 客户
+	w.itemRoute(api.Group("/items"))         // 商品
+	w.tagRoute(api.Group("/tags"))           // 标签
 	w.extsRoute(api.Group("/exts"))          // 扩展定义
 	w.xlsxRoute(api.Group("/xlsxes"))        // Excel定义
 	w.userRoute(api.Group("/users"))         // 用户
 	w.profileRoute(api.Group("/profile"))    // 账户
-	w.itemRoute(api.Group("/items"))         // 商品
-	w.tagRoute(api.Group("/tags"))           // 标签
 	// 静态资源
 	if w.Dev {
 		e.Static("/", "www")
@@ -116,12 +122,12 @@ func (w *Web) initEcho() *echo.Echo {
 	return e
 }
 
-// Start 启动WEB服务
+// Start starts an HTTP server.
 func (w *Web) Start(address string) error {
 	return w.initEcho().Start(address)
 }
 
-// StartTLS 启动TLS服务
+// StartTLS starts an HTTPS server.
 func (w *Web) StartTLS(address, certFile, keyFile string) error {
 	if certFile == "" || keyFile == "" {
 		return w.startTLS(address)
@@ -129,10 +135,10 @@ func (w *Web) StartTLS(address, certFile, keyFile string) error {
 	return w.initEcho().StartTLS(address, certFile, keyFile)
 }
 
-// startTLS 启动缺省TLS服务
 func (w *Web) startTLS(address string) error {
 	e := w.initEcho()
 	s := e.TLSServer
+	s.Addr = address
 	s.TLSConfig = new(tls.Config)
 	s.TLSConfig.Certificates = make([]tls.Certificate, 1)
 	cert, err := keys.Asset("keys/cert.pem")
@@ -147,22 +153,21 @@ func (w *Web) startTLS(address string) error {
 	if err != nil {
 		return err
 	}
-	s.Addr = address
 	if !e.DisableHTTP2 {
 		s.TLSConfig.NextProtos = append(s.TLSConfig.NextProtos, "h2")
 	}
 	return e.StartServer(e.TLSServer)
 }
 
-// StartAutoTLS 启动自动TLS
+// StartAutoTLS starts an HTTPS server using certificates automatically installed from https://letsencrypt.org.
 func (w *Web) StartAutoTLS(address string) error {
 	e := w.initEcho()
 	e.AutoTLSManager.Cache = autocert.DirCache(w.Temp)
 	return e.StartAutoTLS(address)
 }
+
 func (w *Web) httpErrorHandler(err error, c echo.Context) {
 	var code = http.StatusInternalServerError
-
 	if !c.Response().Committed {
 		if c.Request().Method == echo.HEAD {
 			if err := c.NoContent(code); err != nil {
@@ -230,25 +235,6 @@ func (w *Web) login(c echo.Context) error {
 		}
 	}
 	return echo.ErrUnauthorized
-}
-
-// QR码
-func (w *Web) qrcode(c echo.Context) error {
-	code, err := qr.Encode(w.URL, qr.Q)
-	if err != nil {
-		return c.String(http.StatusInternalServerError, "QR码生成错误")
-	}
-	return c.Blob(http.StatusOK, "image/png", code.PNG())
-}
-func (w *Web) info(c echo.Context) error {
-	req := c.Request()
-	m := make(map[string]string)
-	m["Proto"] = req.Proto
-	m["Host"] = req.Host
-	m["RemoteAddr"] = req.RemoteAddr
-	m["Method"] = req.Method
-	m["Path"] = req.URL.Path
-	return c.JSON(http.StatusOK, m)
 }
 
 // 上传文件临时保存

@@ -13,7 +13,7 @@ import (
 type User struct {
 	Obj
 	Phone  string            `json:"phone"`  // 电话
-	Pass   string            `json:"-"`      // 密码
+	Pass   []byte            `json:"-"`      // 密码
 	Admin  bool              `json:"admin"`  // 管理员
 	Extend map[string]string `json:"extend"` // 扩展属性
 }
@@ -40,6 +40,8 @@ func (w *Web) userPass(c echo.Context) error {
 	}
 	u.Pass = Pass(pass)
 	w.Put(u.ID[:], u)
+	// 删除用户密钥缓存
+	w.cache.Remove(u.ID.String())
 	return c.JSON(http.StatusOK, u)
 }
 

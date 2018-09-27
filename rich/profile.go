@@ -1,10 +1,11 @@
 package rich
 
 import (
+	"bytes"
 	"errors"
 	"net/http"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/xuender/goutils"
 )
@@ -50,10 +51,12 @@ func (w *Web) profilePatch(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	if u.Pass != Pass(old) {
+	if bytes.Equal(u.Pass, Pass(old)) {
 		return errors.New("原密码错误")
 	}
 	u.Pass = Pass(pass)
 	w.Put(u.ID[:], u)
+	// 删除用户密钥缓存
+	w.cache.Remove(u.ID.String())
 	return c.JSON(http.StatusOK, u)
 }

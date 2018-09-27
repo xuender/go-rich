@@ -1,6 +1,7 @@
 package rich
 
 import (
+	"bytes"
 	"crypto/rsa"
 	"crypto/tls"
 	"errors"
@@ -10,9 +11,9 @@ import (
 	"os"
 	"time"
 
-	static "github.com/Code-Hex/echo-static"
-	jwt "github.com/dgrijalva/jwt-go"
-	assetfs "github.com/elazarl/go-bindata-assetfs"
+	"github.com/Code-Hex/echo-static"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/syndtr/goleveldb/leveldb"
@@ -101,10 +102,7 @@ func (w *Web) initEcho() *echo.Echo {
 	e.GET("/login", w.login) // 登录
 	api := e.Group("/api")   // API
 	// 需要身份认证
-	api.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		SigningKey:    verifyKey,
-		SigningMethod: "RS256",
-	}))
+	api.Use(middlewareJWT(w, "HS256"))
 
 	w.customerRoute(api.Group("/customers")) // 客户
 	w.itemRoute(api.Group("/items"))         // 商品
@@ -213,19 +211,20 @@ func (w *Web) login(c echo.Context) error {
 	if pass == "" {
 		return errors.New("密码不能为空")
 	}
-	pass = Pass(pass)
+	passBs := Pass(pass)
 	for _, u := range w.users() {
 		// 身份认证
-		if u.Name == nick || u.Phone == nick || pass == u.Pass {
+		if u.Name == nick || u.Phone == nick || bytes.Equal(passBs, u.Pass) {
 			// 创建令牌
-			token := jwt.New(jwt.SigningMethodRS256)
+			// token := jwt.New(jwt.SigningMethodRS256)
+			token := jwt.New(jwt.SigningMethodHS256)
 			// 设置用户信息
 			claims := token.Claims.(jwt.MapClaims)
 			claims["id"] = u.ID
 			// 有效期 1 年
 			claims["exp"] = time.Now().Add(time.Hour * 24 * 365).Unix()
 			// 生成令牌
-			t, err := token.SignedString(signKey)
+			t, err := token.SignedString(passBs)
 			if err != nil {
 				return err
 			}

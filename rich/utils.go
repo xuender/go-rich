@@ -2,7 +2,6 @@ package rich
 
 import (
 	"crypto/md5"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"net"
@@ -58,12 +57,12 @@ func py(str string) string {
 var salt = []byte("ender weihai 2018-09-12")
 
 // Pass 密码生成
-func Pass(str string) string {
+func Pass(str string) []byte {
 	h := md5.New()
 	h.Write(salt)
 	h.Write([]byte(str))
 	h.Write(salt)
-	return hex.EncodeToString(h.Sum(nil))
+	return h.Sum(nil)
 }
 
 // Axis 装环Excel坐标

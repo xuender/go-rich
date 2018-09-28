@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { pull, includes } from 'lodash'
@@ -10,7 +10,7 @@ import { Tag } from '../tag';
   templateUrl: './select.page.html',
   styleUrls: ['./select.page.scss'],
 })
-export class SelectPage implements OnInit {
+export class SelectPage  {
   tags$: Observable<Tag[]>
   tags: string[] = []
   constructor(
@@ -19,9 +19,6 @@ export class SelectPage implements OnInit {
   ) {
     this.tags$ = this.navParams.get('tags$')
     this.tags = this.navParams.get('tags')
-  }
-
-  ngOnInit() {
   }
 
   cancel() {

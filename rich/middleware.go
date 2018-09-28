@@ -3,7 +3,6 @@ package rich
 import (
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
@@ -16,11 +15,10 @@ func middlewareJWT(w *Web, signingMethod string) echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			auth := c.Request().Header.Get("Authorization")
 			err := errors.New("身份认证错误")
-			if auth == "" {
+			if auth == "" || len(auth) < 20 {
 				return err
 			}
 			auth = auth[7:]
-			log.Printf("[%s]\n", auth)
 			token := new(jwt.Token)
 			token, err = jwt.Parse(auth, func(t *jwt.Token) (interface{}, error) {
 				if signingMethod != t.Method.Alg() {

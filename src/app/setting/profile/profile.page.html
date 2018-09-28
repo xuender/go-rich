@@ -12,18 +12,17 @@
 <ion-content padding>
   <ion-list>
     <ion-item>
-      <ion-label fixed>昵称</ion-label>
-      <ion-input type="text" placeholder="用户昵称" name="name" [(ngModel)]="user.name"></ion-input>
+      <ion-label fixed>姓名</ion-label>
+      <ion-input type="text" placeholder="用户昵称" name="name" [ngModel]="user.name" readonly></ion-input>
     </ion-item>
     <ion-item>
       <ion-label fixed>电话</ion-label>
-      <ion-input type="text" placeholder="联系方式" name="phone" [(ngModel)]="user.phone"></ion-input>
+      <ion-input type="text" placeholder="联系方式" name="phone" [ngModel]="user.phone" readonly></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label fixed>备注</ion-label>
-      <ion-input type="text" placeholder="备注信息" name="note" [(ngModel)]="user.note"></ion-input>
+      <ion-textarea [ngModel]="user.note" name="note" rows="5" placeholder="账户备注" maxlength="100" readonly></ion-textarea>
     </ion-item>
-    <ion-button (click)="pass()">修改密码</ion-button>
-    <ion-button (click)="logout()">登出</ion-button>
+    <ion-button (click)="pass()" size="large">修改密码</ion-button>
+    <ion-button (click)="logout()" size="large" color="danger">登出</ion-button>
   </ion-list>
 </ion-content>

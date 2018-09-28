@@ -20,8 +20,8 @@ export class TagService {
     private ngZone: NgZone,
   ) {
     this.keys.push(
-      { key: 'tag-C', name: '客户', color: 'primary', tags: [], },
-      { key: 'tag-I', name: '商品', color: 'warning', tags: [], },
+      { key: 'tag-C', name: '客户', color: 'medium', tags: [], },
+      { key: 'tag-I', name: '商品', color: 'secondary', tags: [], },
     )
   }
 

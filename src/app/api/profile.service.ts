@@ -15,7 +15,7 @@ export class ProfileService {
     private navCtrl: NavController,
   ) { }
   logout() {
-    localStorage.setItem('token', '')
+    localStorage.removeItem('token')
   }
   login() {
     this.alertCtrl.create({
@@ -43,11 +43,13 @@ export class ProfileService {
         }, {
           text: '确定',
           handler: (v) => {
-            this.http.get<any>(`${URL}/login?nick=${v['nick']}&pass=${v['pass']}`)
-              .subscribe(a => {
-                localStorage.setItem('token', a.token)
-                this.navCtrl.goBack()
+            if (!v['nick'] || !v['pass']) { return false }
+            this.http.get<string>(`${URL}/login?nick=${v['nick']}&pass=${v['pass']}`)
+              .subscribe(t => {
+                localStorage.setItem('token', t)
+                this.navCtrl.goBack(true)
               })
+            return true
           }
         }
       ]

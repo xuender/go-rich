@@ -19,20 +19,18 @@
     <ion-list>
       <ion-item-group>
         <ion-item [class.error]="name.invalid && name.touched">
-          <ion-label fixed>昵称</ion-label>
-          <ion-input #name="ngModel" [(ngModel)]="obj.name" name="name" type="text" placeholder="昵称最长20" maxlength="20"
-            required></ion-input>
+          <ion-label fixed>姓名</ion-label>
+          <ion-input #name="ngModel" [(ngModel)]="obj.name" name="name" type="text" placeholder="姓名最长20" maxlength="20" required></ion-input>
         </ion-item>
         <ion-item color="danger" *ngIf="name.invalid && name.touched">
-          <p [hidden]="!name.errors?.required">请输入昵称</p>
-          <p [hidden]="!name.errors?.maxlength">昵称最长20</p>
+          <p [hidden]="!name.errors?.required">请输入姓名</p>
+          <p [hidden]="!name.errors?.maxlength">姓名最长20</p>
         </ion-item>
       </ion-item-group>
       <ion-item-group>
         <ion-item [class.error]="phone.invalid && phone.touched">
           <ion-label fixed>电话</ion-label>
-          <ion-input #phone="ngModel" [(ngModel)]="obj.phone" name="phone" type="text" placeholder="电话最长20" maxlength="20"
-            required></ion-input>
+          <ion-input #phone="ngModel" [(ngModel)]="obj.phone" name="phone" type="text" placeholder="电话最长20" maxlength="20" required></ion-input>
         </ion-item>
         <ion-item color="danger" *ngIf="phone.invalid && phone.touched">
           <p [hidden]="!phone.errors?.required">请输入电话</p>
@@ -41,15 +39,15 @@
       </ion-item-group>
       <ion-item-group>
         <ion-item [class.error]="note.invalid && note.touched">
-          <ion-textarea #note="ngModel" [(ngModel)]="obj.note" name="note" rows="5" placeholder="标签备注最长100" maxlength="100"></ion-textarea>
+          <ion-textarea #note="ngModel" [(ngModel)]="obj.note" name="note" rows="5" placeholder="用户备注最长100" maxlength="100"></ion-textarea>
         </ion-item>
         <ion-item color="danger" *ngIf="note.invalid && note.touched">
-          <p [hidden]="!note.errors?.maxlength">标签备注最长100</p>
+          <p [hidden]="!note.errors?.maxlength">用户备注最长100</p>
         </ion-item>
       </ion-item-group>
     </ion-list>
   </form>
   <ion-list>
-    <ion-button *ngIf="obj.id" (click)="pass()">重置密码</ion-button>
+    <ion-button *ngIf="obj.id" (click)="pass()" size="large">重置密码</ion-button>
   </ion-list>
 </ion-content>

@@ -200,6 +200,19 @@ func getAssets(root string) *assetfs.AssetFS {
 	}
 }
 
+// Signed 创建令牌
+func (w *Web) Signed(id string, pass []byte) (string, error) {
+	// 创建令牌
+	token := jwt.New(jwt.SigningMethodHS256)
+	// 设置用户信息
+	claims := token.Claims.(jwt.MapClaims)
+	claims["id"] = id
+	// 有效期 1 年
+	claims["exp"] = time.Now().Add(time.Hour * 24 * 365).Unix()
+	// 生成令牌
+	return token.SignedString(pass)
+}
+
 // 登录
 func (w *Web) login(c echo.Context) error {
 	// 登录信息绑定
@@ -215,22 +228,11 @@ func (w *Web) login(c echo.Context) error {
 	for _, u := range w.users() {
 		// 身份认证
 		if u.Name == nick || u.Phone == nick || bytes.Equal(passBs, u.Pass) {
-			// 创建令牌
-			// token := jwt.New(jwt.SigningMethodRS256)
-			token := jwt.New(jwt.SigningMethodHS256)
-			// 设置用户信息
-			claims := token.Claims.(jwt.MapClaims)
-			claims["id"] = u.ID
-			// 有效期 1 年
-			claims["exp"] = time.Now().Add(time.Hour * 24 * 365).Unix()
-			// 生成令牌
-			t, err := token.SignedString(passBs)
+			t, err := w.Signed(u.ID.String(), passBs)
 			if err != nil {
 				return err
 			}
-			return c.JSON(http.StatusOK, map[string]string{
-				"token": t,
-			})
+			return c.JSON(http.StatusOK, t)
 		}
 	}
 	return echo.ErrUnauthorized

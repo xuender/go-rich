@@ -25,7 +25,7 @@
     <ion-item-sliding *ngFor="let i of paging.data">
       <ion-item button (click)="update(i)">
         <ion-label>{{ i.name }}</ion-label>
-        <ion-badge *ngFor="let t of i.tags" [color]="hasTag(t)? 'primary' : 'light'">{{ t }}</ion-badge>
+        <ion-badge *ngFor="let t of i.tags" [color]="hasTag(t)? 'primary' : 'secondary'">{{ t }}</ion-badge>
         <ion-badge color="warning">{{ i.price / 100 | currency:'￥' }}</ion-badge>
       </ion-item>
       <ion-item-options side="end">

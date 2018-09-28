@@ -58,5 +58,9 @@ func (w *Web) profilePatch(c echo.Context) error {
 	w.Put(u.ID[:], u)
 	// 删除用户密钥缓存
 	w.cache.Remove(u.ID.String())
-	return c.JSON(http.StatusOK, u)
+	t, err := w.Signed(u.ID.String(), u.Pass)
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, t)
 }

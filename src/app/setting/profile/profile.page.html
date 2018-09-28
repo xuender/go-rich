@@ -6,20 +6,39 @@
       </ion-button>
     </ion-buttons>
     <ion-title>账户设置</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="userForm.valid && save()" [disabled]="userForm.invalid">
+        保存
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-list>
-    <ion-item>
-      <ion-label fixed>姓名</ion-label>
-      <ion-input type="text" placeholder="用户昵称" name="name" [ngModel]="user.name" readonly></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label fixed>手机</ion-label>
-      <ion-input type="text" placeholder="联系手机" name="phone" [ngModel]="user.phone" readonly></ion-input>
-    </ion-item>
-    <ion-button (click)="pass()" size="large">修改密码</ion-button>
-    <ion-button (click)="logout()" size="large" color="danger">登出</ion-button>
-  </ion-list>
+  <form #userForm="ngForm">
+    <ion-list>
+      <ion-item-group>
+        <ion-item [class.error]="name.invalid && name.touched">
+          <ion-label fixed>姓名</ion-label>
+          <ion-input #name="ngModel" [(ngModel)]="user.name" name="name" type="text" placeholder="姓名最长20" maxlength="20" required></ion-input>
+        </ion-item>
+        <ion-item color="danger" *ngIf="name.invalid && name.touched">
+          <p [hidden]="!name.errors?.required">请输入姓名</p>
+          <p [hidden]="!name.errors?.maxlength">姓名最长20</p>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item [class.error]="phone.invalid && phone.touched">
+          <ion-label fixed>手机</ion-label>
+          <ion-input #phone="ngModel" [(ngModel)]="user.phone" name="phone" type="text" placeholder="手机最长20" maxlength="20" required></ion-input>
+        </ion-item>
+        <ion-item color="danger" *ngIf="phone.invalid && phone.touched">
+          <p [hidden]="!phone.errors?.required">请输入手机号</p>
+          <p [hidden]="!phone.errors?.maxlength">手机最长20</p>
+        </ion-item>
+      </ion-item-group>
+      <ion-button (click)="pass()" size="large">修改密码</ion-button>
+      <ion-button (click)="logout()" size="large" color="danger">登出</ion-button>
+    </ion-list>
+  </form>
 </ion-content>

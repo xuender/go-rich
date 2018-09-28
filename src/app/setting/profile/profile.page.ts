@@ -1,8 +1,9 @@
-import { ModalController, AlertController, ToastController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ModalController, AlertController, ToastController } from '@ionic/angular';
 
 import { URL } from '../../api/init'
+import { User } from '../../users/user';
 import { ProfileService } from '../../api/profile.service';
 @Component({
   selector: 'app-profile',
@@ -31,6 +32,12 @@ export class ProfilePage implements OnInit {
   }
   cancel() {
     this.modalCtrl.dismiss();
+  }
+
+  async save() {
+    await this.http.patch<User>(`${URL}/api/profile`, this.user).toPromise()
+    const toast = await this.toastCtrl.create({ message: '账户信息保存成功' })
+    toast.present()
   }
   async pass() {
     const alert = await this.alertCtrl.create({
@@ -65,7 +72,7 @@ export class ProfilePage implements OnInit {
           text: '确定',
           handler: (v) => {
             if (v['pass'] != v['two']) { return false }
-            this.http.patch<string>(`${URL}/api/profile?old=${v['old']}&pass=${v['pass']}`, {})
+            this.http.patch<string>(`${URL}/api/profile/pass?old=${v['old']}&pass=${v['pass']}`, {})
               .subscribe((t: string) => localStorage.setItem('token', t))
             return true
           }

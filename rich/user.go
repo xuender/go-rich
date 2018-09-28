@@ -6,13 +6,13 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
-	"github.com/xuender/goutils"
+	"github.com/xuender/go-utils"
 )
 
 // User 用户
 type User struct {
 	Obj
-	Phone  string            `json:"phone"`  // 电话
+	Phone  string            `json:"phone"`  // 手机
 	Pass   []byte            `json:"-"`      // 密码
 	Admin  bool              `json:"admin"`  // 管理员
 	Extend map[string]string `json:"extend"` // 扩展属性
@@ -54,7 +54,7 @@ func (w *Web) users() []User {
 	us := []User{}
 	w.Iterator([]byte{UserIDPrefix, '-'}, func(key, data []byte) {
 		u := User{}
-		goutils.Decode(data, &u)
+		utils.Decode(data, &u)
 		us = append(us, u)
 	})
 	return us
@@ -63,11 +63,17 @@ func (w *Web) users() []User {
 // 用户创建
 func (w *Web) userPost(c echo.Context) error {
 	u := User{}
-	return w.ObjPost(c, &u, UserIDPrefix, func() error { return w.Bind(c, &u) },
-		func() error {
-			// TODO 新增用户校验
-			return nil
-		})
+	return w.ObjPost(c, &u, UserIDPrefix, func() error { return w.Bind(c, &u) }, func() error {
+		for _, o := range w.users() {
+			if o.Name == u.Name {
+				return errors.New("姓名重复")
+			}
+			if o.Phone == u.Phone {
+				return errors.New("手机重复")
+			}
+		}
+		return nil
+	})
 }
 
 // 用户获取
@@ -78,11 +84,19 @@ func (w *Web) userGet(c echo.Context) error {
 // 用户修改
 func (w *Web) userPut(c echo.Context) error {
 	u := User{}
-	return w.ObjPut(c, &u, UserIDPrefix, func() error { return w.Bind(c, &u) },
-		func() error {
-			// TODO 昵称/电话重复检查
-			return nil
-		})
+	return w.ObjPut(c, &u, UserIDPrefix, func() error { return w.Bind(c, &u) }, func() error {
+		users := w.users()
+		utils.Filter(&users, func(o User) bool { return !o.ID.Equal(u.ID) })
+		for _, o := range users {
+			if o.Name == u.Name {
+				return errors.New("姓名重复")
+			}
+			if o.Phone == u.Phone {
+				return errors.New("手机重复")
+			}
+		}
+		return nil
+	})
 }
 
 // 用户删除
@@ -96,7 +110,7 @@ func (w *Web) UserInit() {
 	if len(us) == 0 {
 		u := User{
 			Obj: Obj{
-				ID:   goutils.NewID(UserIDPrefix),
+				ID:   utils.NewID(UserIDPrefix),
 				Name: "admin",
 				Ca:   time.Now(),
 			},

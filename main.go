@@ -9,7 +9,7 @@ import (
 	"syscall"
 
 	"github.com/urfave/cli"
-	"github.com/xuender/goutils"
+	"github.com/xuender/go-utils"
 
 	"./rich"
 )
@@ -106,7 +106,7 @@ func runAction(c *cli.Context) error {
 	}
 	// 打开浏览器
 	if !c.Bool("n") {
-		goutils.Open(web.URL + "/qr")
+		utils.Open(web.URL + "/qr")
 	}
 	fmt.Println(<-quitChan)
 	web.Close()

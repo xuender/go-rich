@@ -10,20 +10,20 @@ import (
 
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/labstack/echo"
-	"github.com/xuender/goutils"
+	"github.com/xuender/go-utils"
 )
 
 // Customer 客户
 type Customer struct {
 	Obj
 	Phone  string            `json:"phone,omitempty"`  // 电话
-	Trades []goutils.ID      `json:"trades,omitempty"` // 消费记录
+	Trades []utils.ID        `json:"trades,omitempty"` // 消费记录
 	Extend map[string]string `json:"extend"`           // 扩展属性
 	Tags   Tags              `json:"tags"`             // 标签
 }
 
 // BeforePost 创建前设置拼音标签
-func (c *Customer) BeforePost(key byte) goutils.ID {
+func (c *Customer) BeforePost(key byte) utils.ID {
 	c.Obj.BeforePost(key)
 	if len(c.Pinyin) > 0 {
 		c.Tags.Add(strings.ToUpper(string(c.Pinyin[0])))
@@ -32,7 +32,7 @@ func (c *Customer) BeforePost(key byte) goutils.ID {
 }
 
 // BeforePut 修改前设置拼音标签
-func (c *Customer) BeforePut(id goutils.ID) {
+func (c *Customer) BeforePut(id utils.ID) {
 	c.Obj.BeforePut(id)
 	c.Tags.DelPy() // 删除原拼音标签
 	if len(c.Pinyin) > 0 {
@@ -67,7 +67,7 @@ func (w *Web) customersGet(c echo.Context) error {
 	w.ObjSelect(c, &customers)
 	excel := c.QueryParam("excel")
 	if excel != "" {
-		id := new(goutils.ID)
+		id := new(utils.ID)
 		err := id.Parse(excel)
 		if err != nil {
 			return err
@@ -78,7 +78,7 @@ func (w *Web) customersGet(c echo.Context) error {
 }
 
 // 导出excel
-func (w *Web) excel(c echo.Context, cs []Customer, id *goutils.ID) error {
+func (w *Web) excel(c echo.Context, cs []Customer, id *utils.ID) error {
 	xlsx := Xlsx{}
 	w.Get(id[:], &xlsx)
 	// 生成xlsx
@@ -123,7 +123,7 @@ func (w *Web) customers() []Customer {
 	cs := []Customer{}
 	w.Iterator([]byte{CustomerIDPrefix, '-'}, func(key, value []byte) {
 		c := Customer{}
-		if goutils.Decode(value, &c) == nil {
+		if utils.Decode(value, &c) == nil {
 			cs = append(cs, c)
 		} else {
 			log.Printf("客户信息解析失败 %x \n", key)
@@ -168,7 +168,7 @@ func (w *Web) customersDelete(c echo.Context) error {
 // 客户信息上传
 func (w *Web) customersFile(c echo.Context) error {
 	w.cache.Remove(CustomerIDPrefix)
-	xid := new(goutils.ID)
+	xid := new(utils.ID)
 	err := xid.Parse(c.Request().Header.Get("xlsx"))
 	if err != nil {
 		return err
@@ -213,7 +213,7 @@ func readXlsx(file string, m map[int]string) (cs []Customer, err error) {
 
 // 新建客户
 func newCustomer(row []string, m map[int]string) (c Customer, err error) {
-	p, err := goutils.Parse(row, m, &c)
+	p, err := utils.Parse(row, m, &c)
 	if err != nil {
 		return
 	}

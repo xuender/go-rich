@@ -29,12 +29,12 @@
       </ion-item-group>
       <ion-item-group>
         <ion-item [class.error]="phone.invalid && phone.touched">
-          <ion-label fixed>电话</ion-label>
-          <ion-input #phone="ngModel" [(ngModel)]="obj.phone" name="phone" type="text" placeholder="电话最长20" maxlength="20" required></ion-input>
+          <ion-label fixed>手机</ion-label>
+          <ion-input #phone="ngModel" [(ngModel)]="obj.phone" name="phone" type="text" placeholder="手机最长20" maxlength="20" required></ion-input>
         </ion-item>
         <ion-item color="danger" *ngIf="phone.invalid && phone.touched">
-          <p [hidden]="!phone.errors?.required">请输入电话</p>
-          <p [hidden]="!phone.errors?.maxlength">电话最长20</p>
+          <p [hidden]="!phone.errors?.required">请输入手机</p>
+          <p [hidden]="!phone.errors?.maxlength">手机最长20</p>
         </ion-item>
       </ion-item-group>
       <ion-item-group>

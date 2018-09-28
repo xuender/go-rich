@@ -3,7 +3,7 @@ package rich
 import (
 	"sort"
 
-	"github.com/xuender/goutils"
+	"github.com/xuender/go-utils"
 )
 
 // Tags 标签
@@ -22,7 +22,7 @@ func (t *Tags) Add(tag string) {
 
 // DelPy 删除拼音标签
 func (t *Tags) DelPy() {
-	goutils.Remove(t, func(s string) bool { return len(s) == 1 })
+	utils.Remove(t, func(s string) bool { return len(s) == 1 })
 }
 
 // Sort 标签排序

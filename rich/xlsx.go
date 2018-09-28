@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
-	"github.com/xuender/goutils"
+	"github.com/xuender/go-utils"
 )
 
 // Xlsx Excel定义
@@ -28,7 +28,7 @@ func (w *Web) xlsxes() []Xlsx {
 	xs := []Xlsx{}
 	w.Iterator([]byte{XlsxIDPrefix, '-'}, func(key, value []byte) {
 		x := Xlsx{}
-		if goutils.Decode(value, &x) == nil {
+		if utils.Decode(value, &x) == nil {
 			xs = append(xs, x)
 		} else {
 			log.Printf("Excel定义解析失败 %x \n", key)

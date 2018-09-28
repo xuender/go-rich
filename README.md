@@ -30,7 +30,7 @@ go get github.com/360EntSecGroup-Skylar/excelize
 # 汉字转拼音
 go get github.com/mozillazg/go-slugify
 # 工具
-go get github.com/xuender/goutils
+go get github.com/xuender/go-utils
 # 单元测试
 go get github.com/smartystreets/goconvey
 # 二维码生成

@@ -3,12 +3,12 @@ package rich
 import (
 	"time"
 
-	"github.com/xuender/goutils"
+	"github.com/xuender/go-utils"
 )
 
 // Trade 订单
 type Trade struct {
-	ID     goutils.ID  `json:"id"`     // 主键
+	ID     utils.ID    `json:"id"`     // 主键
 	Status TradeStatus `json:"status"` // 状态
 	Ca     time.Time   `json:"ca"`     // 创建时间
 	Pa     time.Time   `json:"pa"`     // 付款时间
@@ -19,7 +19,7 @@ type Trade struct {
 // NewTrade 创建订单
 func NewTrade(orders []Order) *Trade {
 	t := &Trade{
-		ID:     goutils.NewID(TradeIDPrefix),
+		ID:     utils.NewID(TradeIDPrefix),
 		Ca:     time.Now(),
 		Status: 预订,
 		Orders: orders,

@@ -7,7 +7,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
-	"github.com/xuender/goutils"
+	"github.com/xuender/go-utils"
 )
 
 // 账户路由
@@ -20,7 +20,7 @@ func (w *Web) profileRoute(c *echo.Group) {
 func (w *Web) profile(c echo.Context) (u User, err error) {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
-	id := new(goutils.ID)
+	id := new(utils.ID)
 	if err = id.Parse(claims["id"].(string)); err != nil {
 		return
 	}

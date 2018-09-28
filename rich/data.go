@@ -7,7 +7,7 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/labstack/echo"
 	"github.com/syndtr/goleveldb/leveldb/util"
-	"github.com/xuender/goutils"
+	"github.com/xuender/go-utils"
 	validator "gopkg.in/go-playground/validator.v9"
 	zh_translations "gopkg.in/go-playground/validator.v9/translations/zh"
 )
@@ -34,12 +34,12 @@ func (w *Web) Get(key []byte, p interface{}) error {
 	if err != nil {
 		return err
 	}
-	return goutils.Decode(data, p)
+	return utils.Decode(data, p)
 }
 
 // Put 数据库数据保存
 func (w *Web) Put(key []byte, p interface{}) error {
-	bs, err := goutils.Encode(p)
+	bs, err := utils.Encode(p)
 	if err != nil {
 		return err
 	}

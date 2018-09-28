@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/labstack/echo"
-	"github.com/xuender/goutils"
+	"github.com/xuender/go-utils"
 )
 
 // Item 商品
@@ -18,7 +18,7 @@ type Item struct {
 }
 
 // BeforePost 创建前设置拼音标签
-func (i *Item) BeforePost(key byte) goutils.ID {
+func (i *Item) BeforePost(key byte) utils.ID {
 	i.Obj.BeforePost(key)
 	if len(i.Pinyin) > 0 {
 		i.Tags.Add(strings.ToUpper(string(i.Pinyin[0])))
@@ -27,7 +27,7 @@ func (i *Item) BeforePost(key byte) goutils.ID {
 }
 
 // BeforePut 修改前设置拼音标签
-func (i *Item) BeforePut(id goutils.ID) {
+func (i *Item) BeforePut(id utils.ID) {
 	i.Obj.BeforePut(id)
 	i.Tags.DelPy() // 删除原拼音标签
 	if len(i.Pinyin) > 0 {
@@ -66,7 +66,7 @@ func (w *Web) items() []Item {
 	cs := []Item{}
 	w.Iterator([]byte{ItemIDPrefix, '-'}, func(key, value []byte) {
 		c := Item{}
-		if goutils.Decode(value, &c) == nil {
+		if utils.Decode(value, &c) == nil {
 			cs = append(cs, c)
 		} else {
 			log.Printf("商品解析失败 %x \n", key)

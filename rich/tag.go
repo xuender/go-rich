@@ -7,7 +7,7 @@ import (
 	"sort"
 
 	"github.com/labstack/echo"
-	"github.com/xuender/goutils"
+	"github.com/xuender/go-utils"
 )
 
 // Tag 标签
@@ -60,7 +60,7 @@ func (w *Web) tagRoute(c *echo.Group) {
 		key := c.Param("id")
 		ret := w.tags()
 		all := c.QueryParam("all") == "true"
-		goutils.Filter(&ret, func(t Tag) bool { return t.Use[key] && (all || len(t.Name) > 1) })
+		utils.Filter(&ret, func(t Tag) bool { return t.Use[key] && (all || len(t.Name) > 1) })
 		return c.JSON(http.StatusOK, ret)
 	})
 	// 标签创建
@@ -100,7 +100,7 @@ func (w *Web) tagsGet(c echo.Context) error {
 	ret := w.tags()
 	// 搜索
 	w.ObjSearch(c, &ret)
-	goutils.Filter(&ret, func(t Tag) bool { return len(t.Name) > 1 })
+	utils.Filter(&ret, func(t Tag) bool { return len(t.Name) > 1 })
 	// 数据库标签使用情况
 	// m := map[string]map[string]int{}
 	// for _, key := range TagKeys {
@@ -124,7 +124,7 @@ func (w *Web) tags() []Tag {
 	ts := []Tag{}
 	w.Iterator([]byte{TagIDPrefix, '-'}, func(key, value []byte) {
 		t := Tag{}
-		if goutils.Decode(value, &t) == nil {
+		if utils.Decode(value, &t) == nil {
 			ts = append(ts, t)
 		} else {
 			log.Printf("标签解析失败 %x \n", key)

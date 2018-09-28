@@ -10,16 +10,16 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
-	"github.com/xuender/goutils"
+	"github.com/xuender/go-utils"
 )
 
 // Obj 基础对象
 type Obj struct {
-	ID     goutils.ID `json:"id"`                              // 主键
-	Name   string     `json:"name" validate:"required,lte=50"` // 名称 必填 最长50
-	Pinyin string     `json:"pinyin"`                          // 拼音
-	Note   string     `json:"note" validate:"lte=100"`         // 备注 最长100
-	Ca     time.Time  `json:"ca"`                              // 创建时间
+	ID     utils.ID  `json:"id"`                              // 主键
+	Name   string    `json:"name" validate:"required,lte=50"` // 名称 必填 最长50
+	Pinyin string    `json:"pinyin"`                          // 拼音
+	Note   string    `json:"note" validate:"lte=100"`         // 备注 最长100
+	Ca     time.Time `json:"ca"`                              // 创建时间
 }
 
 // Binder 对象绑定
@@ -31,13 +31,13 @@ type Binder interface {
 // Puter 对象修改
 type Puter interface {
 	// BeforePut 修改前
-	BeforePut(id goutils.ID)
+	BeforePut(id utils.ID)
 }
 
 // Poster 新对象操作
 type Poster interface {
 	// BeforePost 保存前
-	BeforePost(key byte) goutils.ID
+	BeforePost(key byte) utils.ID
 }
 
 // Matcher 对象比较
@@ -51,14 +51,14 @@ type Includeser interface {
 }
 
 // BeforePut 修改对象
-func (o *Obj) BeforePut(id goutils.ID) {
+func (o *Obj) BeforePut(id utils.ID) {
 	o.ID = id
 	o.Pinyin = py(o.Name)
 }
 
 // BeforePost 对象新建前
-func (o *Obj) BeforePost(key byte) goutils.ID {
-	o.ID = goutils.NewID(key)
+func (o *Obj) BeforePost(key byte) utils.ID {
+	o.ID = utils.NewID(key)
 	o.Ca = time.Now()
 	o.Pinyin = py(o.Name)
 	return o.ID
@@ -70,7 +70,7 @@ func (w *Web) ObjPut(c echo.Context, p Puter, key byte, bind func() error, check
 	if idstr == "" {
 		return errors.New("id为空")
 	}
-	id := new(goutils.ID)
+	id := new(utils.ID)
 	err := id.Parse(idstr)
 	if err != nil {
 		return err
@@ -109,7 +109,7 @@ func (w *Web) ObjPost(c echo.Context, p Poster, key byte, bind func() error, che
 
 // ObjLoad 对象加载
 func (w *Web) ObjLoad(c echo.Context, o interface{}) error {
-	id := new(goutils.ID)
+	id := new(utils.ID)
 	err := id.Parse(c.Param("id"))
 	if err != nil {
 		return err
@@ -121,7 +121,7 @@ func (w *Web) ObjLoad(c echo.Context, o interface{}) error {
 func (w *Web) ObjSearch(c echo.Context, i interface{}) (interface{}, error) {
 	txt := c.QueryParam("search")
 	if txt != "" {
-		return goutils.Filter(i, func(m Matcher) bool {
+		return utils.Filter(i, func(m Matcher) bool {
 			return m.Match(txt)
 		})
 	}
@@ -134,7 +134,7 @@ func (w *Web) ObjSelect(c echo.Context, i interface{}) (interface{}, error) {
 	if str != "" {
 		tags := []string{}
 		json.Unmarshal([]byte(str), &tags)
-		return goutils.Filter(i, func(m Includeser) bool {
+		return utils.Filter(i, func(m Includeser) bool {
 			return m.Includes(tags)
 		})
 	}
@@ -190,7 +190,7 @@ func (w *Web) ObjGet(c echo.Context, o interface{}) error {
 
 // ObjDelete 对象删除
 func (w *Web) ObjDelete(c echo.Context, key byte) error {
-	id := new(goutils.ID)
+	id := new(utils.ID)
 	err := id.Parse(c.Param("id"))
 	if err != nil {
 		return err

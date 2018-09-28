@@ -10,34 +10,42 @@ import { Tag } from '../tag';
   templateUrl: './select.page.html',
   styleUrls: ['./select.page.scss'],
 })
-export class SelectPage  {
+export class SelectPage {
   tags$: Observable<Tag[]>
-  tags: string[] = []
+  obj: any = {}
   constructor(
     private modalCtrl: ModalController,
     private navParams: NavParams,
   ) {
     this.tags$ = this.navParams.get('tags$')
-    this.tags = this.navParams.get('tags')
+    const tags = this.navParams.get('tags')
+    for (const t of tags) {
+      this.obj[t] = true
+    }
   }
 
   cancel() {
     this.modalCtrl.dismiss();
   }
 
-  select() {
-    this.modalCtrl.dismiss(this.tags);
+  select(tag: string = '') {
+    const tags: string[] = []
+    for (const k in this.obj) {
+      if (this.obj[k]) {
+        tags.push(k)
+      }
+    }
+    if (tag && !includes(tags, tag)) {
+      tags.push(tag)
+    }
+    this.modalCtrl.dismiss(tags);
   }
 
   change(tag: string) {
-    if (this.has(tag)) {
-      pull(this.tags, tag)
+    if (tag in this.obj) {
+      this.obj[tag] = !this.obj[tag]
     } else {
-      this.tags.push(tag)
+      this.obj[tag] = true
     }
-  }
-
-  has(tag: string) {
-    return includes(this.tags, tag)
   }
 }

@@ -26,4 +26,9 @@ export class UsersPage extends ObjsPage<User> {
   get page() { return UserPage }
   get newObj() { return {} }
   get title() { return '用户' }
+
+  search(event: CustomEvent) {
+    const txt = event.detail.value
+    this.users$ = this.userService.search(txt)
+  }
 }

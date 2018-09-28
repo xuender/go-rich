@@ -18,10 +18,12 @@
   <ion-grid>
     <ion-row>
       <ion-col *ngFor="let t of tags$ | async">
-        <ion-label>
-          {{ t.name }}
-        </ion-label>
-        <ion-toggle (ionChange)="change(t.name)" [checked]="has(t.name)"></ion-toggle>
+        <ion-row>
+          <ion-button (click)="select(t.name)">{{ t.name }}</ion-button>
+        </ion-row>
+        <ion-row>
+          <ion-toggle (ionChange)="change(t.name)" [checked]="obj[t.name]"></ion-toggle>
+        </ion-row>
       </ion-col>
     </ion-row>
   </ion-grid>

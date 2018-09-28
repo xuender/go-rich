@@ -3,6 +3,7 @@ package rich
 import (
 	"errors"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/labstack/echo"
@@ -28,6 +29,11 @@ func (w *Web) userRoute(c *echo.Group) {
 	c.PATCH("/:id/pass", w.userPass) // 修改密码
 }
 
+// Match 匹配
+func (u User) Match(txt string) bool {
+	return u.Obj.Match(txt) || strings.Contains(u.Phone, txt)
+}
+
 // 用户修改密码
 func (w *Web) userPass(c echo.Context) error {
 	pass := c.QueryParam("pass")
@@ -47,7 +53,9 @@ func (w *Web) userPass(c echo.Context) error {
 
 // 获取全部用户
 func (w *Web) usersGet(c echo.Context) error {
-	return c.JSON(http.StatusOK, w.users())
+	ret := w.users()
+	w.ObjSearch(c, &ret)
+	return c.JSON(http.StatusOK, ret)
 }
 
 func (w *Web) users() []User {
@@ -56,6 +64,9 @@ func (w *Web) users() []User {
 		u := User{}
 		utils.Decode(data, &u)
 		us = append(us, u)
+	})
+	sort.Slice(us, func(i int, j int) bool {
+		return us[i].Name < us[j].Name
 	})
 	return us
 }

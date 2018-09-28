@@ -35,7 +35,7 @@ export abstract class ObjsPlusPage<T extends Obj> extends ObjsPage<T> implements
   }
 
   async select() {
-    const tags = await this.tagService.select(this.tagKey)
+    const tags = await this.tagService.selectTags(this.tagKey)
     if (tags) {
       this.tags = tags
       this.paging = await this.service.selectPaging(this.tags).toPromise()

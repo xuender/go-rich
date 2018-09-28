@@ -3,30 +3,23 @@ import { ModalController, NavParams } from '@ionic/angular';
 
 import { Tag } from '../tag';
 import { TagService } from '../tag.service';
+import { ObjPage } from '../../api/obj.page';
 
 @Component({
   selector: 'app-tag',
   templateUrl: './tag.page.html',
   styleUrls: ['./tag.page.scss'],
 })
-export class TagPage {
-  tag: Tag
+export class TagPage extends ObjPage<Tag>{
   constructor(
     public tagService: TagService,
-    private modalCtrl: ModalController,
-    private navParams: NavParams
+    protected modalCtrl: ModalController,
+    protected navParams: NavParams
   ) {
-    this.tag = this.navParams.get('tag')
-    if (!this.tag.use) {
-      this.tag.use = {}
+    super(modalCtrl, navParams)
+    if (!this.obj.use) {
+      this.obj.use = {}
     }
   }
-
-  cancel() {
-    this.modalCtrl.dismiss();
-  }
-
-  async save() {
-    this.modalCtrl.dismiss(await this.tagService.save(this.tag))
-  }
+  get service() { return this.tagService }
 }

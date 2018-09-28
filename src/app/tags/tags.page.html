@@ -5,7 +5,7 @@
         取消
       </ion-button>
     </ion-buttons>
-    <ion-searchbar placeholder="标签名称拼音或声母" (ionChange)="search($event)"></ion-searchbar>
+    <ion-searchbar placeholder="名称,拼音或声母" (ionChange)="search($event)"></ion-searchbar>
     <ion-buttons slot="end">
       <ion-button (click)="create()">
         新建
@@ -17,7 +17,6 @@
 <ion-content padding>
   <ion-list *ngIf="tags$ | async as tags; else loading" #il>
     <ion-item-divider>
-      <ion-label>{{ title }}</ion-label>
       <ion-badge color="primary" *ngIf="tagService.has(tags)">{{ tags.length }}</ion-badge>
     </ion-item-divider>
     <ion-item-sliding *ngFor="let t of tags">

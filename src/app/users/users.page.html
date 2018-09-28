@@ -5,7 +5,7 @@
         取消
       </ion-button>
     </ion-buttons>
-    <ion-title>用户列表</ion-title>
+    <ion-searchbar placeholder="姓名,手机,拼音或声母" (ionChange)="search($event)"></ion-searchbar>
     <ion-buttons slot="end">
       <ion-button (click)="create()">
         新建

@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { ModalController, ActionSheetController, List } from '@ionic/angular';
+import { ModalController, ActionSheetController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
 import { Tag } from './tag';
 import { TagPage } from './tag/tag.page';
 import { TagService } from './tag.service';
+import { ObjsPage } from '../api/objs.page';
 
 @Component({
   selector: 'app-tags',
@@ -12,62 +13,24 @@ import { TagService } from './tag.service';
   styleUrls: ['./tags.page.scss'],
 })
 
-export class TagsPage {
+export class TagsPage extends ObjsPage<Tag> {
   tags$: Observable<Tag[]>
-  title: string = ''
   constructor(
     public tagService: TagService,
-    private actionSheetCtrl: ActionSheetController,
-    private modalCtrl: ModalController
+    protected modalCtrl: ModalController,
+    protected actionSheetCtrl: ActionSheetController,
   ) {
-    this.tags$ = this.tagService.tags$
+    super(modalCtrl, actionSheetCtrl)
+    this.tags$ = this.tagService.all$
   }
 
-  cancel() {
-    this.modalCtrl.dismiss();
-  }
-
-  async create() {
-    const modal = await this.modalCtrl.create({
-      component: TagPage,
-      componentProps: {
-        tag: { name: '' }
-      }
-    })
-    return await modal.present()
-  }
-
-  async update(t: Tag) {
-    const modal = await this.modalCtrl.create({
-      component: TagPage,
-      componentProps: { tag: Object.assign({}, t) },
-    });
-    return await modal.present()
-  }
-
-  async del(t: Tag, il: List) {
-    const actionSheet = await this.actionSheetCtrl.create({
-      header: `确认删除标签 [ ${t.name} ] ?`,
-      buttons: [{
-        text: '删除',
-        role: 'destructive',
-        icon: 'trash',
-        handler: () => {
-          this.tagService.delete(t)
-        }
-      }, {
-        text: '取消',
-        icon: 'close',
-        role: 'cancel',
-      }]
-    });
-    await actionSheet.present();
-    await il.closeSlidingItems()
-  }
+  get service() { return this.tagService }
+  get page() { return TagPage }
+  get newObj() { return {} }
+  get title() { return '标签' }
 
   search(event: CustomEvent) {
     const txt = event.detail.value
-    this.title = `搜索: ${txt}`
     this.tags$ = this.tagService.search(txt)
   }
 }

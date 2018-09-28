@@ -5,13 +5,13 @@
         新建
       </ion-button>
     </ion-buttons>
-    <ion-searchbar placeholder="名称拼音或声母" (ionChange)="search($event)"></ion-searchbar>
+    <ion-searchbar placeholder="名称,拼音或声母" (ionChange)="search($event)"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
   <ion-fab vertical="center" horizontal="end" edge slot="fixed">
-    <ion-fab-button (click)="select()" color="light">
+    <ion-fab-button (click)="select()" color="secondary">
       <ion-icon name="pricetags"></ion-icon>
     </ion-fab-button>
   </ion-fab>

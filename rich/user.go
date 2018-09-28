@@ -41,7 +41,7 @@ func (w *Web) userPass(c echo.Context) error {
 	u.Pass = Pass(pass)
 	w.Put(u.ID[:], u)
 	// 删除用户密钥缓存
-	w.cache.Remove(u.ID.String())
+	delete(w.cache, u.ID.String())
 	return c.JSON(http.StatusOK, u)
 }
 

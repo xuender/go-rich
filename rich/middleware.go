@@ -28,13 +28,13 @@ func middlewareJWT(w *Web, signingMethod string) echo.MiddlewareFunc {
 				}
 				// 用户ID
 				id := t.Claims.(jwt.MapClaims)["id"]
-				if sign, ok := w.cache.Get(id); ok {
+				if sign, ok := w.cache[id]; ok {
 					return sign, nil
 				}
 				// 设置缓存
 				for _, u := range w.users() {
 					if u.ID.String() == id {
-						w.cache.Put(id, u.Pass)
+						w.cache[id] = u.Pass
 						return u.Pass, nil
 					}
 				}

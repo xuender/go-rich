@@ -60,7 +60,7 @@ func (w *Web) itemsGet(c echo.Context) error {
 
 // 商品列表
 func (w *Web) items() []Item {
-	if cs, ok := w.cache.Get(ItemIDPrefix); ok {
+	if cs, ok := w.cache[ItemIDPrefix]; ok {
 		return cs.([]Item)
 	}
 	cs := []Item{}
@@ -75,26 +75,26 @@ func (w *Web) items() []Item {
 	sort.Slice(cs, func(i int, j int) bool {
 		return cs[i].Name < cs[j].Name
 	})
-	w.cache.Put(ItemIDPrefix, cs)
+	w.cache[ItemIDPrefix] = cs
 	return cs
 }
 
 // 商品创建
 func (w *Web) itemPost(c echo.Context) error {
-	w.cache.Remove(ItemIDPrefix)
+	delete(w.cache, ItemIDPrefix)
 	i := Item{}
 	return w.ObjPost(c, &i, ItemIDPrefix, func() error { return w.Bind(c, &i) }, func() error { return w.addTags("tag-I", i.Tags) })
 }
 
 // 商品修改
 func (w *Web) itemPut(c echo.Context) error {
-	w.cache.Remove(ItemIDPrefix)
+	delete(w.cache, ItemIDPrefix)
 	i := Item{}
 	return w.ObjPut(c, &i, ItemIDPrefix, func() error { return w.Bind(c, &i) }, func() error { return w.addTags("tag-I", i.Tags) })
 }
 
 // 商品删除
 func (w *Web) itemDelete(c echo.Context) error {
-	w.cache.Remove(ItemIDPrefix)
+	delete(w.cache, ItemIDPrefix)
 	return w.ObjDelete(c, ItemIDPrefix)
 }

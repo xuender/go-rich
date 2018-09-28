@@ -117,7 +117,7 @@ func (w *Web) excel(c echo.Context, cs []Customer, id *utils.ID) error {
 
 // 客户列表
 func (w *Web) customers() []Customer {
-	if cs, ok := w.cache.Get(CustomerIDPrefix); ok {
+	if cs, ok := w.cache[CustomerIDPrefix]; ok {
 		return cs.([]Customer)
 	}
 	cs := []Customer{}
@@ -132,33 +132,33 @@ func (w *Web) customers() []Customer {
 	sort.Slice(cs, func(i int, j int) bool {
 		return cs[i].Name < cs[j].Name
 	})
-	w.cache.Put(CustomerIDPrefix, cs)
+	w.cache[CustomerIDPrefix] = cs
 	return cs
 }
 
 // 客户创建
 func (w *Web) customerPost(c echo.Context) error {
-	w.cache.Remove(CustomerIDPrefix)
+	delete(w.cache, CustomerIDPrefix)
 	cu := Customer{}
 	return w.ObjPost(c, &cu, CustomerIDPrefix, func() error { return w.Bind(c, &cu) }, func() error { return w.addTags("tag-C", cu.Tags) })
 }
 
 // 客户修改
 func (w *Web) customerPut(c echo.Context) error {
-	w.cache.Remove(CustomerIDPrefix)
+	delete(w.cache, CustomerIDPrefix)
 	cu := Customer{}
 	return w.ObjPut(c, &cu, CustomerIDPrefix, func() error { return w.Bind(c, &cu) }, func() error { return w.addTags("tag-C", cu.Tags) })
 }
 
 // 删除用户
 func (w *Web) customerDelete(c echo.Context) error {
-	w.cache.Remove(CustomerIDPrefix)
+	delete(w.cache, CustomerIDPrefix)
 	return w.ObjDelete(c, CustomerIDPrefix)
 }
 
 // 清除用户
 func (w *Web) customersDelete(c echo.Context) error {
-	w.cache.Remove(CustomerIDPrefix)
+	delete(w.cache, CustomerIDPrefix)
 	w.Iterator([]byte{CustomerIDPrefix, '-'}, func(key, value []byte) {
 		w.Delete(key)
 	})
@@ -167,7 +167,7 @@ func (w *Web) customersDelete(c echo.Context) error {
 
 // 客户信息上传
 func (w *Web) customersFile(c echo.Context) error {
-	w.cache.Remove(CustomerIDPrefix)
+	delete(w.cache, CustomerIDPrefix)
 	xid := new(utils.ID)
 	err := xid.Parse(c.Request().Header.Get("xlsx"))
 	if err != nil {

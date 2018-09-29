@@ -16,7 +16,11 @@ func middlewareJWT(w *Web, signingMethod string) echo.MiddlewareFunc {
 			auth := c.Request().Header.Get("Authorization")
 			err := errors.New("身份认证错误")
 			if auth == "" || len(auth) < 20 {
-				return err
+				return &echo.HTTPError{
+					Code:     http.StatusUnauthorized,
+					Message:  "invalid or expired jwt",
+					Internal: err,
+				}
 			}
 			auth = auth[7:]
 			token := new(jwt.Token)

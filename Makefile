@@ -1,7 +1,7 @@
 # 获取最后的tag
 TAG = $(shell git tag | tail -n 1)
 
-all: web generate build pack
+all: web generate build pack doc
 
 web:
 	@echo 编译 web
@@ -34,6 +34,10 @@ pack:
 	mv rich-darwin go-rich
 	zip go-rich-$(TAG)-darwin_amd64.zip go-rich
 	rm go-rich
+
+doc:
+	gren release
+	gren changelog
 
 todo:
 	@echo 寻找未完成代码

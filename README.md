@@ -38,6 +38,7 @@ go get rsc.io/qr
 ```
 ### 编译
 ```shell
+npm install github-release-notes -g
 npm i
 make
 ```

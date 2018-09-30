@@ -55,13 +55,18 @@ func main() {
 			Value: "temp",
 			Usage: "临时文件目录",
 		},
+		cli.StringFlag{
+			Name:  "logfile,l",
+			Value: "rich.log",
+			Usage: "日志输出文件",
+		},
 		cli.BoolFlag{
 			Name:  "no-open,n",
 			Usage: "启动不打开浏览器",
 		},
 		cli.BoolFlag{
 			Name:  "develop-mode,d",
-			Usage: "开发模式: 静态资源读自www目录,支持跨域访问,访问日志输出",
+			Usage: "开发模式: 静态资源读自www目录,支持跨域访问,访问日志显示",
 		},
 	}
 	app.Action = runAction
@@ -75,9 +80,10 @@ func runAction(c *cli.Context) error {
 		address = ":" + address
 	}
 	web := rich.Web{
-		Temp: c.String("t"),
-		Db:   c.String("b"),
-		Dev:  c.Bool("d"),
+		Temp:    c.String("t"),
+		Db:      c.String("b"),
+		Dev:     c.Bool("d"),
+		LogFile: c.String("l"),
 	}
 	if url, err := rich.GetURL(address, !strings.EqualFold(c.String("m"), "http")); err == nil {
 		web.URL = url
@@ -110,6 +116,5 @@ func runAction(c *cli.Context) error {
 	}
 	fmt.Println(<-quitChan)
 	web.Close()
-	log.Println("退出")
 	return nil
 }

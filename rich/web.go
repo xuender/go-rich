@@ -25,13 +25,14 @@ import (
 
 // Web 网络服务
 type Web struct {
-	Temp  string                      // 临时文件目录
-	Db    string                      // 数据库目录
-	Dev   bool                        // 开发模式
-	URL   string                      // 网址
-	db    *leveldb.DB                 // 数据库
-	days  Days                        // 文件日期列表
-	cache map[interface{}]interface{} // 缓存
+	Temp    string                      // 临时文件目录
+	Db      string                      // 数据库目录
+	Dev     bool                        // 开发模式
+	URL     string                      // 网址
+	LogFile string                      // 日志文件
+	db      *leveldb.DB                 // 数据库
+	days    Days                        // 文件日期列表
+	cache   map[interface{}]interface{} // 缓存
 }
 
 // DaysKey 文件日期列表主键
@@ -78,18 +79,26 @@ func (w *Web) Init() error {
 
 func (w *Web) initEcho() *echo.Echo {
 	e := echo.New()
+	e.HideBanner = true
 	e.HTTPErrorHandler = w.httpErrorHandler
 	// 开发模式
 	if w.Dev {
+		middleware.DefaultLoggerConfig.Format = `${time_rfc3339_nano} [${remote_ip}] ${host}(${method})${uri}(${status}) ${error} ${latency} ` +
+			`[${latency_human}] IN:${bytes_in} OUT:${bytes_out}` + "\n"
 		e.Use(middleware.Recover())
-		e.Use(middleware.Logger())
 		// 跨域访问
 		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 			AllowOrigins:     []string{"*"},
 			AllowMethods:     []string{echo.GET, echo.PUT, echo.POST, echo.DELETE, echo.PATCH},
 			AllowCredentials: true,
 		}))
+	} else {
+		e.HidePort = true
+		if f, err := os.OpenFile(w.LogFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666); err == nil {
+			middleware.DefaultLoggerConfig.Output = f
+		}
 	}
+	e.Use(middleware.Logger())
 	// 二维码访问
 	e.GET("/qr", func(c echo.Context) error {
 		code, err := qr.Encode(w.URL, qr.Q)
@@ -116,6 +125,7 @@ func (w *Web) initEcho() *echo.Echo {
 	} else {
 		e.Use(static.ServeRoot("/", getAssets("www")))
 	}
+	log.Println("Go Rich 启动...")
 	return e
 }
 
@@ -187,6 +197,7 @@ func (w *Web) httpErrorHandler(err error, c echo.Context) {
 // Close 关闭服务
 func (w *Web) Close() {
 	w.db.Close()
+	log.Println("Go Rich 关闭.")
 }
 
 // 静态资源

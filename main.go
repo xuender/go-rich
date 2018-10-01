@@ -85,7 +85,7 @@ func runAction(c *cli.Context) error {
 		Dev:     c.Bool("d"),
 		LogFile: c.String("l"),
 	}
-	if url, err := rich.GetURL(address, !strings.EqualFold(c.String("m"), "http")); err == nil {
+	if url, err := rich.GetURL(address, !strings.EqualFold(c.String("p"), "http")); err == nil {
 		web.URL = url
 	} else {
 		return err

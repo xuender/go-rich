@@ -37,8 +37,9 @@ export class TagsComponent implements OnInit {
   has(tag: string) {
     return includes(this.tags, tag)
   }
+
   async edit() {
     await this.settingService.tags()
-    this.tags$ = this.tagService.tagsByKey(this.key)
+    this.tags$ = this.tagService.tagsByKey(this.key, false)
   }
 }

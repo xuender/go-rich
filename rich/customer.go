@@ -189,9 +189,29 @@ func (w *Web) customersFile(c echo.Context) error {
 			w.Put(c.ID[:], c)
 		}
 		os.Remove(file)
+		w.customersMerge()
 		return c.String(http.StatusOK, "ok")
 	}
 	return c.String(http.StatusInternalServerError, err.Error())
+}
+
+// customersMerge 客户信息合并
+func (w *Web) customersMerge() {
+	m := map[string]Customer{}
+	for _, c := range w.customers() {
+		k := c.Pinyin + "-" + c.Phone
+		if v, ok := m[k]; ok {
+			// 重复
+			for _, t := range c.Tags {
+				v.Tags.Add(t)
+			}
+			w.Put(v.ID[:], v)
+			w.Delete(c.ID[:])
+		} else {
+			m[k] = c
+		}
+	}
+	delete(w.cache, CustomerIDPrefix)
 }
 
 // Excel 文件读取

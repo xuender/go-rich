@@ -25,7 +25,6 @@ export abstract class ObjsPlusPage<T extends Obj> extends ObjsPage<T> implements
   abstract get tagKey(): string
 
   async reset() {
-    console.log(this.service)
     this.paging = await this.service.paging$.toPromise()
   }
 
@@ -44,7 +43,6 @@ export abstract class ObjsPlusPage<T extends Obj> extends ObjsPage<T> implements
 
   async load(event) {
     const p = await this.service.nextPaging$.toPromise()
-    console.log('p', p)
     this.paging.data.push(...p.data)
     event.target.complete()
     event.target.disabled = p.total == p.data.length

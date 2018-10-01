@@ -182,6 +182,10 @@ func (w *Web) httpErrorHandler(err error, c echo.Context) {
 			}
 		} else {
 			if es, ok := err.(*echo.HTTPError); ok {
+				if es.Code == 404 {
+					c.Redirect(http.StatusMovedPermanently, "/")
+					return
+				}
 				if err := c.JSON(es.Code, newHTTPError(es)); err != nil {
 					c.Logger().Error(err)
 				}

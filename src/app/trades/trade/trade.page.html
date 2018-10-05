@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">
+        取消
+      </ion-button>
+    </ion-buttons>
+    <ion-title>订单</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="tradeForm.valid && save()" [disabled]="tradeForm.invalid">
+        保存
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form #tradeForm="ngForm">
+    <ion-list>
+      <ion-item-group>
+        <ion-item>
+          <ion-label>客户</ion-label>
+          <ion-input type="text" value="{{ obj.cid | toName }}" readonly></ion-input>
+          <ion-button (click)="selectCustomer()">选择</ion-button>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-divider>
+        <ion-label>商品</ion-label>
+        <ion-button color="secondary" (click)="add()">增加</ion-button>
+      </ion-item-divider>
+      <ng-container *ngFor="let e of obj.orders; let i = index">
+        <ion-item>
+          <ion-input type="text" value="{{ e.id | toName }}" readonly></ion-input>
+          <ion-input #num="ngModel" name="num-{{i}}" type="number" placeholder="商品数量" [(ngModel)]="e.num" max="1000"
+            min="1" required></ion-input>
+          <ion-badge color="warning">{{ e.price / 100 | currency:'￥' }}</ion-badge>
+          <ion-button color="secondary" (click)="puls(e)">增加</ion-button>
+          <ion-button color="danger" (click)="remove(e)">减少</ion-button>
+        </ion-item>
+        <ion-item color="danger" *ngIf="num.invalid && num.touched">
+          <p [hidden]="!num.errors?.required">请输数量</p>
+          <p [hidden]="!num.errors?.max">数量最多1000</p>
+        </ion-item>
+      </ng-container>
+      <ion-item-group>
+        <ion-item>
+          <ion-label>应收</ion-label>
+          <ion-badge color="warning">{{ price / 100 | currency:'￥' }}</ion-badge>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item>
+          <ion-label>实收</ion-label>
+          <ion-input #total="ngModel" type="number" [(ngModel)]="tradeTotal" name="total" max="99999999"></ion-input>
+        </ion-item>
+        <ion-item color="danger" *ngIf="total.invalid && num.touched">
+          <p [hidden]="!total.errors?.max">超过最大值</p>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item [class.error]="note.invalid && note.touched">
+          <ion-textarea #note="ngModel" [(ngModel)]="obj.note" name="note" rows="5" placeholder="交易备注最长100" maxlength="100"></ion-textarea>
+        </ion-item>
+        <ion-item color="danger" *ngIf="note.invalid && note.touched">
+          <p [hidden]="!note.errors?.maxlength">交易备注最长100</p>
+        </ion-item>
+      </ion-item-group>
+    </ion-list>
+  </form>
+</ion-content>

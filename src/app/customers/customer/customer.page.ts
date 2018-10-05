@@ -4,6 +4,8 @@ import { ModalController, NavParams } from '@ionic/angular';
 import { Customer } from '../customer';
 import { ObjPage } from '../../api/obj.page';
 import { CustomerService } from '../customer.service';
+import { TradeService } from '../../trades/trade.service';
+import { TradePage } from '../../trades/trade/trade.page';
 
 @Component({
   selector: 'app-customer',
@@ -22,4 +24,12 @@ export class CustomerPage extends ObjPage<Customer>{
   }
 
   get service() { return this.customerService }
+
+  async trade() {
+    const modal = await this.modalCtrl.create({
+      component: TradePage,
+      componentProps: { obj: { cid: this.obj.id } }
+    })
+    return await modal.present()
+  }
 }

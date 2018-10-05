@@ -9,6 +9,7 @@ import { ItemsPageModule } from '../items/items.module';
 import { TabsPageRoutingModule } from './tabs.router.module';
 import { SettingPageModule } from '../setting/setting.module';
 import { ContactPageModule } from '../customers/customers.module';
+import { TradesPageModule } from '../trades/trades.module';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { ContactPageModule } from '../customers/customers.module';
     ContactPageModule,
     HomePageModule,
     ItemsPageModule,
+    TradesPageModule,
   ],
   declarations: [TabsPage]
 })

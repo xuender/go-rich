@@ -1,7 +1,6 @@
 package rich
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -27,7 +26,6 @@ var extKeys = []string{
 
 // 获取全部扩展定义
 func (w *Web) extsGet(c echo.Context) error {
-	log.Println("extsGet")
 	ret := make(map[string][]Ext)
 	for _, key := range extKeys {
 		ret[key] = w.getExtByID(key)
@@ -45,13 +43,11 @@ func (w *Web) getExtByID(id string) []Ext {
 // 获取扩展定义
 func (w *Web) extGet(c echo.Context) error {
 	id := c.Param("id")
-	log.Printf("extGet %s\n", id)
 	return c.JSON(http.StatusOK, w.getExtByID(id))
 }
 
 // 扩展定义修改
 func (w *Web) extPut(c echo.Context) error {
-	log.Println("ext put ....")
 	id := c.Param("id")
 	ext := w.getExtByID(id)
 	idBs := []byte(id)

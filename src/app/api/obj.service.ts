@@ -18,12 +18,20 @@ export abstract class ObjService<T extends Obj> {
 
   abstract path(): string
 
+  get url() {
+    return `${URL}${this.path()}`
+  }
+
   get all$() {
-    return this.http.get<T[]>(`${URL}${this.path()}`, { params: this.params })
+    return this.http.get<T[]>(`${this.url}`, { params: this.params })
+  }
+
+  obj$(id: string) {
+    return this.http.get<T>(`${this.url}/${id}`)
   }
 
   get paging$() {
-    return this.http.get<Paging<T>>(`${URL}${this.path()}`, { params: this.params })
+    return this.http.get<Paging<T>>(`${this.url}`, { params: this.params })
   }
 
   get nextPaging$() {
@@ -41,18 +49,18 @@ export abstract class ObjService<T extends Obj> {
 
   async save(o: T) {
     if (o.id) {
-      const t = await this.http.put<T>(`${URL}${this.path()}/${o.id}`, o).toPromise()
+      const t = await this.http.put<T>(`${this.url}/${o.id}`, o).toPromise()
       Object.assign(find(this.datas, (d) => d.id == t.id), t)
       return Object.assign(o, t)
     } else {
-      const t = await this.http.post<T>(`${URL}${this.path()}`, o).toPromise()
+      const t = await this.http.post<T>(`${this.url}`, o).toPromise()
       this.datas.push(t)
       return t
     }
   }
 
   async delete(o: T) {
-    await this.http.delete(`${URL}${this.path()}/${o.id}`).toPromise()
+    await this.http.delete(`${this.url}/${o.id}`).toPromise()
     pull(this.datas, o)
     this.ngZone.run(() => false)
   }

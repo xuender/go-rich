@@ -42,12 +42,11 @@ func (i Item) Includes(tags []string) bool {
 
 // 商品路由
 func (w *Web) itemRoute(c *echo.Group) {
-	c.GET("", w.itemsGet)          // 商品列表
-	c.POST("", w.itemPost)         // 商品创建
-	c.PUT("/:id", w.itemPut)       // 商品修改
-	c.DELETE("/:id", w.itemDelete) // 商品删除
-	// c.DELETE("", w.customersDelete)     // 清除客户
-	// c.POST("/file", w.customersFile)    // 上传客户文件
+	c.GET("", w.itemsGet)                                                     // 商品列表
+	c.POST("", w.itemPost)                                                    // 商品创建
+	c.PUT("/:id", w.itemPut)                                                  // 商品修改
+	c.DELETE("/:id", w.itemDelete)                                            // 商品删除
+	c.GET("/:id", func(c echo.Context) error { return w.ObjGet(c, &Item{}) }) // 商品列表
 }
 
 // 商品列表

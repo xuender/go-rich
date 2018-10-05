@@ -1,4 +1,4 @@
-import { NgModule  } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -19,6 +19,9 @@ import { SelectPageModule } from './tags/select/select.module';
 import { XlsxesPageModule } from './setting/xlsxes/xlsxes.module';
 import { ProfilePageModule } from './setting/profile/profile.module';
 import { UsersPageModule } from './users/users.module';
+import { SelectPageModule as CustomersSelectPageModule } from './customers/select/select.module';
+import { SelectPageModule as ItemsSelectPageModule } from './items/select/select.module';
+import { PipeModule } from './pipe/pipe.module';
 
 @NgModule({
   declarations: [
@@ -38,6 +41,8 @@ import { UsersPageModule } from './users/users.module';
     FormsModule,
     TagsPageModule,
     SelectPageModule,
+    CustomersSelectPageModule,
+    ItemsSelectPageModule,
   ],
   providers: [
     StatusBar,

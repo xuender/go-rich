@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">
+        取消
+      </ion-button>
+    </ion-buttons>
+    <ion-searchbar placeholder="姓名,电话,拼音或声母" (ionChange)="search($event)"></ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="ok()">
+        确定
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-fab vertical="center" horizontal="end" edge slot="fixed">
+    <ion-fab-button (click)="select()" color="light">
+      <ion-icon name="pricetags"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-list #il>
+    <ion-item-divider>
+      <ion-label>
+        <ion-badge color="primary" *ngFor="let t of tags" (click)="removeTag(t)">{{ t }}</ion-badge>
+      </ion-label>
+      <ion-badge color="primary" *ngIf="customerService.has(paging.data)">{{ paging.total }}</ion-badge>
+    </ion-item-divider>
+    <ion-item *ngFor="let c of paging.data" (click)="cid=c.id">
+      <ion-radio slot="start" [checked]="cid==c.id"></ion-radio>
+      <ion-label>{{ c.name }}</ion-label>
+      <ion-badge *ngFor="let t of c.tags" [color]="hasTag(t)? 'primary' : 'medium'">{{ t }}</ion-badge>
+      <ion-badge *ngIf="c.trades">{{ c.trades.length }}</ion-badge>
+    </ion-item>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="load($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="加载更多数据...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

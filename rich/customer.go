@@ -52,12 +52,13 @@ func (c Customer) Match(txt string) bool {
 
 // 客户路由
 func (w *Web) customerRoute(c *echo.Group) {
-	c.GET("", w.customersGet)          // 客户列表
-	c.POST("", w.customerPost)         // 客户创建
-	c.PUT("/:id", w.customerPut)       // 客户修改
-	c.DELETE("/:id", w.customerDelete) // 删除客户
-	c.DELETE("", w.customersDelete)    // 清除客户
-	c.POST("/file", w.customersFile)   // 上传客户文件
+	c.GET("", w.customersGet)                                                     // 客户列表
+	c.POST("", w.customerPost)                                                    // 客户创建
+	c.PUT("/:id", w.customerPut)                                                  // 客户修改
+	c.DELETE("/:id", w.customerDelete)                                            // 删除客户
+	c.DELETE("", w.customersDelete)                                               // 清除客户
+	c.POST("/file", w.customersFile)                                              // 上传客户文件
+	c.GET("/:id", func(c echo.Context) error { return w.ObjGet(c, &Customer{}) }) // 客户查看
 }
 
 // 客户列表

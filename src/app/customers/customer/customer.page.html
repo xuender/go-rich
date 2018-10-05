@@ -15,6 +15,11 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-fab vertical="center" horizontal="end" edge slot="fixed">
+    <ion-fab-button (click)="trade()" color="warning">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
   <form #customerForm="ngForm">
     <ion-list>
       <ion-item-group>

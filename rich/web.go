@@ -71,7 +71,9 @@ func (w *Web) Init() error {
 	// 用户初始化
 	w.UserInit()
 	// 每日帐目初始化
-	w.Get(DaysKey, &w.days)
+	if err := w.Get(DaysKey, &w.days); err != nil {
+		w.days = []string{}
+	}
 	// 缓存初始化
 	w.cache = map[interface{}]interface{}{}
 	return nil
@@ -119,6 +121,7 @@ func (w *Web) initEcho() *echo.Echo {
 	w.xlsxRoute(api.Group("/xlsxes"))        // Excel定义
 	w.userRoute(api.Group("/users"))         // 用户
 	w.profileRoute(api.Group("/profile"))    // 账户
+	w.tradeRoute(api.Group("/trades"))       // 订单
 	// 静态资源
 	if w.Dev {
 		e.Static("/", "www")

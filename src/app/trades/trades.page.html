@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="create()" *ngIf="now==day">
+        新建
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ day }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-fab vertical="center" horizontal="start" edge slot="fixed" *ngIf="previous">
+    <ion-fab-button (click)="goto(previous)" color="warning">
+      <ion-icon name="arrow-dropleft"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-fab vertical="center" horizontal="end" edge slot="fixed" *ngIf="next">
+    <ion-fab-button (click)="goto(next)" color="warning">
+      <ion-icon name="arrow-dropright"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-list *ngIf="trades$ | async as trades; else loading" #il>
+    <ion-item-divider>
+      <ion-label>
+        <ion-badge color="warning">{{ sum(trades) / 100 | currency:'￥' }}</ion-badge>
+      </ion-label>
+      <ion-badge color="primary" *ngIf="tradeService.has(trades)">{{ trades.length }}</ion-badge>
+    </ion-item-divider>
+    <ion-item-sliding *ngFor="let t of trades">
+      <ion-item button (click)="update(t)">
+        <ion-label>
+          {{ t.cid | toName }}
+        </ion-label>
+        <ion-badge color="light">
+          {{ t.ca | date:'HH:mm:ss' }}
+        </ion-badge>
+        <ion-badge color="warning">{{ t.total / 100 | currency:'￥' }}</ion-badge>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option (click)="del(t, il)" color="danger">删除</ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
+
+<ng-template #loading>
+  <ion-spinner></ion-spinner>
+  加载中...
+</ng-template>

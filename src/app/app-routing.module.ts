@@ -8,6 +8,10 @@ const routes: Routes = [
   { path: 'tags', loadChildren: './tags/tags.module#TagsPageModule' },
   { path: 'tag', loadChildren: './tags/tag/tag.module#TagPageModule' },
   { path: 'select', loadChildren: './tags/select/select.module#SelectPageModule' },
+  { path: 'trades', loadChildren: './trades/trades.module#TradesPageModule' },
+  { path: 'trade', loadChildren: './trades/trade/trade.module#TradePageModule' },
+  { path: 'select', loadChildren: './customers/select/select.module#SelectPageModule' },
+  { path: 'select', loadChildren: './items/select/select.module#SelectPageModule' },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

@@ -25,7 +25,8 @@
       <ion-item-group>
         <ion-item [class.error]="name.invalid && name.touched">
           <ion-label fixed>客户姓名</ion-label>
-          <ion-input #name="ngModel" [(ngModel)]="obj.name" name="name" type="text" placeholder="客户姓名最长30" maxlength="30" required></ion-input>
+          <ion-input #name="ngModel" [(ngModel)]="obj.name" name="name" type="text" placeholder="客户姓名最长30" maxlength="30"
+            required></ion-input>
         </ion-item>
         <ion-item color="danger" *ngIf="name.invalid && name.touched">
           <p [hidden]="!name.errors?.required">请输入客户姓名</p>
@@ -51,6 +52,25 @@
           <p [hidden]="!note.errors?.maxlength">备注最长100</p>
         </ion-item>
       </ion-item-group>
+      <ion-item-divider *ngIf="obj.trades">
+        <ion-label>
+          订单
+        </ion-label>
+      </ion-item-divider>
+      <ng-container *ngFor="let t$ of trades">
+        <ion-item *ngIf="t$ | async as t; else loading" button (click)="open(t)">
+          <ion-label>
+            {{ t.ca | date:'yyyy-MM-dd HH:mm:ss' }}
+          </ion-label>
+          <ion-badge>{{ t.orders?.length }}</ion-badge>
+          <ion-badge color="warning">{{ t.total / 100 | currency:'￥' }}</ion-badge>
+        </ion-item>
+      </ng-container>
     </ion-list>
   </form>
 </ion-content>
+
+<ng-template #loading>
+  <ion-spinner></ion-spinner>
+  加载中...
+</ng-template>

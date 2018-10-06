@@ -35,6 +35,7 @@
         <ion-badge color="light">
           {{ t.ca | date:'HH:mm:ss' }}
         </ion-badge>
+        <ion-badge >{{ t.orders?.length }}</ion-badge>
         <ion-badge color="warning">{{ t.total / 100 | currency:'￥' }}</ion-badge>
       </ion-item>
       <ion-item-options side="end">

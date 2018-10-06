@@ -35,24 +35,27 @@ func (t *Trade) BeforePut(id utils.ID) {
 
 // 订单路由
 func (w *Web) tradeRoute(c *echo.Group) {
-	c.GET("", func(c echo.Context) error { return c.JSON(http.StatusOK, w.days) }) // 订单列表
-	c.GET("/:id", w.tradeGet)                                                      // 订单列表
-	c.POST("", w.tradePost)                                                        // 订单创建
-	c.PUT("/:id", w.tradePut)                                                      // 订单修改
-	c.DELETE("/:id", w.tradeDelete)                                                // 订单删除
+	c.GET("", w.tradesGet)          // 订单列表
+	c.GET("/:id", w.tradeGet)       // 订单列表
+	c.POST("", w.tradePost)         // 订单创建
+	c.PUT("/:id", w.tradePut)       // 订单修改
+	c.DELETE("/:id", w.tradeDelete) // 订单删除
 }
 
 // 订单列表
-func (w *Web) tradeGet(c echo.Context) error {
-	id := c.Param("id")
-	log.Println(id)
-	log.Println(w.days.Includes(id))
-	if !w.days.Includes(id) {
+func (w *Web) tradesGet(c echo.Context) error {
+	day := c.QueryParam("day")
+	if day == "" {
+		return c.JSON(http.StatusOK, w.days)
+	}
+	log.Println(day)
+	log.Println(w.days.Includes(day))
+	if !w.days.Includes(day) {
 		return c.JSON(http.StatusOK, []int{})
 	}
 	// TODO 日期校验判断日期是否在
 	ids := []utils.ID{}
-	w.Get([]byte(id), &ids)
+	w.Get([]byte(day), &ids)
 	trades := []Trade{}
 	for _, i := range ids {
 		t := Trade{}
@@ -60,6 +63,11 @@ func (w *Web) tradeGet(c echo.Context) error {
 		trades = append(trades, t)
 	}
 	return c.JSON(http.StatusOK, trades)
+}
+
+// 订单获取
+func (w *Web) tradeGet(c echo.Context) error {
+	return w.ObjGet(c, &Trade{})
 }
 
 // 订单创建
@@ -74,7 +82,12 @@ func (w *Web) tradePost(c echo.Context) error {
 		w.Get(idsKey, &ids)
 		ids = append(ids, t.ID)
 		w.Put(idsKey, ids)
-		log.Println(w.days)
+		if !t.CID.IsNew() {
+			c := Customer{}
+			w.Get(t.CID[:], &c)
+			c.Trades = append(c.Trades, t.ID)
+			w.Put(c.ID[:], c)
+		}
 		return nil
 	})
 }

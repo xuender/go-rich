@@ -34,7 +34,8 @@ export abstract class ObjsPage<T extends Obj>{
       component: this.page,
       componentProps: { obj: Object.assign({}, t) },
     });
-    return await modal.present()
+    await modal.present()
+    await modal.onDidDismiss()
   }
 
   async del(t: T, il: List) {

@@ -28,6 +28,10 @@ export class TradeService extends ObjService<Trade>{
   }
 
   getTrades(day: string) {
-    return this.http.get<Trade[]>(`${this.url}/${day}`)
+    return this.http.get<Trade[]>(`${this.url}?day=${day}`)
+  }
+
+  getTrade$(id: string){
+    return this.http.get<Trade>(`${this.url}/${id}`)
   }
 }

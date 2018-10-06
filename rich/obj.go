@@ -205,8 +205,7 @@ func (w *Web) ObjDelete(c echo.Context, key byte) error {
 // Match 查找匹配
 func (o Obj) Match(txt string) bool {
 	if strings.Contains(o.Name, txt) ||
-		strings.Contains(o.Pinyin, strings.ToLower(txt)) ||
-		strings.Contains(o.Pinyin, py(txt)) {
+		strings.Contains(o.Pinyin, strings.ToLower(txt)) {
 		return true
 	}
 	s := []byte{}

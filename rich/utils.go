@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/mozillazg/go-pinyin"
 	"github.com/mozillazg/go-slugify"
 )
 
@@ -47,11 +48,44 @@ func mkdir(path string) {
 	}
 }
 
+var args = pinyin.NewArgs()
+
 func init() {
 	slugify.Separator = " "
+	args.Heteronym = true
 }
+
+// py 拼音转换
 func py(str string) string {
-	return slugify.Slugify(str)
+	m := map[string]bool{}
+	m[slugify.Slugify(str)] = true
+	for _, str := range PC(pinyin.Pinyin(str, args)) {
+		m[str] = true
+	}
+	ret := ""
+	for k, _ := range m {
+		ret = ret + k + " "
+	}
+	return strings.TrimRight(ret, " ")
+}
+
+// PC 排列组合
+func PC(array [][]string) []string {
+	return pc("", array)
+}
+func pc(s string, array [][]string) []string {
+	if len(array) == 0 {
+		return []string{s}
+	}
+	last := array[1:]
+	ret := []string{}
+	for _, i := range array[0] {
+		larray := pc(i, last)
+		for _, str := range larray {
+			ret = append(ret, strings.Trim(s+" "+str, " "))
+		}
+	}
+	return ret
 }
 
 var salt = []byte("ender weihai 2018-09-12")

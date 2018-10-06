@@ -21,8 +21,6 @@ export class TradeService extends ObjService<Trade>{
 
   async days(now: string) {
     const days = await this.http.get<string[]>(this.url).toPromise()
-    days.push('2018-10-01')
-    days.push('2018-10-02')
     if (!includes(days, now)) {
       days.push(now)
     }

@@ -35,15 +35,7 @@ export class CustomerPage extends ObjPage<Customer>{
 
   get service() { return this.customerService }
 
-  async trade() {
-    const modal = await this.modalCtrl.create({
-      component: TradePage,
-      componentProps: { obj: { cid: this.obj.id } }
-    })
-    return await modal.present()
-  }
-
-  async open(trade: Trade) {
+  async trade(trade = { cid: this.obj.id }) {
     const modal = await this.modalCtrl.create({
       component: TradePage,
       componentProps: { obj: trade }

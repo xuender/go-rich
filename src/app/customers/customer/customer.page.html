@@ -58,7 +58,7 @@
         </ion-label>
       </ion-item-divider>
       <ng-container *ngFor="let t$ of trades">
-        <ion-item *ngIf="t$ | async as t; else loading" button (click)="open(t)">
+        <ion-item *ngIf="t$ | async as t; else loading" button (click)="trade(t)">
           <ion-label>
             {{ t.ca | date:'yyyy-MM-dd HH:mm:ss' }}
           </ion-label>

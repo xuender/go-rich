@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1-beta.1 (08/10/2018)
+- [**bug**] 多音字问题 [#22](https://github.com/xuender/go-rich/issues/22)
+- [**bug**] 收藏地址错误 [#20](https://github.com/xuender/go-rich/issues/20)
+
+---
+
 ## v0.0.5 (01/10/2018)
 - [**bug**] 新增客户标后会显示单字标签 [#19](https://github.com/xuender/go-rich/issues/19)
 - [**bug**] http qr错误 [#18](https://github.com/xuender/go-rich/issues/18)

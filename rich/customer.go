@@ -183,8 +183,8 @@ func (w *Web) customerPut(c echo.Context) error {
 // 删除用户
 func (w *Web) customerDelete(c echo.Context) error {
 	return w.ObjDelete(c, CustomerIDPrefix, func(id utils.ID) error {
-    delete(w.cache, CustomerIDPrefix)
-    return nil
+		delete(w.cache, CustomerIDPrefix)
+		return nil
 	})
 }
 
@@ -252,12 +252,14 @@ func readXlsx(file string, m map[int]string) (cs []Customer, err error) {
 	if err != nil {
 		return
 	}
-	rows := xlsx.GetRows(xlsx.GetSheetName(1))
-	cs = []Customer{}
-	for _, row := range rows {
-		c, e := newCustomer(row, m)
-		if e == nil {
-			cs = append(cs, c)
+	for _, name := range xlsx.GetSheetMap() {
+		rows := xlsx.GetRows(name)
+		cs = []Customer{}
+		for _, row := range rows {
+			c, e := newCustomer(row, m)
+			if e == nil {
+				cs = append(cs, c)
+			}
 		}
 	}
 	return

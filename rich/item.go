@@ -95,5 +95,5 @@ func (w *Web) itemPut(c echo.Context) error {
 // 商品删除
 func (w *Web) itemDelete(c echo.Context) error {
 	delete(w.cache, ItemIDPrefix)
-	return w.ObjDelete(c, ItemIDPrefix)
+	return w.ObjDelete(c, ItemIDPrefix, func(id utils.ID) error { return nil })
 }

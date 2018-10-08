@@ -2,6 +2,7 @@ package rich
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -59,6 +60,34 @@ func (w *Web) customerRoute(c *echo.Group) {
 	c.DELETE("", w.customersDelete)                                               // 清除客户
 	c.POST("/file", w.customersFile)                                              // 上传客户文件
 	c.GET("/:id", func(c echo.Context) error { return w.ObjGet(c, &Customer{}) }) // 客户查看
+}
+
+// 给客户增加订单
+func (w *Web) customerAddTrade(cid, tid utils.ID) error {
+	delete(w.cache, CustomerIDPrefix)
+	c := Customer{}
+	w.Get(cid[:], &c)
+	for _, id := range c.Trades {
+		if id.Equal(tid) {
+			return errors.New(fmt.Sprint("重复增加订单:", tid))
+		}
+	}
+	c.Trades = append(c.Trades, tid)
+	return w.Put(cid[:], c)
+}
+
+// 删除客户的订单
+func (w *Web) customerDelTrade(cid, tid utils.ID) error {
+	delete(w.cache, CustomerIDPrefix)
+	c := Customer{}
+	w.Get(cid[:], &c)
+	for i, id := range c.Trades {
+		if id.Equal(tid) {
+			c.Trades = append(c.Trades[:i], c.Trades[i+1:]...)
+			return w.Put(cid[:], c)
+		}
+	}
+	return errors.New(fmt.Sprint("不存在:", tid))
 }
 
 // 客户列表
@@ -153,8 +182,10 @@ func (w *Web) customerPut(c echo.Context) error {
 
 // 删除用户
 func (w *Web) customerDelete(c echo.Context) error {
-	delete(w.cache, CustomerIDPrefix)
-	return w.ObjDelete(c, CustomerIDPrefix)
+	return w.ObjDelete(c, CustomerIDPrefix, func(id utils.ID) error {
+    delete(w.cache, CustomerIDPrefix)
+    return nil
+	})
 }
 
 // 清除用户

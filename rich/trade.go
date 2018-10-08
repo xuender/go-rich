@@ -74,19 +74,9 @@ func (w *Web) tradeGet(c echo.Context) error {
 func (w *Web) tradePost(c echo.Context) error {
 	t := Trade{}
 	return w.ObjPost(c, &t, TradeIDPrefix, func() error { return w.Bind(c, &t) }, func() error {
-		day := t.Ca.Format("2006-01-02")
-		w.days.Add(day)
-		w.Put(DaysKey, w.days)
-		idsKey := []byte(day)
-		ids := []utils.ID{}
-		w.Get(idsKey, &ids)
-		ids = append(ids, t.ID)
-		w.Put(idsKey, ids)
+		w.dayAdd(t)
 		if !t.CID.IsNew() {
-			c := Customer{}
-			w.Get(t.CID[:], &c)
-			c.Trades = append(c.Trades, t.ID)
-			w.Put(c.ID[:], c)
+			w.customerAddTrade(t.CID, t.ID)
 		}
 		return nil
 	})
@@ -95,10 +85,35 @@ func (w *Web) tradePost(c echo.Context) error {
 // 订单修改
 func (w *Web) tradePut(c echo.Context) error {
 	t := Trade{}
-	return w.ObjPut(c, &t, TradeIDPrefix, func() error { return w.Bind(c, &t) }, func() error { return nil })
+	return w.ObjPut(c, &t, TradeIDPrefix, func() error { return w.Bind(c, &t) }, func() error {
+		old := Trade{}
+		w.Get(t.ID[:], &old)
+		if !t.CID.IsNew() {
+			if !old.CID.IsNew() && !old.CID.Equal(t.CID) {
+				// 删除旧订单
+				w.customerDelTrade(old.CID, t.ID)
+				// 增加新订单
+				w.customerAddTrade(t.CID, t.ID)
+			}
+			if old.CID.IsNew() {
+				// 增加新订单
+				w.customerAddTrade(t.CID, t.ID)
+			}
+		}
+
+		return nil
+	})
 }
 
 // 订单删除
 func (w *Web) tradeDelete(c echo.Context) error {
-	return w.ObjDelete(c, TradeIDPrefix)
+	return w.ObjDelete(c, TradeIDPrefix, func(id utils.ID) error {
+		t := Trade{}
+		w.Get(id[:], &t)
+		if !t.CID.IsNew() {
+			w.customerDelTrade(t.CID, t.ID)
+		}
+		w.dayDel(t)
+		return nil
+	})
 }

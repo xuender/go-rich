@@ -113,7 +113,7 @@ func (w *Web) userPut(c echo.Context) error {
 
 // 用户删除
 func (w *Web) userDelete(c echo.Context) error {
-	return w.ObjDelete(c, UserIDPrefix)
+	return w.ObjDelete(c, UserIDPrefix, func(id utils.ID) error { return nil })
 }
 
 // UserInit 用户初始化

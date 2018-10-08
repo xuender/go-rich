@@ -30,8 +30,8 @@
     <ion-item *ngFor="let c of paging.data" (click)="cid=c.id">
       <ion-radio slot="start" [checked]="cid==c.id"></ion-radio>
       <ion-label>{{ c.name }}</ion-label>
+      <ion-badge color="warning">{{ c.trades?.length }}</ion-badge>
       <ion-badge *ngFor="let t of c.tags" [color]="hasTag(t)? 'primary' : 'medium'">{{ t }}</ion-badge>
-      <ion-badge *ngIf="c.trades">{{ c.trades.length }}</ion-badge>
     </ion-item>
   </ion-list>
   <ion-infinite-scroll (ionInfinite)="load($event)">

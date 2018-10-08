@@ -36,10 +36,19 @@ export class CustomerPage extends ObjPage<Customer>{
   get service() { return this.customerService }
 
   async trade(trade = { cid: this.obj.id }) {
+    const isOld = 'id' in trade
     const modal = await this.modalCtrl.create({
       component: TradePage,
       componentProps: { obj: trade }
     })
-    return await modal.present()
+    await modal.present()
+    const r = await modal.onDidDismiss()
+    if (r.data) {
+      if (isOld) {
+        Object.assign(trade, r.data)
+      } else {
+        this.trades.push(this.tradeService.getTrade$(r.data.id))
+      }
+    }
   }
 }

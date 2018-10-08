@@ -17,11 +17,13 @@ type Xlsx struct {
 
 // Excel定义路由
 func (w *Web) xlsxRoute(c *echo.Group) {
-	c.GET("", func(c echo.Context) error { return c.JSON(http.StatusOK, w.xlsxes()) })   // 列表
-	c.GET("/:id", func(c echo.Context) error { return w.ObjGet(c, &Xlsx{}) })            // 获取
-	c.POST("", w.xlsxPost)                                                               // 创建
-	c.PUT("/:id", w.xlsxPut)                                                             // 修改
-	c.DELETE("/:id", func(c echo.Context) error { return w.ObjDelete(c, XlsxIDPrefix) }) // 删除
+	c.GET("", func(c echo.Context) error { return c.JSON(http.StatusOK, w.xlsxes()) }) // 列表
+	c.GET("/:id", func(c echo.Context) error { return w.ObjGet(c, &Xlsx{}) })          // 获取
+	c.POST("", w.xlsxPost)                                                             // 创建
+	c.PUT("/:id", w.xlsxPut)                                                           // 修改
+	c.DELETE("/:id", func(c echo.Context) error {
+		return w.ObjDelete(c, XlsxIDPrefix, func(id utils.ID) error { return nil })
+	}) // 删除
 }
 
 func (w *Web) xlsxes() []Xlsx {

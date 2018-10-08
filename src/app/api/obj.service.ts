@@ -50,7 +50,10 @@ export abstract class ObjService<T extends Obj> {
   async save(o: T) {
     if (o.id) {
       const t = await this.http.put<T>(`${this.url}/${o.id}`, o).toPromise()
-      Object.assign(find(this.datas, (d) => d.id == t.id), t)
+      const old = find(this.datas, (d) => d.id == t.id)
+      if (old) {
+        Object.assign(old, t)
+      }
       return Object.assign(o, t)
     } else {
       const t = await this.http.post<T>(`${this.url}`, o).toPromise()
@@ -63,6 +66,13 @@ export abstract class ObjService<T extends Obj> {
     await this.http.delete(`${this.url}/${o.id}`).toPromise()
     pull(this.datas, o)
     this.ngZone.run(() => false)
+  }
+
+  reset(t: T) {
+    const o = find(this.datas, i => i.id == t.id)
+    if (o) {
+      Object.assign(o, t)
+    }
   }
 
   search(txt: string) {

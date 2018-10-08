@@ -189,14 +189,16 @@ func (w *Web) ObjGet(c echo.Context, o interface{}) error {
 }
 
 // ObjDelete 对象删除
-func (w *Web) ObjDelete(c echo.Context, key byte) error {
-	id := new(utils.ID)
-	err := id.Parse(c.Param("id"))
-	if err != nil {
+func (w *Web) ObjDelete(c echo.Context, key byte, check func(id utils.ID) error) error {
+	id := utils.ID{}
+	if err := id.Parse(c.Param("id")); err != nil {
 		return err
 	}
 	if id[0] != key {
 		return errors.New("前缀错误")
+	}
+	if err := check(id); err != nil {
+		return err
 	}
 	w.Delete(id[:])
 	return c.JSON(http.StatusOK, nil)

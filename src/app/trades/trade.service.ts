@@ -6,12 +6,14 @@ import { DatePipe } from '@angular/common';
 import { includes } from 'lodash'
 import { ModalController } from '@ionic/angular';
 import { TradePage } from './trade/trade.page';
+import { CustomerService } from '../customers/customer.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TradeService extends ObjService<Trade>{
   constructor(
+    private customerService: CustomerService,
     protected http: HttpClient,
     protected ngZone: NgZone,
   ) {
@@ -31,7 +33,28 @@ export class TradeService extends ObjService<Trade>{
     return this.http.get<Trade[]>(`${this.url}?day=${day}`)
   }
 
-  getTrade$(id: string){
+  getTrade$(id: string) {
     return this.http.get<Trade>(`${this.url}/${id}`)
+  }
+
+  async save(o: Trade) {
+    const t = await super.save(o)
+    if (t.cid) {
+      const c = await this.customerService.obj$(t.cid).toPromise()
+      this.customerService.reset(c)
+    }
+    if (o.cid && o.cid != t.cid) {
+      const c = await this.customerService.obj$(o.cid).toPromise()
+      this.customerService.reset(c)
+    }
+    return t
+  }
+
+  async delete(o: Trade) {
+    await super.delete(o)
+    if (o.cid) {
+      const c = await this.customerService.obj$(o.cid).toPromise()
+      this.customerService.reset(c)
+    }
   }
 }

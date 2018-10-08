@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { TradeService } from './trade.service';
+import { Observable } from 'rxjs';
+import { Component } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { indexOf, lastIndexOf } from 'lodash'
+import { ModalController, ActionSheetController } from '@ionic/angular';
+
 import { Trade } from './trade';
 import { ObjsPage } from '../api/objs.page';
-import { Observable } from 'rxjs';
-import { ModalController, ActionSheetController } from '@ionic/angular';
 import { TradePage } from './trade/trade.page';
+import { TradeService } from './trade.service';
 
 @Component({
   selector: 'app-trades',
@@ -25,7 +26,7 @@ export class TradesPage extends ObjsPage<Trade>{
     protected actionSheetCtrl: ActionSheetController,
   ) {
     super(modalCtrl, actionSheetCtrl)
-    this.now = datePipe.transform(new Date(), 'yyyy-MM-dd')
+    this.now = this.datePipe.transform(new Date(), 'yyyy-MM-dd')
     this.day = this.now
     this.trades$ = this.tradeService.getTrades(this.day)
     this.tradeService.days(this.day)

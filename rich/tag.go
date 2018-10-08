@@ -91,7 +91,7 @@ func (w *Web) tagRoute(c *echo.Group) {
 	})
 	// 标签删除
 	c.DELETE("/:id", func(c echo.Context) error {
-		return w.ObjDelete(c, TagIDPrefix)
+		return w.ObjDelete(c, TagIDPrefix, func(id utils.ID) error { return nil })
 	})
 }
 

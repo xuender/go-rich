@@ -56,7 +56,7 @@
           <ion-label>实收</ion-label>
           <ion-input #total="ngModel" type="number" [(ngModel)]="tradeTotal" name="total" max="99999999"></ion-input>
         </ion-item>
-        <ion-item color="danger" *ngIf="total.invalid && num.touched">
+        <ion-item color="danger" *ngIf="total.invalid && total.touched">
           <p [hidden]="!total.errors?.max">超过最大值</p>
         </ion-item>
       </ion-item-group>

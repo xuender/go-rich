@@ -63,7 +63,7 @@ func py(str string) string {
 		m[str] = true
 	}
 	ret := ""
-	for k, _ := range m {
+	for k := range m {
 		ret = ret + k + " "
 	}
 	return strings.TrimRight(ret, " ")

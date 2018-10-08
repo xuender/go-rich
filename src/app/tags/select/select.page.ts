@@ -1,7 +1,7 @@
+import { includes } from 'lodash'
+import { Observable } from 'rxjs';
 import { Component } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
-import { Observable } from 'rxjs';
-import { pull, includes } from 'lodash'
 
 import { Tag } from '../tag';
 

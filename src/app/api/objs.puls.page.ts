@@ -1,6 +1,6 @@
 import { OnInit } from '@angular/core';
-import { ModalController, ActionSheetController } from '@ionic/angular';
 import { pull, includes } from 'lodash'
+import { ModalController, ActionSheetController } from '@ionic/angular';
 
 import { Obj } from './obj';
 import { Paging } from './paging';

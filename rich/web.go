@@ -2,7 +2,6 @@ package rich
 
 import (
 	"bytes"
-	"crypto/rsa"
 	"crypto/tls"
 	"errors"
 	"io"
@@ -37,41 +36,20 @@ type Web struct {
 
 // DaysKey 文件日期列表主键
 var DaysKey = []byte("days")
-var (
-	verifyKey *rsa.PublicKey
-	signKey   *rsa.PrivateKey
-)
 
 // Init 初始化.
 func (w *Web) Init() error {
 	// 日志初始化
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
-	// 密钥初始化
-	signBytes, err := keys.Asset("keys/private.rsa")
-	if err != nil {
-		return err
-	}
-	signKey, err = jwt.ParseRSAPrivateKeyFromPEM(signBytes)
-	if err != nil {
-		return err
-	}
-	verifyBytes, err := keys.Asset("keys/public.rsa.pub")
-	if err != nil {
-		return err
-	}
-	verifyKey, err = jwt.ParseRSAPublicKeyFromPEM(verifyBytes)
-	if err != nil {
-		return err
-	}
 	// 数据库初始化
-	w.db, err = leveldb.OpenFile(w.Db, nil)
-	if err != nil {
+	err := errors.New("未知异常")
+	if w.db, err = leveldb.OpenFile(w.Db, nil); err != nil {
 		return err
 	}
 	// 用户初始化
 	w.UserInit()
 	// 每日帐目初始化
-	if err := w.Get(DaysKey, &w.days); err != nil {
+	if err = w.Get(DaysKey, &w.days); err != nil {
 		w.days = []string{}
 	}
 	// 缓存初始化

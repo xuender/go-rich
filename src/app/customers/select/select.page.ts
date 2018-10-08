@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ModalController, ActionSheetController, NavParams } from '@ionic/angular';
-import { ObjsPlusPage } from '../../api/objs.puls.page';
+
 import { Customer } from '../customer';
-import { CustomerService } from '../customer.service';
 import { TagService } from '../../tags/tag.service';
-import { CustomerPage } from '../customer/customer.page';
+import { CustomerService } from '../customer.service';
+import { ObjsPlusPage } from '../../api/objs.puls.page';
 
 @Component({
   selector: 'app-select',

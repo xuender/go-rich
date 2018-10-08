@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { find, remove } from 'lodash'
+import { Component } from '@angular/core';
+import { ModalController, ActionSheetController, NavParams } from '@ionic/angular';
+
 import { Item } from '../item';
-import { ObjsPlusPage } from '../../api/objs.puls.page';
 import { ItemService } from '../item.service';
 import { TagService } from '../../tags/tag.service';
-import { ModalController, ActionSheetController, NavParams } from '@ionic/angular';
-import { find, remove } from 'lodash'
+import { ObjsPlusPage } from '../../api/objs.puls.page';
 
 @Component({
   selector: 'app-select',

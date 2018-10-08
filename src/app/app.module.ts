@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -21,7 +20,6 @@ import { ProfilePageModule } from './setting/profile/profile.module';
 import { UsersPageModule } from './users/users.module';
 import { SelectPageModule as CustomersSelectPageModule } from './customers/select/select.module';
 import { SelectPageModule as ItemsSelectPageModule } from './items/select/select.module';
-import { PipeModule } from './pipe/pipe.module';
 
 @NgModule({
   declarations: [

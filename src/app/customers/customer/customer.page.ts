@@ -1,13 +1,13 @@
+import { Observable } from 'rxjs';
 import { Component } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 
 import { Customer } from '../customer';
+import { Trade } from '../../trades/trade';
 import { ObjPage } from '../../api/obj.page';
 import { CustomerService } from '../customer.service';
 import { TradeService } from '../../trades/trade.service';
 import { TradePage } from '../../trades/trade/trade.page';
-import { Observable } from 'rxjs';
-import { Trade } from '../../trades/trade';
 
 @Component({
   selector: 'app-customer',

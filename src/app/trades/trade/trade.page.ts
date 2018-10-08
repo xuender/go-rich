@@ -1,7 +1,7 @@
 import { pull } from 'lodash'
 import { Observable } from 'rxjs';
-import { Component, OnInit } from '@angular/core';
-import { ModalController, NavParams, Item } from '@ionic/angular';
+import { Component } from '@angular/core';
+import { ModalController, NavParams } from '@ionic/angular';
 
 import { Order } from '../order';
 import { Trade } from '../trade';

@@ -2,11 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { TabsPage } from './tabs.page';
-import { HomePage } from '../home/home.page';
 import { ItemsPage } from '../items/items.page';
+import { TradesPage } from '../trades/trades.page';
 import { SettingPage } from '../setting/setting.page';
 import { CustomersPage } from '../customers/customers.page';
-import { TradesPage } from '../trades/trades.page';
 
 const routes: Routes = [
   {

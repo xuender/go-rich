@@ -14,18 +14,16 @@ import (
 	"./rich"
 )
 
-//go:generate openssl genrsa -out keys/private.rsa 1024
-//go:generate openssl rsa -in keys/private.rsa -pubout -out keys/public.rsa.pub
 //go:generate go run $GOROOT/src/crypto/tls/generate_cert.go --host=localhost
 //go:generate mv cert.pem key.pem keys
-//go:generate go-bindata -nomemcopy -pkg keys -o ./keys/bindata.go keys/private.rsa keys/public.rsa.pub keys/cert.pem keys/key.pem
+//go:generate go-bindata -nomemcopy -pkg keys -o ./keys/bindata.go keys/cert.pem keys/key.pem
 //go:generate go-bindata -nomemcopy -pkg rich -o ./rich/bindata.go www/...
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "Go Rich"
 	app.Usage = "服务小商家"
-	app.Version = "v0.0.4"
+	app.Version = "v0.1-beta.1"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "address,a",

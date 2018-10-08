@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AlertController, NavController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
+import { AlertController, NavController } from '@ionic/angular';
 
 import { URL } from './init'
 import { User } from '../users/user';

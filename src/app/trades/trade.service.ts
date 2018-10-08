@@ -1,11 +1,9 @@
+import { includes } from 'lodash'
+import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
+
 import { Trade } from './trade';
 import { ObjService } from '../api/obj.service';
-import { HttpClient } from '@angular/common/http';
-import { DatePipe } from '@angular/common';
-import { includes } from 'lodash'
-import { ModalController } from '@ionic/angular';
-import { TradePage } from './trade/trade.page';
 import { CustomerService } from '../customers/customer.service';
 
 @Injectable({

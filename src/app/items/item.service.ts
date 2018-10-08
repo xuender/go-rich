@@ -1,9 +1,9 @@
+import { ModalController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 
 import { Item } from './item';
 import { ObjService } from '../api/obj.service';
-import { ModalController } from '@ionic/angular';
 import { SelectPage } from './select/select.page';
 
 @Injectable({

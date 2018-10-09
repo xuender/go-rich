@@ -6,6 +6,7 @@ import { Item } from '../item';
 import { ItemService } from '../item.service';
 import { TagService } from '../../tags/tag.service';
 import { ObjsPlusPage } from '../../api/objs.puls.page';
+import { ItemPage } from '../item/item.page';
 
 @Component({
   selector: 'app-select',
@@ -27,8 +28,8 @@ export class SelectPage extends ObjsPlusPage<Item>{
   get tagKey() { return 'tag-C' };
   get service() { return this.itemService }
   set service(s) { }
-  get page() { return {} }
-  get newObj() { return {} }
+  get page() { return ItemPage }
+  get newObj() { return { name: '', price: 0, extend: {}, tags: [] } }
   get title() { return '商品' }
 
   trigger(item: Item) {

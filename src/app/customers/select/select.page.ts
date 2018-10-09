@@ -28,7 +28,7 @@ export class SelectPage extends ObjsPlusPage<Customer>{
   get service() { return this.customerService }
   set service(s) { }
   get page() { return {} }
-  get newObj() { return {} }
+  get newObj() { return { name: '', extend: {}, tags: [] } }
   get title() { return '客户' }
 
   cancel() {

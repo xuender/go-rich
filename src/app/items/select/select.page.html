@@ -15,6 +15,11 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-fab vertical="center" horizontal="start" edge slot="fixed">
+    <ion-fab-button (click)="create()" color="secondary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
   <ion-fab vertical="center" horizontal="end" edge slot="fixed">
     <ion-fab-button (click)="select()" color="secondary">
       <ion-icon name="pricetags"></ion-icon>

@@ -10,6 +10,14 @@ import (
 // Days 日期
 type Days []string
 
+// DayFormat 日期格式化
+const DayFormat = "2006-01-02"
+
+// Clean 清空
+func (d *Days) Clean() {
+	*d = append([]string{})
+}
+
 // Add 增加
 func (d *Days) Add(day string) bool {
 	if d.Includes(day) {
@@ -32,7 +40,7 @@ func (d *Days) Includes(day string) bool {
 
 // 日帐增加
 func (w *Web) dayAdd(t Trade) error {
-	day := t.Ca.Format("2006-01-02")
+	day := t.Ca.Format(DayFormat)
 	w.days.Add(day)
 	w.Put(DaysKey, w.days)
 	idsKey := []byte(day)
@@ -40,6 +48,26 @@ func (w *Web) dayAdd(t Trade) error {
 	w.Get(idsKey, &ids)
 	ids = append(ids, t.ID)
 	return w.Put(idsKey, ids)
+}
+
+// Reset 重置帐目
+func (w *Web) Reset() error {
+	for _, day := range w.days {
+		w.Delete([]byte(day))
+	}
+	w.days.Clean()
+	w.Iterator([]byte{TradeIDPrefix, '-'}, func(key, data []byte) {
+		t := Trade{}
+		utils.Decode(data, &t)
+		day := t.Ca.Format(DayFormat)
+		w.days.Add(day)
+		idsKey := []byte(day)
+		ids := []utils.ID{}
+		w.Get(idsKey, &ids)
+		ids = append(ids, t.ID)
+		w.Put(idsKey, ids)
+	})
+	return w.Put(DaysKey, w.days)
 }
 
 // 日帐减少

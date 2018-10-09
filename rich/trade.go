@@ -1,7 +1,6 @@
 package rich
 
 import (
-	"log"
 	"net/http"
 	"time"
 
@@ -48,8 +47,6 @@ func (w *Web) tradesGet(c echo.Context) error {
 	if day == "" {
 		return c.JSON(http.StatusOK, w.days)
 	}
-	log.Println(day)
-	log.Println(w.days.Includes(day))
 	if !w.days.Includes(day) {
 		return c.JSON(http.StatusOK, []int{})
 	}

@@ -66,6 +66,10 @@ func main() {
 			Name:  "develop-mode,d",
 			Usage: "开发模式: 静态资源读自www目录,支持跨域访问,访问日志显示",
 		},
+		cli.BoolFlag{
+			Name:  "reset,r",
+			Usage: "帐目索引重置",
+		},
 	}
 	app.Action = runAction
 	if err := app.Run(os.Args); err != nil {
@@ -91,6 +95,11 @@ func runAction(c *cli.Context) error {
 	// 初始化
 	if err := web.Init(); err != nil {
 		return err
+	}
+	if c.Bool("r") {
+		if err := web.Reset(); err != nil {
+			return err
+		}
 	}
 	// 退出
 	quitChan := make(chan os.Signal)

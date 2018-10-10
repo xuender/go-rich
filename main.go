@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"syscall"
 
@@ -23,7 +24,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "Go Rich"
 	app.Usage = "服务小商家"
-	app.Version = "v0.1-beta.1"
+	app.Version = "v0.1-beta.3"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "address,a",
@@ -67,6 +68,10 @@ func main() {
 			Usage: "开发模式: 静态资源读自www目录,支持跨域访问,访问日志显示",
 		},
 		cli.BoolFlag{
+			Name:  "upgrade,u",
+			Usage: "自动升级",
+		},
+		cli.BoolFlag{
 			Name:  "reset,r",
 			Usage: "帐目索引重置",
 		},
@@ -100,6 +105,16 @@ func runAction(c *cli.Context) error {
 		if err := web.Reset(); err != nil {
 			return err
 		}
+	}
+	if c.Bool("u") {
+		go func() {
+			if url, tag, err := rich.LastURL("xuender", "go-rich", c.App.Version); err == nil && tag != c.App.Version {
+				log.Println("更新版本:", tag, "网址:", url)
+				rich.Download(url, c.String("t"))
+				os.Rename(filepath.Join(c.String("t"), "go-rich"), "go-rich")
+				log.Println("更新完毕")
+			}
+		}()
 	}
 	// 退出
 	quitChan := make(chan os.Signal)

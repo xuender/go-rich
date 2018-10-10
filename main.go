@@ -38,11 +38,11 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:  "cert,c",
-			Usage: "TLS证书文件, 可省略",
+			Usage: "TLS证书文件, TLS必须",
 		},
 		cli.StringFlag{
 			Name:  "key,k",
-			Usage: "TLS密钥文件, 可省略",
+			Usage: "TLS密钥文件, TLS必须",
 		},
 		cli.StringFlag{
 			Name:  "db,b",
@@ -106,6 +106,7 @@ func runAction(c *cli.Context) error {
 			return err
 		}
 	}
+	// 升级
 	if c.Bool("u") {
 		go func() {
 			if url, tag, err := rich.LastURL("xuender", "go-rich", c.App.Version); err == nil && tag != c.App.Version {

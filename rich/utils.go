@@ -64,9 +64,29 @@ func py(str string) string {
 	}
 	ret := ""
 	for k := range m {
-		ret = ret + k + " "
+		ret = ret + k + " ; "
 	}
-	return strings.TrimRight(ret, " ")
+	return strings.Trim(ret, " ")
+}
+
+// Initial 首字母
+func Initial(str string) []string {
+	m := map[string]bool{}
+	s := strings.Trim(slugify.Slugify(str), " ")
+	if s != "" {
+		m[strings.ToUpper(string(s[0]))] = true
+	}
+	for _, i := range PC(pinyin.Pinyin(str, args)) {
+		i = strings.Trim(i, " ")
+		if i != "" {
+			m[strings.ToUpper(string(i[0]))] = true
+		}
+	}
+	ret := []string{}
+	for k := range m {
+		ret = append(ret, k)
+	}
+	return ret
 }
 
 // PC 排列组合

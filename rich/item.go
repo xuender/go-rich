@@ -3,7 +3,6 @@ package rich
 import (
 	"log"
 	"sort"
-	"strings"
 
 	"github.com/labstack/echo"
 	"github.com/xuender/go-utils"
@@ -20,8 +19,8 @@ type Item struct {
 // BeforePost 创建前设置拼音标签
 func (i *Item) BeforePost(key byte) utils.ID {
 	i.Obj.BeforePost(key)
-	if len(i.Pinyin) > 0 {
-		i.Tags.Add(strings.ToUpper(string(i.Pinyin[0])))
+	for _, f := range Initial(i.Name) {
+		i.Tags.Add(f)
 	}
 	return i.ID
 }
@@ -30,8 +29,8 @@ func (i *Item) BeforePost(key byte) utils.ID {
 func (i *Item) BeforePut(id utils.ID) {
 	i.Obj.BeforePut(id)
 	i.Tags.DelPy() // 删除原拼音标签
-	if len(i.Pinyin) > 0 {
-		i.Tags.Add(strings.ToUpper(string(i.Pinyin[0])))
+	for _, f := range Initial(i.Name) {
+		i.Tags.Add(f)
 	}
 }
 

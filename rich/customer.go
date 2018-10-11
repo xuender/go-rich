@@ -26,8 +26,8 @@ type Customer struct {
 // BeforePost 创建前设置拼音标签
 func (c *Customer) BeforePost(key byte) utils.ID {
 	c.Obj.BeforePost(key)
-	if len(c.Pinyin) > 0 {
-		c.Tags.Add(strings.ToUpper(string(c.Pinyin[0])))
+	for _, i := range Initial(c.Name) {
+		c.Tags.Add(i)
 	}
 	return c.ID
 }
@@ -36,8 +36,8 @@ func (c *Customer) BeforePost(key byte) utils.ID {
 func (c *Customer) BeforePut(id utils.ID) {
 	c.Obj.BeforePut(id)
 	c.Tags.DelPy() // 删除原拼音标签
-	if len(c.Pinyin) > 0 {
-		c.Tags.Add(strings.ToUpper(string(c.Pinyin[0])))
+	for _, i := range Initial(c.Name) {
+		c.Tags.Add(i)
 	}
 }
 

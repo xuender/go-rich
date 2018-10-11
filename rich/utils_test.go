@@ -32,4 +32,11 @@ func TestUtils(t *testing.T) {
 			So(PC(a), ShouldContain, "A b c")
 		})
 	})
+	Convey("Initial", t, func() {
+		Convey("多音字", func() {
+			So(Initial("长三"), ShouldContain, "Z")
+			So(Initial("长三"), ShouldContain, "C")
+			So(Initial(" 长三"), ShouldContain, "C")
+		})
+	})
 }

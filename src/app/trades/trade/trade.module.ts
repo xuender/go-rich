@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { TradePage } from './trade.page';
 import { PipeModule } from '../../pipe/pipe.module';
+import { ComponentsModule } from '../../component/components.module';
 
 const routes: Routes = [
   {
@@ -22,6 +23,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes),
     PipeModule,
+    ComponentsModule,
   ],
   declarations: [TradePage]
 })

@@ -25,7 +25,7 @@
       <ion-item-group>
         <ion-item button (click)="selectCustomer()">
           <ion-label>客户</ion-label>
-          {{ obj.cid | toName }}
+          <rich-name id="{{obj.cid}}"></rich-name>
         </ion-item>
       </ion-item-group>
       <ion-item-divider>
@@ -33,7 +33,9 @@
       </ion-item-divider>
       <ng-container *ngFor="let e of obj.orders; let i = index">
         <ion-item>
-          <ion-input type="text" value="{{ e.id | toName }}" readonly></ion-input>
+          <ion-label>
+            <rich-name id="{{e.id}}"></rich-name>
+          </ion-label>
           <ion-input #num="ngModel" name="num-{{i}}" type="number" placeholder="商品数量" [(ngModel)]="e.num" max="1000"
             min="1" required></ion-input>
           <ion-badge color="warning">{{ e.price / 100 | currency:'￥' }}</ion-badge>

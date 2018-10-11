@@ -9,4 +9,6 @@ export interface Obj {
   ca?: Date
   // 拼音
   pinyin?: string
+  // 删除时间
+  da?: string
 }

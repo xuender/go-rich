@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { TradesPage } from './trades.page';
 import { TradePageModule } from './trade/trade.module';
 import { PipeModule } from '../pipe/pipe.module';
+import { ComponentsModule } from '../component/components.module';
 
 const routes: Routes = [
   {
@@ -24,6 +25,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     TradePageModule,
     PipeModule,
+    ComponentsModule,
   ],
   declarations: [TradesPage],
   providers: [DatePipe,]

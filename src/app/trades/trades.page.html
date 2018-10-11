@@ -30,7 +30,7 @@
     <ion-item-sliding *ngFor="let t of trades">
       <ion-item button (click)="update(t)">
         <ion-label>
-          {{ t.cid | toName }}
+          <rich-name id="{{t.cid}}"></rich-name>
         </ion-label>
         <ion-badge color="light">
           {{ t.ca | date:'HH:mm:ss' }}

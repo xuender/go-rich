@@ -5,13 +5,15 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { ExtComponent } from '../ext/ext.component';
 import { TagsComponent } from '../tags/tags.component';
+import { NameComponent } from './name/name.component';
 
 const components = [
   TagsComponent,
   ExtComponent,
+  NameComponent,
 ]
 @NgModule({
-  declarations: [...components],
+  declarations: [...components, NameComponent],
   imports: [
     CommonModule,
     FormsModule,

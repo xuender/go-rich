@@ -182,7 +182,7 @@ func (w *Web) customerPut(c echo.Context) error {
 
 // 删除用户
 func (w *Web) customerDelete(c echo.Context) error {
-	return w.ObjDelete(c, CustomerIDPrefix, func(id utils.ID) error {
+	return w.ObjDeleter(c, CustomerIDPrefix, &Customer{}, func() error {
 		delete(w.cache, CustomerIDPrefix)
 		return nil
 	})

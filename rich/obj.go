@@ -20,6 +20,23 @@ type Obj struct {
 	Pinyin string    `json:"pinyin"`                          // 拼音
 	Note   string    `json:"note" validate:"lte=100"`         // 备注 最长100
 	Ca     time.Time `json:"ca"`                              // 创建时间
+	Da     time.Time `json:"da,omitempty"`                    // 删除时间
+}
+
+// Delete 删除对象
+func (o *Obj) Delete() {
+	o.Da = time.Now()
+}
+
+// IsDelete 对象是否删除
+func (o *Obj) IsDelete() bool {
+	return o.Da.Year() > 1
+}
+
+// Deleter 删除器
+type Deleter interface {
+	IsDelete() bool
+	Delete()
 }
 
 // Binder 对象绑定
@@ -201,6 +218,27 @@ func (w *Web) ObjDelete(c echo.Context, key byte, check func(id utils.ID) error)
 		return err
 	}
 	w.Delete(id[:])
+	return c.JSON(http.StatusOK, nil)
+}
+
+// ObjDeleter 对象删除器
+func (w *Web) ObjDeleter(c echo.Context, key byte, obj Deleter, check func() error) error {
+	id := utils.ID{}
+	if err := id.Parse(c.Param("id")); err != nil {
+		return err
+	}
+	if id[0] != key {
+		return errors.New("前缀错误")
+	}
+	w.Get(id[:], obj)
+	if obj.IsDelete() {
+		return c.JSON(http.StatusOK, nil)
+	}
+	if err := check(); err != nil {
+		return err
+	}
+	obj.Delete()
+	w.Put(id[:], obj)
 	return c.JSON(http.StatusOK, nil)
 }
 

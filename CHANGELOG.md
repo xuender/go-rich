@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.1-beta.3 (11/10/2018)
+- [**enhancement**] 名称首字多音字时,单字标签生成多个 [#32](https://github.com/xuender/go-rich/issues/32)
+- [**bug**] toName发生多次调用 [#31](https://github.com/xuender/go-rich/issues/31)
+- [**enhancement**] 客户删除改假删 [#30](https://github.com/xuender/go-rich/issues/30)
+- [**enhancement**] 商品删除改假删 [#29](https://github.com/xuender/go-rich/issues/29)
+- [**enhancement**] 自动升级 [#27](https://github.com/xuender/go-rich/issues/27)
+- [**enhancement**] 创建订单同时新增商品 [#25](https://github.com/xuender/go-rich/issues/25)
+- [**enhancement**] 重新生成日期索引 [#24](https://github.com/xuender/go-rich/issues/24)
+
+---
+
+## v0.1-beta.2 (09/10/2018)
+- [**enhancement**] 导入Excel多页识别 [#23](https://github.com/xuender/go-rich/issues/23)
+- [**enhancement**] 订单列表 [#21](https://github.com/xuender/go-rich/issues/21)
+
+---
+
 ## v0.1-beta.1 (08/10/2018)
 - [**bug**] 多音字问题 [#22](https://github.com/xuender/go-rich/issues/22)
 - [**bug**] 收藏地址错误 [#20](https://github.com/xuender/go-rich/issues/20)

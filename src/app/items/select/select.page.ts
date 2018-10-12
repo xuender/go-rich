@@ -1,6 +1,6 @@
 import { find, remove } from 'lodash'
 import { Component } from '@angular/core';
-import { ModalController, ActionSheetController, NavParams } from '@ionic/angular';
+import { ModalController, ActionSheetController } from '@ionic/angular';
 
 import { Item } from '../item';
 import { ItemService } from '../item.service';
@@ -14,16 +14,14 @@ import { ItemPage } from '../item/item.page';
   styleUrls: ['./select.page.scss'],
 })
 export class SelectPage extends ObjsPlusPage<Item>{
-  itemService: ItemService
   items: Item[] = []
   constructor(
     protected tagService: TagService,
     protected modalCtrl: ModalController,
     protected actionSheetCtrl: ActionSheetController,
-    private navParams: NavParams
+    private itemService: ItemService,
   ) {
     super(tagService, modalCtrl, actionSheetCtrl)
-    this.itemService = this.navParams.get('service')
   }
   get tagKey() { return 'tag-C' };
   get service() { return this.itemService }

@@ -8,8 +8,9 @@ import { Trade } from '../trade';
 import { ObjPage } from '../../api/obj.page';
 import { TradeService } from '../trade.service';
 import { Customer } from '../../customers/customer';
-import { ItemService } from '../../items/item.service';
 import { CustomerService } from '../../customers/customer.service';
+import { SelectPage } from '../../items/select/select.page';
+import { ItemService } from '../../items/item.service';
 
 @Component({
   selector: 'app-trade',
@@ -19,7 +20,6 @@ import { CustomerService } from '../../customers/customer.service';
 export class TradePage extends ObjPage<Trade>{
   customer$: Observable<Customer>
   constructor(
-    private itemService: ItemService,
     public tradeService: TradeService,
     private customerService: CustomerService,
     protected modalCtrl: ModalController,
@@ -44,7 +44,11 @@ export class TradePage extends ObjPage<Trade>{
   }
 
   async add() {
-    const r = await this.itemService.doSelect()
+    const modal = await this.modalCtrl.create({
+      component: SelectPage,
+    })
+    await modal.present()
+    const r = await modal.onDidDismiss()
     if (r.data) {
       for (const i of r.data) {
         this.obj.orders.push({

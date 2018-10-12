@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Obj } from '../../api/obj';
-import { URL } from '../../api/init'
+import { Config } from '../../api/config'
 
 @Component({
   selector: 'rich-name',
@@ -29,7 +29,7 @@ export class NameComponent implements OnInit {
       default:
         console.error('ID错误', this.id)
     }
-    this.http.get<Obj>(`${URL}/api/${code}/${this.id}`)
+    this.http.get<Obj>(`${Config.URL}/api/${code}/${this.id}`)
       .subscribe(r => {
         this.name = r.name
         this.del = r.da && !r.da.startsWith('0001')

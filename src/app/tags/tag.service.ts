@@ -5,7 +5,7 @@ import { find } from 'lodash'
 
 import { Tag } from './tag';
 import { Key } from '../api/key';
-import { URL } from '../api/init'
+import { Config } from '../api/config'
 import { SelectPage } from '../tags/select/select.page';
 import { ObjService } from '../api/obj.service';
 
@@ -29,7 +29,7 @@ export class TagService extends ObjService<Tag>{
   path() { return '/api/tags' }
 
   tagsByKey(key: string, all = true) {
-    return this.http.get<Tag[]>(`${URL}/api/tags/${key}?all=${all}`)
+    return this.http.get<Tag[]>(`${Config.URL}/api/tags/${key}?all=${all}`)
   }
 
   async selectTags(key: string) {

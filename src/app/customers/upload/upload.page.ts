@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { FileUploader, FileItem, Headers } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
 
-import { URL } from '../../api/init'
+import { Config } from '../../api/config'
 import { Xlsx } from '../../setting/xlsxes/xlsx';
 import { CustomerService } from '../customer.service';
 import { SettingService } from '../../setting/setting.service';
@@ -21,7 +21,7 @@ export class UploadPage {
   }
   headers: Headers[] = [this.header]
   uploader: FileUploader = new FileUploader({
-    url: `${URL}/api/customers/file`,
+    url: `${Config.URL}/api/customers/file`,
     headers: this.headers,
     authToken: `Bearer ${localStorage.getItem("token")}`
   })

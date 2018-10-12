@@ -3,7 +3,7 @@ import { NgZone } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 
 import { Obj } from './obj';
-import { URL } from './init'
+import { Config } from './config'
 import { Paging } from './paging';
 
 export abstract class ObjService<T extends Obj> {
@@ -19,7 +19,7 @@ export abstract class ObjService<T extends Obj> {
   abstract path(): string
 
   get url() {
-    return `${URL}${this.path()}`
+    return `${Config.URL}${this.path()}`
   }
 
   get all$() {

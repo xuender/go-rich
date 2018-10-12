@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ModalController, NavParams, AlertController } from '@ionic/angular';
 
 import { User } from '../user';
-import { URL } from '../../api/init'
+import { Config } from '../../api/config'
 import { ObjPage } from '../../api/obj.page';
 import { UserService } from '../user.service';
 
@@ -45,7 +45,7 @@ export class UserPage extends ObjPage<User>{
           text: '确定',
           handler: (v) => {
             // console.log(v)
-            this.http.patch<User>(`${URL}/api/users/${this.obj.id}/pass?pass=${v['pass']}`, this.obj)
+            this.http.patch<User>(`${Config.URL}/api/users/${this.obj.id}/pass?pass=${v['pass']}`, this.obj)
               .subscribe((u: User) => console.log(u))
           }
         }

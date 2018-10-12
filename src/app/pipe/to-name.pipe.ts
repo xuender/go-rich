@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { URL } from '../api/init'
+import { Config } from '../api/config'
 @Pipe({
   name: 'toName',
   pure: false
@@ -23,7 +23,7 @@ export class ToNamePipe implements PipeTransform {
         default:
           console.error('ID错误', id)
       }
-      this.http.get(`${URL}/api/${name}/${id}`)
+      this.http.get(`${Config.URL}/api/${name}/${id}`)
         .subscribe((r: any) => ToNamePipe.cache[id] = r.name)
     }
     return ToNamePipe.cache[id];

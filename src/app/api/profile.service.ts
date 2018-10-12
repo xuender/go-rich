@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AlertController, NavController } from '@ionic/angular';
 
-import { URL } from './init'
+import { Config } from './config'
 import { User } from '../users/user';
 
 @Injectable({
@@ -17,11 +17,11 @@ export class ProfileService {
   ) { }
 
   get profile$() {
-    return this.http.get<any>(`${URL}/api/profile`)
+    return this.http.get<any>(`${Config.URL}/api/profile`)
   }
 
   save(user: User) {
-    return this.http.patch<User>(`${URL}/api/profile`, user)
+    return this.http.patch<User>(`${Config.URL}/api/profile`, user)
   }
 
   logout() {
@@ -55,7 +55,7 @@ export class ProfileService {
           text: '确定',
           handler: (v) => {
             if (!v['nick'] || !v['pass']) { return false }
-            this.http.get<string>(`${URL}/login?nick=${v['nick']}&pass=${v['pass']}`)
+            this.http.get<string>(`${Config.URL}/login?nick=${v['nick']}&pass=${v['pass']}`)
               .subscribe(t => {
                 localStorage.setItem('token', t)
                 this.navCtrl.goBack(true)
@@ -108,7 +108,7 @@ export class ProfileService {
           text: '确定',
           handler: (v) => {
             if (v['pass'] != v['two']) { return false }
-            this.http.patch<string>(`${URL}/api/profile/pass?old=${v['old']}&pass=${v['pass']}`, {})
+            this.http.patch<string>(`${Config.URL}/api/profile/pass?old=${v['old']}&pass=${v['pass']}`, {})
               .subscribe((t: string) => localStorage.setItem('token', t))
             return true
           }

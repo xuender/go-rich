@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
 
 import { Ext } from './ext';
-import { URL } from '../api/init'
+import { Config } from '../api/config'
 import { ExtPage } from '../ext/ext.page';
 
 @Injectable({
@@ -17,18 +17,18 @@ export class ExtService {
   }
 
   get extsByCustomer$() {
-    return this.http.get<Ext[]>(`${URL}/api/exts/E-C`)
+    return this.http.get<Ext[]>(`${Config.URL}/api/exts/E-C`)
   }
   get extsByItem$() {
-    return this.http.get<Ext[]>(`${URL}/api/exts/E-I`)
+    return this.http.get<Ext[]>(`${Config.URL}/api/exts/E-I`)
   }
 
   async saveByCustomer(exts: Ext[]) {
-    return this.http.put<Ext[]>(`${URL}/api/exts/E-C`, exts).toPromise()
+    return this.http.put<Ext[]>(`${Config.URL}/api/exts/E-C`, exts).toPromise()
   }
 
   async saveByItem(exts: Ext[]) {
-    return this.http.put<Ext[]>(`${URL}/api/exts/E-I`, exts).toPromise()
+    return this.http.put<Ext[]>(`${Config.URL}/api/exts/E-I`, exts).toPromise()
   }
 
   async extCustomer() {

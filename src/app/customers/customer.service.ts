@@ -1,7 +1,7 @@
 import { Injectable, NgZone } from '@angular/core'
 import { HttpClient } from '@angular/common/http';
 
-import { URL } from '../api/init'
+import { Config } from '../api/config'
 import { Customer } from './customer'
 import { ObjService } from '../api/obj.service';
 import { ModalController } from '@ionic/angular';
@@ -22,7 +22,7 @@ export class CustomerService extends ObjService<Customer> {
   path() { return '/api/customers' }
 
   download(params: any) {
-    return this.http.get(`${URL}/api/customers`, { params: params, responseType: 'blob', })
+    return this.http.get(`${Config.URL}/api/customers`, { params: params, responseType: 'blob', })
   }
 
   async doSelect() {

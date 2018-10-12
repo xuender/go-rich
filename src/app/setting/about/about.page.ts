@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Config } from '../../api/config'
+import { App } from './app';
 
 @Component({
   selector: 'app-about',
@@ -9,11 +10,11 @@ import { Config } from '../../api/config'
   styleUrls: ['./about.page.scss'],
 })
 export class AboutPage {
-  app = {}
+  app: App = {}
   constructor(
     private http: HttpClient,
   ) {
-    this.http.get<any>(`${Config.URL}/about`)
+    this.http.get<App>(`${Config.URL}/about`)
       .subscribe(app => this.app = app)
   }
 }

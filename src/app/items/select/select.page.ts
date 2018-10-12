@@ -19,7 +19,7 @@ export class SelectPage extends ObjsPlusPage<Item>{
     protected tagService: TagService,
     protected modalCtrl: ModalController,
     protected actionSheetCtrl: ActionSheetController,
-    private itemService: ItemService,
+    public itemService: ItemService,
   ) {
     super(tagService, modalCtrl, actionSheetCtrl)
   }

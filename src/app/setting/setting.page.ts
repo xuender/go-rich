@@ -13,13 +13,13 @@ export class SettingPage implements OnInit {
   constructor(
     public setting: SettingService,
     public ext: ExtService,
-    private router:Router,
+    private router: Router,
   ) { }
 
   ngOnInit() {
   }
 
-  about(){
+  about() {
     this.router.navigateByUrl('/tabs/(setting:about)')
   }
 

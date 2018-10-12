@@ -3,8 +3,8 @@ import { ModalController } from '@ionic/angular';
 
 import { TagsPage } from '../tags/tags.page';
 import { UsersPage } from '../users/users.page';
-import { XlsxesPage } from '../setting/xlsxes/xlsxes.page';
-import { ProfilePage } from '../setting/profile/profile.page';
+import { XlsxesPage } from './xlsxes/xlsxes.page';
+import { ProfilePage } from './profile/profile.page';
 
 @Injectable({
   providedIn: 'root'

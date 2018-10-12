@@ -20,11 +20,12 @@
       <ion-item-group>
         <ion-item [class.error]="name.invalid && name.touched">
           <ion-label fixed>姓名</ion-label>
-          <ion-input #name="ngModel" [(ngModel)]="user.name" name="name" type="text" placeholder="姓名最长20" maxlength="20" required></ion-input>
+          <ion-input #name="ngModel" [(ngModel)]="user.name" name="name" type="text" placeholder="姓名最长20" minlength="3" maxlength="20" required></ion-input>
         </ion-item>
         <ion-item color="danger" *ngIf="name.invalid && name.touched">
           <p [hidden]="!name.errors?.required">请输入姓名</p>
           <p [hidden]="!name.errors?.maxlength">姓名最长20</p>
+          <p [hidden]="!name.errors?.minlength">姓名最短3</p>
         </ion-item>
       </ion-item-group>
       <ion-item-group>

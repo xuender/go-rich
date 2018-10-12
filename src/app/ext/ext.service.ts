@@ -4,7 +4,7 @@ import { ModalController } from '@ionic/angular';
 
 import { Ext } from './ext';
 import { Config } from '../api/config'
-import { ExtPage } from '../ext/ext.page';
+import { ExtPage } from './ext.page';
 
 @Injectable({
   providedIn: 'root'

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
 
-import { ProfileService } from '../../api/profile.service';
+import { ProfileService } from './profile.service';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',

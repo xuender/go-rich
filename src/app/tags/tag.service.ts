@@ -6,7 +6,7 @@ import { find } from 'lodash'
 import { Tag } from './tag';
 import { Key } from '../api/key';
 import { Config } from '../api/config'
-import { SelectPage } from '../tags/select/select.page';
+import { SelectPage } from './select/select.page';
 import { ObjService } from '../api/obj.service';
 
 @Injectable({

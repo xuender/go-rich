@@ -1,7 +1,7 @@
 # 获取最后的tag
 TAG = $(shell git tag | tail -n 1)
 
-all: web generate build pack gren
+all: web generate build pack changelog
 
 web:
 	@echo 编译 web
@@ -35,8 +35,8 @@ pack:
 	zip go-rich-$(TAG)-darwin_amd64.zip go-rich
 	rm go-rich
 
-gren:
-	@echo 生成文档
+changelog:
+	@echo 修改记录
 	conventional-changelog -p angular -i CHANGELOG.md -s -r 0
 
 todo:

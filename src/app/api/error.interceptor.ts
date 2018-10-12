@@ -15,16 +15,12 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(tap((event: HttpEvent<any>) => { }, (err: any) => {
       switch (err.status) {
         case 401:
+        case 403:
           this.router.navigateByUrl('/start')
           break
-        case 204:
-        case 200:
-          break;
-        case 400:
         default:
-          console.log(err.status)
           this.alertCtrl.create({
-            header: '错误',
+            header: `错误 [ ${err.status} ]`,
             message: err.error.message,
             buttons: ['确定']
           }).then(a => a.present())

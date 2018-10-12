@@ -121,7 +121,7 @@ func (w *Web) ObjPost(c echo.Context, p Poster, key byte, bind func() error, che
 		}
 	}
 	w.Put(id[:], p)
-	return c.JSON(http.StatusOK, p)
+	return c.JSON(http.StatusCreated, p)
 }
 
 // ObjLoad 对象加载
@@ -218,7 +218,7 @@ func (w *Web) ObjDelete(c echo.Context, key byte, check func(id utils.ID) error)
 		return err
 	}
 	w.Delete(id[:])
-	return c.JSON(http.StatusOK, nil)
+	return c.JSON(http.StatusNoContent, nil)
 }
 
 // ObjDeleter 对象删除器
@@ -239,7 +239,7 @@ func (w *Web) ObjDeleter(c echo.Context, key byte, obj Deleter, check func() err
 	}
 	obj.Delete()
 	w.Put(id[:], obj)
-	return c.JSON(http.StatusOK, nil)
+	return c.JSON(http.StatusNoContent, nil)
 }
 
 // Match 查找匹配

@@ -6,6 +6,7 @@ import { ItemsPage } from '../items/items.page';
 import { TradesPage } from '../trades/trades.page';
 import { SettingPage } from '../setting/setting.page';
 import { CustomersPage } from '../customers/customers.page';
+import { AboutPage } from '../setting/about/about.page';
 
 const routes: Routes = [
   {
@@ -36,6 +37,11 @@ const routes: Routes = [
         path: 'setting',
         outlet: 'setting',
         component: SettingPage,
+      },
+      {
+        path: 'about',
+        outlet: 'setting',
+        component: AboutPage,
       },
     ]
   },

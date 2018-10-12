@@ -29,6 +29,7 @@ type Web struct {
 	Dev     bool                        // 开发模式
 	URL     string                      // 网址
 	LogFile string                      // 日志文件
+	App     map[string]string           // 应用信息
 	db      *leveldb.DB                 // 数据库
 	days    Days                        // 文件日期列表
 	cache   map[interface{}]interface{} // 缓存
@@ -87,8 +88,12 @@ func (w *Web) initEcho() *echo.Echo {
 		}
 		return c.Blob(http.StatusOK, "image/png", code.PNG())
 	})
-	e.GET("/login", w.login) // 登录
-	api := e.Group("/api")   // API
+  // 应用信息
+	e.GET("/about", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, w.App)
+	})
+  e.GET("/login", w.login) // 登录
+	api := e.Group("/api") // API
 	// 需要身份认证
 	api.Use(middlewareJWT(w, "HS256"))
 

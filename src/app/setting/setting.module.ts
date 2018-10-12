@@ -7,6 +7,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { SettingPage } from './setting.page';
 import { UsersPageModule } from '../users/users.module';
 import { XlsxesPageModule } from './xlsxes/xlsxes.module';
+import { AboutPageModule } from './about/about.module';
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
     IonicModule,
     XlsxesPageModule,
     UsersPageModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    AboutPageModule,
   ],
   declarations: [SettingPage]
 })

@@ -39,8 +39,12 @@
 ### 编译
 
 ```shell
-npm install github-release-notes -g
+# 生成 changelog
+npm install -g conventional-changelog-cli
+# git cz 规范提交
 npm install -g commitizen
+# 使用 Angular 的 Commit message 格式
+commitizen init cz-conventional-changelog --save --save-exact
 npm i
 make
 ```

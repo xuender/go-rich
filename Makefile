@@ -37,8 +37,7 @@ pack:
 
 gren:
 	@echo 生成文档
-	gren release --override
-	gren changelog --override
+	conventional-changelog -p angular -i CHANGELOG.md -s -r 0
 
 todo:
 	@echo 寻找未完成代码

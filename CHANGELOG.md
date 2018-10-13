@@ -1,3 +1,25 @@
+<a name="0.1.10"></a>
+## [0.1.10](https://github.com/xuender/go-rich/compare/v0.1.9...v0.1.10) (2018-10-13)
+
+
+### Bug Fixes
+
+* **console:** 控制台显示手机操作地址二维码 ([f59914b](https://github.com/xuender/go-rich/commit/f59914b)), closes [#39](https://github.com/xuender/go-rich/issues/39)
+* **items:** 修复商品选择页面标签显示错误 ([2896578](https://github.com/xuender/go-rich/commit/2896578)), closes [#42](https://github.com/xuender/go-rich/issues/42)
+* **obj:** 所有对象新增修改前Trim掉空格 ([9d4473a](https://github.com/xuender/go-rich/commit/9d4473a)), closes [#43](https://github.com/xuender/go-rich/issues/43)
+* **windows:** rich.bat 换行符错误 ([84726e3](https://github.com/xuender/go-rich/commit/84726e3)), closes [#41](https://github.com/xuender/go-rich/issues/41)
+
+
+### Features
+
+* **api:** 规范API返回的状态码 ([0952047](https://github.com/xuender/go-rich/commit/0952047)), closes [#36](https://github.com/xuender/go-rich/issues/36)
+* **bak:** 增加-z参数，备份数据库 ([7453779](https://github.com/xuender/go-rich/commit/7453779)), closes [#40](https://github.com/xuender/go-rich/issues/40)
+* **console:** 控制台显示服务器IP及端口号 ([d9d424a](https://github.com/xuender/go-rich/commit/d9d424a)), closes [#44](https://github.com/xuender/go-rich/issues/44)
+* **login:** 用户初始密码设置成版本号 ([d4be93d](https://github.com/xuender/go-rich/commit/d4be93d)), closes [#38](https://github.com/xuender/go-rich/issues/38)
+* **login:** 登录时根据新用户状态显示帐号密码 ([e3d4a22](https://github.com/xuender/go-rich/commit/e3d4a22)), closes [#37](https://github.com/xuender/go-rich/issues/37)
+
+
+
 <a name="0.1.9"></a>
 ## [0.1.9](https://github.com/xuender/go-rich/compare/v0.1.8...v0.1.9) (2018-10-12)
 
@@ -15,7 +37,7 @@
 
 
 <a name="0.1.8"></a>
-## [0.1.8](https://github.com/xuender/go-rich/compare/v0.1.7...v0.1.8) (2018-10-11)
+## [0.1.8](https://github.com/xuender/go-rich/compare/5958129...v0.1.8) (2018-10-11)
 
 
 ### Bug Fixes
@@ -27,41 +49,6 @@
 
 * **客户,商品:** 首字母多音字时生成多个单字标签 ([a9cf5b5](https://github.com/xuender/go-rich/commit/a9cf5b5)), closes [#32](https://github.com/xuender/go-rich/issues/32)
 * **客户和商品:** 删除客户或商品后,历史订单还可以看到当时的客户和购买的商品 ([5958129](https://github.com/xuender/go-rich/commit/5958129)), closes [#29](https://github.com/xuender/go-rich/issues/29) [#30](https://github.com/xuender/go-rich/issues/30)
-
-
-
-<a name="0.1.7"></a>
-## [0.1.7](https://github.com/xuender/go-rich/compare/v0.1.6...v0.1.7) (2018-10-09)
-
-
-
-<a name="0.1.6"></a>
-## [0.1.6](https://github.com/xuender/go-rich/compare/v0.1.5...v0.1.6) (2018-10-08)
-
-
-
-<a name="0.1.5"></a>
-## [0.1.5](https://github.com/xuender/go-rich/compare/v0.1.4...v0.1.5) (2018-10-01)
-
-
-
-<a name="0.1.4"></a>
-## [0.1.4](https://github.com/xuender/go-rich/compare/v0.1.3...v0.1.4) (2018-09-30)
-
-
-
-<a name="0.1.3"></a>
-## [0.1.3](https://github.com/xuender/go-rich/compare/v0.1.2...v0.1.3) (2018-09-26)
-
-
-
-<a name="0.1.2"></a>
-## [0.1.2](https://github.com/xuender/go-rich/compare/v0.1.1...v0.1.2) (2018-08-29)
-
-
-
-<a name="0.1.1"></a>
-## 0.1.1 (2018-08-23)
 
 
 

@@ -1,6 +1,6 @@
 {
   "name": "go-rich",
-  "version": "v0.1.9",
+  "version": "v0.1.10",
   "author": "xuender",
   "homepage": "http://github.com/xuender/rich",
   "scripts": {

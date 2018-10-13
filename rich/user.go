@@ -126,8 +126,8 @@ func (w *Web) UserInit() {
 				Name: "admin",
 				Ca:   time.Now(),
 			},
-			Phone: "admin",
-			Pass:  Pass("6181"),
+			Phone: "13900000000",
+			Pass:  Pass(strings.Replace(w.App.Version, ".", "", -1)),
 		}
 		w.Put(u.ID[:], u)
 	}

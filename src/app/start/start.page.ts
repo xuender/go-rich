@@ -18,7 +18,10 @@ export class StartPage implements OnInit {
     private http: HttpClient,
   ) {
     this.http.get<App>(`${Config.URL}/about`)
-      .subscribe(app => this.app = app)
+      .subscribe(app => {
+        this.app = app
+        this.app.version = app.version.replace(/\./g, '')
+      })
   }
 
   ngOnInit() {

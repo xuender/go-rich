@@ -142,6 +142,7 @@ func runAction(c *cli.Context) error {
 	if !c.Bool("n") {
 		utils.Open(web.URL + "/qr")
 	}
+	log.Println("访问地址:", web.URL)
 	fmt.Println(<-quitChan)
 	web.Close()
 	return nil

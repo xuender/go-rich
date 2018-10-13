@@ -88,12 +88,12 @@ func (w *Web) initEcho() *echo.Echo {
 		}
 		return c.Blob(http.StatusOK, "image/png", code.PNG())
 	})
-  // 应用信息
+	// 应用信息
 	e.GET("/about", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, w.App)
 	})
-  e.GET("/login", w.login) // 登录
-	api := e.Group("/api") // API
+	e.GET("/login", w.login) // 登录
+	api := e.Group("/api")   // API
 	// 需要身份认证
 	api.Use(middlewareJWT(w, "HS256"))
 

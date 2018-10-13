@@ -6,9 +6,12 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"syscall"
 
+	colorable "github.com/mattn/go-colorable"
+	"github.com/mdp/qrterminal"
 	"github.com/urfave/cli"
 	"github.com/xuender/go-utils"
 
@@ -60,8 +63,8 @@ func main() {
 			Usage: "日志输出文件",
 		},
 		cli.BoolFlag{
-			Name:  "no-open,n",
-			Usage: "启动不打开浏览器",
+			Name:  "open,o",
+			Usage: "启动浏览器显示QR码",
 		},
 		cli.BoolFlag{
 			Name:  "develop-mode,d",
@@ -122,6 +125,7 @@ func runAction(c *cli.Context) error {
 			}
 		}()
 	}
+	printURL(web.URL)
 	// 退出
 	quitChan := make(chan os.Signal)
 	signal.Notify(quitChan,
@@ -139,11 +143,31 @@ func runAction(c *cli.Context) error {
 		go web.Start(address)
 	}
 	// 打开浏览器
-	if !c.Bool("n") {
+	if c.Bool("o") {
 		utils.Open(web.URL + "/qr")
 	}
-	fmt.Println("访问地址:", web.URL)
 	fmt.Println(<-quitChan)
 	web.Close()
 	return nil
+}
+
+func printURL(url string) {
+	qrConfig := qrterminal.Config{
+		HalfBlocks:     true,
+		Level:          qrterminal.L,
+		Writer:         os.Stdout,
+		BlackWhiteChar: "\u001b[37m\u001b[40m\u2584\u001b[0m",
+		BlackChar:      "\u001b[30m\u001b[40m\u2588\u001b[0m",
+		WhiteBlackChar: "\u001b[30m\u001b[47m\u2585\u001b[0m",
+		WhiteChar:      "\u001b[37m\u001b[47m\u2588\u001b[0m",
+	}
+	if runtime.GOOS == "windows" {
+		qrConfig.HalfBlocks = false
+		qrConfig.Writer = colorable.NewColorableStdout()
+		qrConfig.BlackChar = qrterminal.BLACK
+		qrConfig.WhiteChar = qrterminal.WHITE
+	}
+	fmt.Println("访问地址:", url)
+	// 控制台二维码
+	qrterminal.GenerateWithConfig(url, qrConfig)
 }

@@ -23,7 +23,7 @@ export class SelectPage extends ObjsPlusPage<Item>{
   ) {
     super(tagService, modalCtrl, actionSheetCtrl)
   }
-  get tagKey() { return 'tag-C' };
+  get tagKey() { return 'tag-I' };
   get service() { return this.itemService }
   set service(s) { }
   get page() { return ItemPage }

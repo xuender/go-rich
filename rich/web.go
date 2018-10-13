@@ -29,7 +29,7 @@ type Web struct {
 	Dev     bool                        // 开发模式
 	URL     string                      // 网址
 	LogFile string                      // 日志文件
-	App     map[string]string           // 应用信息
+	App     *App                        // 应用信息
 	db      *leveldb.DB                 // 数据库
 	days    Days                        // 文件日期列表
 	cache   map[interface{}]interface{} // 缓存
@@ -53,6 +53,9 @@ func (w *Web) Init() error {
 	if err = w.Get(DaysKey, &w.days); err != nil {
 		w.days = []string{}
 	}
+	if len(w.days) > 0 {
+		w.App.IsNew = false
+	}
 	// 缓存初始化
 	w.cache = map[interface{}]interface{}{}
 	return nil
@@ -61,6 +64,7 @@ func (w *Web) Init() error {
 func (w *Web) initEcho() *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
+	e.HidePort = true
 	e.HTTPErrorHandler = w.httpErrorHandler
 	// 开发模式
 	if w.Dev {

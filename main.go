@@ -94,11 +94,7 @@ func runAction(c *cli.Context) error {
 		Db:      c.String("b"),
 		Dev:     c.Bool("d"),
 		LogFile: c.String("l"),
-		App: map[string]string{
-			"Name":    c.App.Name,
-			"Usage":   c.App.Usage,
-			"Version": c.App.Version,
-		},
+		App:     rich.NewApp(c.App),
 	}
 	if url, err := rich.GetURL(address, !strings.EqualFold(c.String("p"), "http")); err == nil {
 		web.URL = url

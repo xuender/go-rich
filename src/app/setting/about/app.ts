@@ -1,6 +1,7 @@
 
 export interface App {
-  Name?: string
-  Version?: string
-  Usage?: string
+  name?: string
+  version?: string
+  usage?: string
+  isNew?: boolean
 }

@@ -7,11 +7,25 @@
 <ion-content padding>
   <form #loginForm="ngForm">
     <ion-list>
+      <ion-card *ngIf="app.isNew">
+        <ion-card-header>
+          <ion-card-title>新用户提示</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>新用户默认登录名:
+            <span style="color:red">admin</span>
+          </p>
+          <p>新用户默认登录密码:
+            <span style="color:red">6181</span>
+          </p>
+          <p>登录后请及时更改登录名和密码</p>
+        </ion-card-content>
+      </ion-card>
       <ion-item-group>
         <ion-item [class.error]="nick.invalid && nick.touched">
           <ion-label fixed>登录名</ion-label>
-          <ion-input #nick="ngModel" [(ngModel)]="obj.nick" name="nick" type="text" placeholder="用户姓名或手机号" minlength="3" maxlength="30"
-            required></ion-input>
+          <ion-input #nick="ngModel" [(ngModel)]="obj.nick" name="nick" type="text" placeholder="用户姓名或手机号" minlength="3"
+            maxlength="30" required></ion-input>
         </ion-item>
         <ion-item color="danger" *ngIf="nick.invalid && nick.touched">
           <p [hidden]="!nick.errors?.required">请输入登录名</p>
@@ -22,8 +36,8 @@
       <ion-item-group>
         <ion-item [class.error]="pass.invalid && pass.touched">
           <ion-label fixed>密码</ion-label>
-          <ion-input #pass="ngModel" [(ngModel)]="obj.pass" name="pass" type="password" placeholder="登录密码" minlength="4" maxlength="30"
-            required></ion-input>
+          <ion-input #pass="ngModel" [(ngModel)]="obj.pass" name="pass" type="password" placeholder="登录密码" minlength="4"
+            maxlength="30" required></ion-input>
         </ion-item>
         <ion-item color="danger" *ngIf="pass.invalid && pass.touched">
           <p [hidden]="!pass.errors?.required">请输入密码</p>
@@ -36,11 +50,4 @@
       </ion-button>
     </ion-list>
   </form>
-  <p>新用户默认登录名:
-    <span style="color:red">admin</span>
-  </p>
-  <p>新用户默认登录密码:
-    <span style="color:red">6181</span>
-  </p>
-  <p>登录后请及时更改登录名和密码</p>
 </ion-content>

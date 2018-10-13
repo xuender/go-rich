@@ -69,12 +69,14 @@ type Includeser interface {
 
 // BeforePut 修改对象
 func (o *Obj) BeforePut(id utils.ID) {
+	o.Name = strings.Trim(o.Name, " ")
 	o.ID = id
 	o.Pinyin = py(o.Name)
 }
 
 // BeforePost 对象新建前
 func (o *Obj) BeforePost(key byte) utils.ID {
+	o.Name = strings.Trim(o.Name, " ")
 	o.ID = utils.NewID(key)
 	o.Ca = time.Now()
 	o.Pinyin = py(o.Name)

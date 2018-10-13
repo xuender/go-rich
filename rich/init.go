@@ -1,5 +1,8 @@
 package rich
 
+// DayFormat 日期格式化
+const DayFormat = "2006-01-02"
+
 const (
 	// CustomerIDPrefix 客户前缀
 	CustomerIDPrefix byte = 'C'

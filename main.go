@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/urfave/cli"
 	"github.com/xuender/go-utils"
@@ -60,6 +61,10 @@ func main() {
 			Usage: "日志输出文件",
 		},
 		cli.BoolFlag{
+			Name:  "zip-backup,z",
+			Usage: "数据库备份",
+		},
+		cli.BoolFlag{
 			Name:  "open,o",
 			Usage: "启动浏览器显示QR码",
 		},
@@ -82,6 +87,16 @@ func main() {
 	}
 }
 func runAction(c *cli.Context) error {
+	// 备份
+	if c.Bool("z") {
+		bak := time.Now().Format(rich.DayFormat) + ".zip"
+		if err := rich.Zip(c.String("b"), bak); err != nil {
+			log.Println(err.Error())
+		} else {
+			log.Println("备份:", bak)
+		}
+	}
+
 	address := c.String("a")
 	if !strings.HasPrefix(address, ":") {
 		address = ":" + address

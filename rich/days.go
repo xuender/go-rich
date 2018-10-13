@@ -10,9 +10,6 @@ import (
 // Days 日期
 type Days []string
 
-// DayFormat 日期格式化
-const DayFormat = "2006-01-02"
-
 // Clean 清空
 func (d *Days) Clean() {
 	*d = append([]string{})

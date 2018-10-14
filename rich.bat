@@ -1,2 +1,2 @@
 move /Y temp\go-rich.exe .
-go-rich.exe -n -u
+go-rich.exe -u -z

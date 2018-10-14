@@ -240,7 +240,7 @@ func (w *Web) login(c echo.Context) error {
 	passBs := Pass(pass)
 	for _, u := range w.users() {
 		// 身份认证
-		if u.Name == nick || u.Phone == nick || bytes.Equal(passBs, u.Pass) {
+		if (u.Name == nick || u.Phone == nick) && bytes.Equal(passBs, u.Pass) {
 			t, err := w.Signed(u.ID.String(), passBs)
 			if err != nil {
 				return err

@@ -15,6 +15,12 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(tap((event: HttpEvent<any>) => { }, (err: any) => {
       switch (err.status) {
         case 401:
+          this.alertCtrl.create({
+            header: `登录错误`,
+            message: '登录名或密码错误，请重新输入',
+            buttons: ['确定']
+          }).then(a => a.present())
+          break
         case 403:
           this.router.navigateByUrl('/start')
           break

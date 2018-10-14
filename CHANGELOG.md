@@ -1,3 +1,19 @@
+<a name="0.1.11"></a>
+## [0.1.11](https://github.com/xuender/go-rich/compare/v0.1.10...v0.1.11) (2018-10-14)
+
+
+### Bug Fixes
+
+* **index:** 页面不缓存 ([a910b96](https://github.com/xuender/go-rich/commit/a910b96)), closes [#45](https://github.com/xuender/go-rich/issues/45)
+* **trades:** 订单页面没选择客户也会查询客户信息 ([fe99537](https://github.com/xuender/go-rich/commit/fe99537))
+
+
+### Features
+
+* **console:** 优化控制台输出，显示新用户初始帐号 ([17c2538](https://github.com/xuender/go-rich/commit/17c2538)), closes [#46](https://github.com/xuender/go-rich/issues/46) [#47](https://github.com/xuender/go-rich/issues/47)
+
+
+
 <a name="0.1.10"></a>
 ## [0.1.10](https://github.com/xuender/go-rich/compare/v0.1.9...v0.1.10) (2018-10-13)
 

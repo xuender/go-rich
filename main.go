@@ -26,7 +26,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "Go Rich"
 	app.Usage = "致力服务小商家"
-	app.Version = "v0.1.10"
+	app.Version = "v0.1.11"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "address,a",

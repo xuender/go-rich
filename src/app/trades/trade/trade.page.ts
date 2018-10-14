@@ -54,6 +54,7 @@ export class TradePage extends ObjPage<Trade>{
         this.obj.orders.push({
           id: i.id,
           price: i.price,
+          cost: i.cost,
           num: 1,
         })
       }
@@ -66,6 +67,15 @@ export class TradePage extends ObjPage<Trade>{
       price += (o.price * o.num)
     }
     return price
+  }
+
+  get cost() {
+    let cost = 0
+    for (const o of this.obj.orders) {
+      cost += ((o.cost ? o.cost : 0) * o.num)
+    }
+    this.obj.cost = cost
+    return cost
   }
 
   puls(o: Order) {

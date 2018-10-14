@@ -12,6 +12,7 @@ import (
 type Item struct {
 	Obj
 	Price  int64             `json:"price"`  // 价格,单位分
+	Cost   int64             `json:"cost"`   // 成本，单位分
 	Extend map[string]string `json:"extend"` // 扩展属性
 	Tags   Tags              `json:"tags"`   // 标签
 }

@@ -6,4 +6,6 @@ export interface Order {
   num: number
   // 金额
   price: number
+  // 成本
+  cost?: number
 }

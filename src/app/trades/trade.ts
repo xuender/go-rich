@@ -10,6 +10,8 @@ export interface Trade extends Obj {
   pa: Date
   // 总额， 单位分
   total: number
+  // 成本
+  cost?: number
   // 订单详情
   orders: Order[]
 }

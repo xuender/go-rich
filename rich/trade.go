@@ -16,6 +16,7 @@ type Trade struct {
 	Ca     time.Time   `json:"ca"`                      // 创建时间
 	Pa     time.Time   `json:"pa"`                      // 付款时间
 	Orders []Order     `json:"orders"`                  // 订单详情
+	Cost   int64       `json:"cost"`                    // 成本，单位分
 	Total  int64       `json:"total"`                   // 总额,单位分
 	Note   string      `json:"note" validate:"lte=100"` // 备注 最长100
 }

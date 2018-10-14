@@ -19,6 +19,7 @@ export class ItemPage extends ObjPage<Item> {
     super(modalCtrl, navParams)
     if (!this.obj.extend) { this.obj.extend = {} }
     if (!this.obj.tags) { this.obj.tags = [] }
+    if (!this.obj.cost) { this.obj.cost = 0 }
   }
 
   get service() { return this.itemService }
@@ -29,5 +30,13 @@ export class ItemPage extends ObjPage<Item> {
 
   set itemPrice(price: number) {
     this.obj.price = Math.ceil(price * 100)
+  }
+
+  get itemCost() {
+    return this.obj.cost / 100
+  }
+
+  set itemCost(cost: number) {
+    this.obj.cost = Math.ceil(cost * 100)
   }
 }

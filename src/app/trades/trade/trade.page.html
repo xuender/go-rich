@@ -15,7 +15,7 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-fab vertical="center" horizontal="end" edge slot="fixed">
+  <ion-fab vertical="center" horizontal="start" edge slot="fixed">
     <ion-fab-button (click)="add()" color="secondary">
       <ion-icon name="list"></ion-icon>
     </ion-fab-button>
@@ -36,21 +36,23 @@
           <ion-label>
             <rich-name id="{{e.id}}"></rich-name>
           </ion-label>
-          <ion-input #num="ngModel" name="num-{{i}}" type="number" placeholder="商品数量" [(ngModel)]="e.num" max="1000"
-            min="1" required></ion-input>
+          <!-- <ion-input #num="ngModel" name="num-{{i}}" type="number" placeholder="商品数量" [(ngModel)]="e.num" max="1000"
+            min="1" required></ion-input> -->
           <ion-badge color="warning">{{ e.price / 100 | currency:'￥' }}</ion-badge>
+          <ion-badge *ngIf="e.num && e.num > 1">x{{ e.num }}</ion-badge>
           <ion-button color="secondary" (click)="puls(e)">增加</ion-button>
           <ion-button color="danger" (click)="remove(e)">减少</ion-button>
         </ion-item>
-        <ion-item color="danger" *ngIf="num.invalid && num.touched">
+        <!-- <ion-item color="danger" *ngIf="num.invalid && num.touched">
           <p [hidden]="!num.errors?.required">请输数量</p>
           <p [hidden]="!num.errors?.max">数量最多1000</p>
-        </ion-item>
+        </ion-item> -->
       </ng-container>
       <ion-item-group>
         <ion-item>
-          <ion-label>应收</ion-label>
+          <ion-label>合计</ion-label>
           <ion-badge color="warning">{{ price / 100 | currency:'￥' }}</ion-badge>
+          <ion-badge color="success">{{ cost / 100 | currency:'￥' }}</ion-badge>
         </ion-item>
       </ion-item-group>
       <ion-item-group>
@@ -60,6 +62,12 @@
         </ion-item>
         <ion-item color="danger" *ngIf="total.invalid && total.touched">
           <p [hidden]="!total.errors?.max">超过最大值</p>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item>
+          <ion-label>利润</ion-label>
+          <ion-badge color="danger">{{ (tradeTotal*100 - cost) / 100 | currency:'￥' }}</ion-badge>
         </ion-item>
       </ion-item-group>
       <ion-item-group>

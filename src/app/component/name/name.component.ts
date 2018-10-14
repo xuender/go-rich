@@ -17,6 +17,9 @@ export class NameComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
+    if (!this.id) {
+      return
+    }
     console.log(this.id)
     let code
     switch (this.id[0]) {
@@ -28,6 +31,7 @@ export class NameComponent implements OnInit {
         break
       default:
         console.error('ID错误', this.id)
+        return
     }
     this.http.get<Obj>(`${Config.URL}/api/${code}/${this.id}`)
       .subscribe(r => {

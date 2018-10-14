@@ -1,9 +1,0 @@
-# Generar certificados para JWT
-
-openssl genrsa -out private.rsa 1024
-
-openssl rsa -in private.rsa -pubout -out public.rsa.pub
-
-# http2
-
-go run $(go env GOROOT)/src/crypto/tls/generate_cert.go --host=localhost

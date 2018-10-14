@@ -116,10 +116,11 @@ func runAction(c *cli.Context) error {
 	}
 	// 扫码提示
 	color.Println(" ", color.Blue(web.URL, color.U))
-	color.Println("  使用", color.Green("微信"), "扫码，即可打开")
+	color.Println("  使用", color.Green("微信"), "扫码，即刻使用")
 	color.Println(" ", color.Red("《  "+c.App.Name+"  》", color.B, color.WhtBg), color.Cyan(c.App.Version, color.In))
-	rich.PrintQR(web.URL)
 	color.Println("      ", color.Red(c.App.Usage, color.U))
+	rich.PrintQR(web.URL)
+	color.Println("请保持本窗口处于打开状态，", color.Red("CTRL+C", color.B), "退出")
 	// 初始化
 	if err := web.Init(); err != nil {
 		return err

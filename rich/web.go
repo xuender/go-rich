@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/Code-Hex/echo-static"
@@ -15,6 +16,7 @@ import (
 	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/labstack/gommon/color"
 	"github.com/syndtr/goleveldb/leveldb"
 	"golang.org/x/crypto/acme/autocert"
 	"rsc.io/qr"
@@ -55,6 +57,13 @@ func (w *Web) Init() error {
 	}
 	if len(w.days) > 0 {
 		w.App.IsNew = false
+	}
+	if w.App.IsNew {
+		color.Println("新用户提示:", color.Yellow("尽快修改初始密码", color.B))
+		color.Println(color.Black("      登录帐号      ", color.B, color.YelBg))
+		color.Println(color.Cyan(" 登录昵称 ", color.U), " : ", color.Green("admin", color.B))
+		color.Println(color.Cyan(" 初始密码 ", color.U), " : ", color.Green(strings.Replace(w.App.Version, ".", "", -1), color.B))
+		color.Println("创建首笔订单后不再提示以上信息")
 	}
 	// 缓存初始化
 	w.cache = map[interface{}]interface{}{}

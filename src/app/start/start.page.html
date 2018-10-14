@@ -7,20 +7,6 @@
 <ion-content padding>
   <form #loginForm="ngForm">
     <ion-list>
-      <ion-card *ngIf="!app || app?.isNew">
-        <ion-card-header>
-          <ion-card-title>新用户提示</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <p>新用户默认登录名:
-            <span style="color:red">admin</span>
-          </p>
-          <p>新用户默认登录密码:
-            <span style="color:red">{{ app?.version }}</span>
-          </p>
-          <p>登录后请及时更改登录名和密码</p>
-        </ion-card-content>
-      </ion-card>
       <ion-item-group>
         <ion-item [class.error]="nick.invalid && nick.touched">
           <ion-label fixed>登录名</ion-label>

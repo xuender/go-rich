@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/labstack/gommon/color"
 	"github.com/urfave/cli"
 	"github.com/xuender/go-utils"
 
@@ -24,7 +25,7 @@ import (
 func main() {
 	app := cli.NewApp()
 	app.Name = "Go Rich"
-	app.Usage = "服务小商家"
+	app.Usage = "致力服务小商家"
 	app.Version = "v0.1.10"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
@@ -113,6 +114,12 @@ func runAction(c *cli.Context) error {
 	} else {
 		return err
 	}
+	// 扫码提示
+	color.Println(" ", color.Blue(web.URL, color.U))
+	color.Println("  使用", color.Green("微信"), "扫码，即可打开")
+	color.Println(" ", color.Red("《  "+c.App.Name+"  》", color.B, color.WhtBg), color.Cyan(c.App.Version, color.In))
+	rich.PrintQR(web.URL)
+	color.Println("      ", color.Red(c.App.Usage, color.U))
 	// 初始化
 	if err := web.Init(); err != nil {
 		return err
@@ -133,8 +140,6 @@ func runAction(c *cli.Context) error {
 			}
 		}()
 	}
-	fmt.Println("访问地址:", web.URL)
-	rich.PrintQR(web.URL)
 	// 退出
 	quitChan := make(chan os.Signal)
 	signal.Notify(quitChan,

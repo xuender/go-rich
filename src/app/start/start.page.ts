@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+
 import { Config } from '../api/config'
-import { App } from '../setting/about/app';
 
 @Component({
   selector: 'app-start',
@@ -12,16 +12,10 @@ import { App } from '../setting/about/app';
 export class StartPage implements OnInit {
 
   obj = { nick: '', pass: '' }
-  app: App
   constructor(
     private router: Router,
     private http: HttpClient,
   ) {
-    this.http.get<App>(`${Config.URL}/about`)
-      .subscribe(app => {
-        this.app = app
-        this.app.version = app.version.replace(/\./g, '')
-      })
   }
 
   ngOnInit() {

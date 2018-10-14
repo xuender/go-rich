@@ -85,19 +85,20 @@ func (w *Web) items() []Item {
 func (w *Web) itemPost(c echo.Context) error {
 	delete(w.cache, ItemIDPrefix)
 	i := Item{}
-	return w.ObjPost(c, &i, ItemIDPrefix, func() error { return w.Bind(c, &i) }, func() error { return w.addTags("tag-I", i.Tags) })
+	return w.ObjPost(c, &i, ItemIDPrefix, func() error { return w.Bind(c, &i) }, func() error { return w.addTags(TagKeys[1], i.Tags) })
 }
 
 // 商品修改
 func (w *Web) itemPut(c echo.Context) error {
 	delete(w.cache, ItemIDPrefix)
 	i := Item{}
-	return w.ObjPut(c, &i, ItemIDPrefix, func() error { return w.Bind(c, &i) }, func() error { return w.addTags("tag-I", i.Tags) })
+	return w.ObjPut(c, &i, ItemIDPrefix, func() error { return w.Bind(c, &i) }, func() error { return w.addTags(TagKeys[1], i.Tags) })
 }
 
 // 商品删除
 func (w *Web) itemDelete(c echo.Context) error {
 	return w.ObjDeleter(c, ItemIDPrefix, &Item{}, func() error {
+		w.tagsReset()
 		delete(w.cache, ItemIDPrefix)
 		return nil
 	})
@@ -128,7 +129,7 @@ func (w *Web) itemsFile(c echo.Context) error {
 	if err == nil {
 		for _, i := range items {
 			i.BeforePost(ItemIDPrefix)
-			w.addTags("tag-I", i.Tags)
+			w.addTags(TagKeys[1], i.Tags)
 			w.Put(i.ID[:], i)
 		}
 		os.Remove(file)

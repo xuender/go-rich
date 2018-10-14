@@ -24,6 +24,31 @@ var TagKeys = []string{
 	"tag-I", // 商品标签数据
 }
 
+// 标签重置
+func (w *Web) tagsReset() {
+	delete(w.cache, CustomerIDPrefix)
+	delete(w.cache, ItemIDPrefix)
+	customers := w.customers()
+	items := w.items()
+	for _, t := range w.tags() {
+		t.Use[TagKeys[0]] = false
+		t.Use[TagKeys[1]] = false
+		for _, c := range customers {
+			if utils.Includes(c.Tags, t.Name) {
+				t.Use[TagKeys[0]] = true
+				break
+			}
+		}
+		for _, i := range items {
+			if utils.Includes(i.Tags, t.Name) {
+				t.Use[TagKeys[1]] = true
+				break
+			}
+		}
+		w.Put(t.ID[:], t)
+	}
+}
+
 func (w *Web) addTags(key string, tags Tags) error {
 	for _, n := range tags {
 		noHas := true

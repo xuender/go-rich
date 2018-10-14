@@ -167,19 +167,20 @@ func (w *Web) customers() []Customer {
 func (w *Web) customerPost(c echo.Context) error {
 	delete(w.cache, CustomerIDPrefix)
 	cu := Customer{}
-	return w.ObjPost(c, &cu, CustomerIDPrefix, func() error { return w.Bind(c, &cu) }, func() error { return w.addTags("tag-C", cu.Tags) })
+	return w.ObjPost(c, &cu, CustomerIDPrefix, func() error { return w.Bind(c, &cu) }, func() error { return w.addTags(TagKeys[0], cu.Tags) })
 }
 
 // 客户修改
 func (w *Web) customerPut(c echo.Context) error {
 	delete(w.cache, CustomerIDPrefix)
 	cu := Customer{}
-	return w.ObjPut(c, &cu, CustomerIDPrefix, func() error { return w.Bind(c, &cu) }, func() error { return w.addTags("tag-C", cu.Tags) })
+	return w.ObjPut(c, &cu, CustomerIDPrefix, func() error { return w.Bind(c, &cu) }, func() error { return w.addTags(TagKeys[0], cu.Tags) })
 }
 
 // 删除用户
 func (w *Web) customerDelete(c echo.Context) error {
 	return w.ObjDeleter(c, CustomerIDPrefix, &Customer{}, func() error {
+		w.tagsReset()
 		delete(w.cache, CustomerIDPrefix)
 		return nil
 	})
@@ -219,7 +220,7 @@ func (w *Web) customersFile(c echo.Context) error {
 	if err == nil {
 		for _, c := range cs {
 			c.BeforePost(CustomerIDPrefix)
-			w.addTags("tag-C", c.Tags)
+			w.addTags(TagKeys[0], c.Tags)
 			w.Put(c.ID[:], c)
 		}
 		os.Remove(file)

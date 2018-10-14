@@ -28,20 +28,82 @@
           <p [hidden]="!name.errors?.maxlength">名称最长20</p>
         </ion-item>
       </ion-item-group>
-      <ion-item>
-        <ion-label fixed>姓名</ion-label>
-        <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map['Name']" name="ename">
-          <ion-select-option [value]="0">无</ion-select-option>
-          <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label fixed>电话</ion-label>
-        <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map['Phone']" name="phone">
-          <ion-select-option [value]="0">无</ion-select-option>
-          <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
-        </ion-select>
-      </ion-item>
+      <ion-item-group>
+        <ion-item [class.error]="type.invalid && type.touched">
+          <ion-label fixed>类型</ion-label>
+          <ion-select #type="ngModel" [(ngModel)]="obj.type" name="type" ok-text="确定" cancel-text="取消" required>
+            <ion-select-option *ngFor="let t of types;let i = index" [value]="i+1">{{ t }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item color="danger" *ngIf="type.invalid && type.touched">
+          <p [hidden]="!type.errors?.required">请选择类型</p>
+        </ion-item>
+      </ion-item-group>
+      <ng-container *ngIf="obj.type == 1">
+        <ion-item>
+          <ion-label fixed>姓名</ion-label>
+          <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map['Name']" name="ename">
+            <ion-select-option [value]="0">无</ion-select-option>
+            <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label fixed>电话</ion-label>
+          <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map['Phone']" name="phone">
+            <ion-select-option [value]="0">无</ion-select-option>
+            <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item-divider>
+          <ion-label>客户扩展</ion-label>
+          <ion-button (click)="customer()">设置</ion-button>
+        </ion-item-divider>
+        <ion-item-group *ngIf="extsByCustomer$ | async as exts; else loading">
+          <ion-item *ngFor="let e of exts">
+            <ion-label fixed>{{ e.key }}</ion-label>
+            <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map[e.key]" [name]="e.key">
+              <ion-select-option [value]="0">无</ion-select-option>
+              <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-item-group>
+      </ng-container>
+      <ng-container *ngIf="obj.type == 2">
+        <ion-item>
+          <ion-label fixed>名称</ion-label>
+          <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map['Name']" name="iname">
+            <ion-select-option [value]="0">无</ion-select-option>
+            <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label fixed>成本</ion-label>
+          <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map['Cost']" name="cost">
+            <ion-select-option [value]="0">无</ion-select-option>
+            <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label fixed>价格</ion-label>
+          <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map['Price']" name="price">
+            <ion-select-option [value]="0">无</ion-select-option>
+            <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item-divider>
+          <ion-label>商品扩展</ion-label>
+          <ion-button (click)="item()">设置</ion-button>
+        </ion-item-divider>
+        <ion-item-group *ngIf="extsByItem$ | async as exts; else loading">
+          <ion-item *ngFor="let e of exts">
+            <ion-label fixed>{{ e.key }}</ion-label>
+            <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map[e.key]" [name]="e.key">
+              <ion-select-option [value]="0">无</ion-select-option>
+              <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-item-group>
+      </ng-container>
       <ion-item>
         <ion-label fixed>备注</ion-label>
         <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map['Note']" name="note">
@@ -49,19 +111,6 @@
           <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-item-divider>
-        <ion-label>客户扩展</ion-label>
-        <ion-button (click)="edit()">设置</ion-button>
-      </ion-item-divider>
-      <ion-item-group *ngIf="extsByCustomer$ | async as exts; else loading">
-        <ion-item *ngFor="let e of exts">
-          <ion-label fixed>{{ e.key }}</ion-label>
-          <ion-select ok-text="确定" cancel-text="取消" [(ngModel)]="obj.map[e.key]" [name]="e.key">
-            <ion-select-option [value]="0">无</ion-select-option>
-            <ion-select-option [value]="i+1" *ngFor="let a of abc; let i = index">{{a}}列</ion-select-option>
-          </ion-select>
-        </ion-item>
-      </ion-item-group>
     </ion-list>
   </form>
 </ion-content>

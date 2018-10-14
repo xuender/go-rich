@@ -6,6 +6,14 @@
       </ion-button>
     </ion-buttons>
     <ion-searchbar placeholder="名称,拼音或声母" (ionChange)="search($event)"></ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="upload()">
+        上传
+      </ion-button>
+      <!-- <ion-button (click)="download()">
+        下载
+      </ion-button> -->
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -33,4 +41,8 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
+  <ion-infinite-scroll (ionInfinite)="load($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="加载更多数据...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

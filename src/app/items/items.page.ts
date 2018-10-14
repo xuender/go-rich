@@ -7,6 +7,7 @@ import { ItemPage } from './item/item.page';
 import { ItemService } from './item.service';
 import { TagService } from '../tags/tag.service';
 import { ObjsPlusPage } from '../api/objs.puls.page';
+import { UploadPage } from '../setting/xlsxes/upload/upload.page';
 
 @Component({
   selector: 'app-items',
@@ -30,4 +31,14 @@ export class ItemsPage extends ObjsPlusPage<Item> {
   get page() { return ItemPage }
   get newObj() { return { name: '', price: 0, extend: {}, tags: [] } }
   get title() { return '商品' }
+
+  async upload() {
+    const modal = await this.modalCtrl.create({
+      component: UploadPage,
+      componentProps: { url: 'items/file' }
+    });
+    await modal.present()
+    await modal.onDidDismiss()
+    await this.reset()
+  }
 }

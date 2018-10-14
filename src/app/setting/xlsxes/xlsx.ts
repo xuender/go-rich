@@ -1,5 +1,6 @@
 export interface Xlsx {
-  id?: string                      // 主键
-  name: string                    // 名称
+  id?: string
+  // 名称
+  name: string
   map: any
 }

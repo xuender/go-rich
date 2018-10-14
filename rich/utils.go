@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/mozillazg/go-pinyin"
 	"github.com/mozillazg/go-slugify"
 )
@@ -122,4 +123,19 @@ func Pass(str string) []byte {
 // Axis 装环Excel坐标
 func Axis(col, row int) string {
 	return fmt.Sprintf("%c%d", col+65, row+1)
+}
+
+// ReadXlsx 读取Excel文件
+func ReadXlsx(file string, add func(row []string)) error {
+	xlsx, err := excelize.OpenFile(file)
+	if err != nil {
+		return err
+	}
+	for _, name := range xlsx.GetSheetMap() {
+		rows := xlsx.GetRows(name)
+		for _, row := range rows {
+			add(row)
+		}
+	}
+	return nil
 }

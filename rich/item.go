@@ -1,8 +1,12 @@
 package rich
 
 import (
-	"log"
+	"errors"
+	"net/http"
+	"os"
 	"sort"
+	"strings"
+	"unsafe"
 
 	"github.com/labstack/echo"
 	"github.com/xuender/go-utils"
@@ -47,6 +51,7 @@ func (w *Web) itemRoute(c *echo.Group) {
 	c.PUT("/:id", w.itemPut)                                                  // 商品修改
 	c.DELETE("/:id", w.itemDelete)                                            // 商品删除
 	c.GET("/:id", func(c echo.Context) error { return w.ObjGet(c, &Item{}) }) // 商品列表
+	c.POST("/file", w.itemsFile)                                              // 上传商品文件
 }
 
 // 商品列表
@@ -65,10 +70,8 @@ func (w *Web) items() []Item {
 	cs := []Item{}
 	w.Iterator([]byte{ItemIDPrefix, '-'}, func(key, value []byte) {
 		c := Item{}
-		if utils.Decode(value, &c) == nil {
+		if utils.Decode(value, &c) == nil && !c.IsDelete() {
 			cs = append(cs, c)
-		} else {
-			log.Printf("商品解析失败 %x \n", key)
 		}
 	})
 	sort.Slice(cs, func(i int, j int) bool {
@@ -98,4 +101,92 @@ func (w *Web) itemDelete(c echo.Context) error {
 		delete(w.cache, ItemIDPrefix)
 		return nil
 	})
+}
+
+// 商品信息上传
+func (w *Web) itemsFile(c echo.Context) error {
+	delete(w.cache, ItemIDPrefix)
+	// 读取Excel定义
+	xid := new(utils.ID)
+	if err := xid.Parse(c.Request().Header.Get("xlsx")); err != nil {
+		return err
+	}
+	xlsx := Xlsx{}
+	w.Get(xid[:], &xlsx)
+	// 读取Excel文件
+	file, err := w.saveTemp(c)
+	if err != nil {
+		return err
+	}
+	items := []Item{}
+	err = ReadXlsx(file, func(row []string) {
+		if is, e := newItems(row, xlsx.Map); e == nil {
+			items = append(items, is...)
+		}
+	})
+	// 生成商品信息
+	if err == nil {
+		for _, i := range items {
+			i.BeforePost(ItemIDPrefix)
+			w.addTags("tag-I", i.Tags)
+			w.Put(i.ID[:], i)
+		}
+		os.Remove(file)
+		w.itemsMerge()
+		return c.String(http.StatusOK, "ok")
+	}
+	return c.String(http.StatusInternalServerError, err.Error())
+}
+
+// 新建商品
+func newItems(row []string, m map[int]string) (items []Item, err error) {
+	i := Item{}
+	p, err := utils.Parse(row, m, &i)
+	if err != nil {
+		return
+	}
+	i.Cost = i.Cost * 100
+	i.Price = i.Price * 100
+	i.Extend = p
+	for _, name := range []string{"", "商品", "货品", "商品名称"} {
+		if i.Name == name {
+			err = errors.New("商品名称错误")
+			return
+		}
+	}
+	if strings.Contains(i.Name, "+") {
+		names := strings.Split(i.Name, "+")
+		if len(names) == 1 {
+			items = append(items, i)
+			return
+		}
+		for _, name := range names {
+			name = strings.Trim(name, " ")
+			if name != "" {
+				var b Item = *(*Item)(unsafe.Pointer(&i))
+				b.Name = name
+				items = append(items, b)
+			}
+		}
+	}
+	return
+}
+
+// itemsMerge 商品信息合并
+func (w *Web) itemsMerge() {
+	m := map[string]Item{}
+	for _, c := range w.items() {
+		k := c.Name
+		if v, ok := m[k]; ok {
+			// 重复
+			for _, t := range c.Tags {
+				v.Tags.Add(t)
+			}
+			w.Put(v.ID[:], v)
+			w.Delete(c.ID[:])
+		} else {
+			m[k] = c
+		}
+	}
+	delete(w.cache, ItemIDPrefix)
 }

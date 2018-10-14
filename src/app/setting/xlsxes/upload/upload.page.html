@@ -5,7 +5,7 @@
         取消
       </ion-button>
     </ion-buttons>
-    <ion-title>客户档案上传</ion-title>
+    <ion-title>档案上传</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="setup()">
         设置
@@ -22,17 +22,17 @@
         <ion-select-option [value]="x.id" *ngFor="let x of xlsxes$ | async">{{ x.name }}</ion-select-option>
       </ion-select>
     </ion-item>
-  </ion-list>
   <ng-container *ngIf="header.value">
     <input ion-input type="file" ng2FileSelect [uploader]="uploader" accept=".xlsx">
-    <ion-button size="large" color="secondary" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+    <ion-button expand="full" size="large" color="secondary" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
       上传
     </ion-button>
-    <ion-button size="large" color="dark" (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
+    <!-- <ion-button size="large" color="dark" (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
       取消
     </ion-button>
     <ion-button size="large" color="danger" (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
       删除
-    </ion-button>
+    </ion-button> -->
   </ng-container>
+  </ion-list>
 </ion-content>

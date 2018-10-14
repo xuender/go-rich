@@ -9,10 +9,18 @@ import (
 	"github.com/xuender/go-utils"
 )
 
+const (
+	_ = iota
+	XlsxTypeCustomers
+	XlsxTypeItems
+	XlsxTypeTrides
+)
+
 // Xlsx Excel定义
 type Xlsx struct {
 	Obj
-	Map map[int]string `json:"map"` // 列定义
+	Type int            `json:"type"` // 类型
+	Map  map[int]string `json:"map"`  // 列定义
 }
 
 // Excel定义路由

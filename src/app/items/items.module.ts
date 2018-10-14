@@ -8,6 +8,7 @@ import { ItemsPage } from './items.page';
 import { PipeModule } from '../pipe/pipe.module';
 import { ItemPageModule } from './item/item.module';
 import { SelectPageModule } from '../tags/select/select.module';
+import { UploadPageModule } from '../setting/xlsxes/upload/upload.module';
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
     ItemPageModule,
     PipeModule,
     SelectPageModule,
+    UploadPageModule,
   ],
   declarations: [
     ItemsPage,

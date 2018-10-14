@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavParams, AlertController } from '@ionic/angular';
 import { FileUploader, FileItem, Headers } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
 
-import { Config } from '../../api/config'
-import { Xlsx } from '../../setting/xlsxes/xlsx';
-import { CustomerService } from '../customer.service';
-import { SettingService } from '../../setting/setting.service';
-import { XlsxService } from '../../setting/xlsxes/xlsx.service';
+import { Config } from '../../../api/config'
+import { Xlsx } from '../../../setting/xlsxes/xlsx';
+import { CustomerService } from '../../../customers/customer.service';
+import { SettingService } from '../../../setting/setting.service';
+import { XlsxService } from '../xlsx.service';
 
 @Component({
   selector: 'app-upload',
@@ -20,11 +20,7 @@ export class UploadPage {
     value: '',
   }
   headers: Headers[] = [this.header]
-  uploader: FileUploader = new FileUploader({
-    url: `${Config.URL}/api/customers/file`,
-    headers: this.headers,
-    authToken: `Bearer ${localStorage.getItem("token")}`
-  })
+  uploader: FileUploader
   select: Xlsx
   xlsxes$: Observable<Xlsx[]>
   constructor(
@@ -32,11 +28,22 @@ export class UploadPage {
     public customer: CustomerService,
     public setting: SettingService,
     private xlsxService: XlsxService,
+    private navParams: NavParams,
+    private alertCtrl: AlertController,
   ) {
     this.xlsxes$ = this.xlsxService.all$
+    this.uploader = new FileUploader({
+      url: `${Config.URL}/api/${this.navParams.get('url')}`,
+      headers: this.headers,
+      authToken: `Bearer ${localStorage.getItem("token")}`
+    })
     this.uploader.onCompleteItem = (item: FileItem, r: string, status: number) => {
       if (status !== 200) {
-        // TOOD 服务器错误
+        this.alertCtrl.create({
+          header: `错误 [ ${status} ]`,
+          message: JSON.parse(r).message,
+          buttons: ['确定']
+        }).then(a => a.present())
         return
       }
       this.modalCtrl.dismiss()

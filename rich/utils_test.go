@@ -9,10 +9,10 @@ import (
 func TestUtils(t *testing.T) {
 	Convey("pinyin", t, func() {
 		Convey("py", func() {
-			So(py("中国"), ShouldEqual, "zhong guo")
-			So(py("中国WTo"), ShouldEqual, "zhong guo wto zhong guo")
+			So(py("中国"), ShouldEqual, "zhong guo ;")
+			So(py("中国WTo"), ShouldEqual, "zhong guo wto ; zhong guo ;")
 			So(py("重瞳"), ShouldContainSubstring, "zhong tong")
-			So(py("11"), ShouldEqual, "11")
+			So(py("11"), ShouldContainSubstring, "11")
 		})
 	})
 	Convey("Axis", t, func() {

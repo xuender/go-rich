@@ -16,7 +16,9 @@ import { ExtService } from '../../../ext/ext.service';
 })
 export class XlsxPage extends ObjPage<Xlsx>{
   abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+  types = ['客户', '商品', '交易']
   extsByCustomer$: Observable<Ext[]>
+  extsByItem$: Observable<Ext[]>
   constructor(
     public extService: ExtService,
     private xlsxService: XlsxService,
@@ -25,6 +27,7 @@ export class XlsxPage extends ObjPage<Xlsx>{
   ) {
     super(modalCtrl, navParams)
     this.extsByCustomer$ = this.extService.extsByCustomer$
+    this.extsByItem$ = this.extService.extsByItem$
     this.obj.map = invert(this.obj.map)
     for (const k in this.obj.map) {
       if (this.obj.map[k]) {
@@ -48,8 +51,13 @@ export class XlsxPage extends ObjPage<Xlsx>{
     await super.save()
   }
 
-  async edit() {
+  async customer() {
     await this.extService.extCustomer()
     this.extsByCustomer$ = this.extService.extsByCustomer$
+  }
+
+  async item() {
+    await this.extService.extItem()
+    this.extsByItem$ = this.extService.extsByItem$
   }
 }

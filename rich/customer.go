@@ -3,7 +3,6 @@ package rich
 import (
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"sort"
@@ -153,10 +152,8 @@ func (w *Web) customers() []Customer {
 	cs := []Customer{}
 	w.Iterator([]byte{CustomerIDPrefix, '-'}, func(key, value []byte) {
 		c := Customer{}
-		if utils.Decode(value, &c) == nil {
+		if utils.Decode(value, &c) == nil && !c.IsDelete() {
 			cs = append(cs, c)
-		} else {
-			log.Printf("客户信息解析失败 %x \n", key)
 		}
 	})
 	sort.Slice(cs, func(i int, j int) bool {
@@ -200,20 +197,25 @@ func (w *Web) customersDelete(c echo.Context) error {
 // 客户信息上传
 func (w *Web) customersFile(c echo.Context) error {
 	delete(w.cache, CustomerIDPrefix)
+	// 读取Excel定义
 	xid := new(utils.ID)
-	err := xid.Parse(c.Request().Header.Get("xlsx"))
-	if err != nil {
+	if err := xid.Parse(c.Request().Header.Get("xlsx")); err != nil {
 		return err
 	}
-
 	xlsx := Xlsx{}
 	w.Get(xid[:], &xlsx)
+	// 读取Excel文件
 	file, err := w.saveTemp(c)
 	if err != nil {
 		return err
 	}
-	cs, err := readXlsx(file, xlsx.Map)
-	// log.Printf("size: %d %s\n", len(cs), promap)
+	cs := []Customer{}
+	err = ReadXlsx(file, func(row []string) {
+		if c, e := newCustomer(row, xlsx.Map); e == nil {
+			cs = append(cs, c)
+		}
+	})
+	// 生成客户信息
 	if err == nil {
 		for _, c := range cs {
 			c.BeforePost(CustomerIDPrefix)
@@ -231,7 +233,7 @@ func (w *Web) customersFile(c echo.Context) error {
 func (w *Web) customersMerge() {
 	m := map[string]Customer{}
 	for _, c := range w.customers() {
-		k := c.Pinyin + "-" + c.Phone
+		k := c.Name + "-" + c.Phone
 		if v, ok := m[k]; ok {
 			// 重复
 			for _, t := range c.Tags {
@@ -246,25 +248,6 @@ func (w *Web) customersMerge() {
 	delete(w.cache, CustomerIDPrefix)
 }
 
-// Excel 文件读取
-func readXlsx(file string, m map[int]string) (cs []Customer, err error) {
-	xlsx, err := excelize.OpenFile(file)
-	if err != nil {
-		return
-	}
-	for _, name := range xlsx.GetSheetMap() {
-		rows := xlsx.GetRows(name)
-		cs = []Customer{}
-		for _, row := range rows {
-			c, e := newCustomer(row, m)
-			if e == nil {
-				cs = append(cs, c)
-			}
-		}
-	}
-	return
-}
-
 // 新建客户
 func newCustomer(row []string, m map[int]string) (c Customer, err error) {
 	p, err := utils.Parse(row, m, &c)
@@ -272,13 +255,11 @@ func newCustomer(row []string, m map[int]string) (c Customer, err error) {
 		return
 	}
 	c.Extend = p
-	if c.Name == "" {
-		err = errors.New("姓名为空")
-		return
-	}
-	if c.Name == "姓名" {
-		err = errors.New("姓名为姓名")
-		return
+	for _, name := range []string{"", "姓名", "客户", "客户姓名"} {
+		if c.Name == name {
+			err = errors.New("姓名错误")
+			return
+		}
 	}
 	return
 }

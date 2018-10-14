@@ -1,5 +1,5 @@
 # 获取最后的tag
-TAG = $(shell git tag | tail -n 1)
+TAG = $(shell git tag -l --sort=v:refname | tail -n 1)
 
 all: web generate build pack changelog
 

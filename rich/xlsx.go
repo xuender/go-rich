@@ -11,8 +11,11 @@ import (
 
 const (
 	_ = iota
+	// XlsxTypeCustomers 客户Excel模板
 	XlsxTypeCustomers
+	// XlsxTypeItems 商品Excel模板
 	XlsxTypeItems
+	// XlsxTypeTrides 订单Excel模板
 	XlsxTypeTrides
 )
 

@@ -26,10 +26,8 @@ var TagKeys = []string{
 
 // 标签重置
 func (w *Web) tagsReset() {
-	delete(w.cache, CustomerIDPrefix)
-	delete(w.cache, ItemIDPrefix)
-	customers := w.customers()
-	items := w.items()
+	customers := w.customers(false)
+	items := w.items(false)
 	for _, t := range w.tags() {
 		t.Use[TagKeys[0]] = false
 		t.Use[TagKeys[1]] = false

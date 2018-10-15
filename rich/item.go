@@ -56,16 +56,18 @@ func (w *Web) itemRoute(c *echo.Group) {
 
 // 商品列表
 func (w *Web) itemsGet(c echo.Context) error {
-	items := w.items()
+	items := w.items(true)
 	w.ObjSearch(c, &items)
 	w.ObjSelect(c, &items)
 	return w.ObjPaging(c, items)
 }
 
 // 商品列表
-func (w *Web) items() []Item {
-	if cs, ok := w.cache[ItemIDPrefix]; ok {
-		return cs.([]Item)
+func (w *Web) items(cache bool) []Item {
+	if cache {
+		if cs, ok := w.cache[ItemIDPrefix]; ok {
+			return cs.([]Item)
+		}
 	}
 	cs := []Item{}
 	w.Iterator([]byte{ItemIDPrefix, '-'}, func(key, value []byte) {
@@ -164,7 +166,7 @@ func newItems(row []string, m map[int]string) (items []Item, err error) {
 		for _, name := range names {
 			name = strings.Trim(name, " ")
 			if name != "" {
-				var b Item = *(*Item)(unsafe.Pointer(&i))
+				var b = *(*Item)(unsafe.Pointer(&i))
 				b.Name = name
 				items = append(items, b)
 			}
@@ -176,7 +178,7 @@ func newItems(row []string, m map[int]string) (items []Item, err error) {
 // itemsMerge 商品信息合并
 func (w *Web) itemsMerge() {
 	m := map[string]Item{}
-	for _, c := range w.items() {
+	for _, c := range w.items(true) {
 		k := c.Name
 		if v, ok := m[k]; ok {
 			// 重复

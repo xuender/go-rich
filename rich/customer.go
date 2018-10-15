@@ -91,7 +91,7 @@ func (w *Web) customerDelTrade(cid, tid utils.ID) error {
 
 // 客户列表
 func (w *Web) customersGet(c echo.Context) error {
-	customers := w.customers()
+	customers := w.customers(true)
 	w.ObjSearch(c, &customers)
 	w.ObjSelect(c, &customers)
 	excel := c.QueryParam("excel")
@@ -145,9 +145,11 @@ func (w *Web) excel(c echo.Context, cs []Customer, id *utils.ID) error {
 }
 
 // 客户列表
-func (w *Web) customers() []Customer {
-	if cs, ok := w.cache[CustomerIDPrefix]; ok {
-		return cs.([]Customer)
+func (w *Web) customers(cache bool) []Customer {
+	if cache {
+		if cs, ok := w.cache[CustomerIDPrefix]; ok {
+			return cs.([]Customer)
+		}
 	}
 	cs := []Customer{}
 	w.Iterator([]byte{CustomerIDPrefix, '-'}, func(key, value []byte) {
@@ -233,7 +235,7 @@ func (w *Web) customersFile(c echo.Context) error {
 // customersMerge 客户信息合并
 func (w *Web) customersMerge() {
 	m := map[string]Customer{}
-	for _, c := range w.customers() {
+	for _, c := range w.customers(true) {
 		k := c.Name + "-" + c.Phone
 		if v, ok := m[k]; ok {
 			// 重复

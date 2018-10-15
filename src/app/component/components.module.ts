@@ -13,7 +13,7 @@ const components = [
   NameComponent,
 ]
 @NgModule({
-  declarations: [...components, NameComponent],
+  declarations: [...components],
   imports: [
     CommonModule,
     FormsModule,

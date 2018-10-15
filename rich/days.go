@@ -53,6 +53,24 @@ func (w *Web) Reset() error {
 		w.Delete([]byte(day))
 	}
 	w.days.Clean()
+	// 删除的客户
+	delc := []Customer{}
+	w.Iterator([]byte{CustomerIDPrefix, '-'}, func(key, data []byte) {
+		c := Customer{}
+		utils.Decode(data, &c)
+		if c.IsDelete() {
+			delc = append(delc, c)
+		}
+	})
+	// 删除的商品
+	deli := []Item{}
+	w.Iterator([]byte{ItemIDPrefix, '-'}, func(key, data []byte) {
+		i := Item{}
+		utils.Decode(data, &i)
+		if i.IsDelete() {
+			deli = append(deli, i)
+		}
+	})
 	w.Iterator([]byte{TradeIDPrefix, '-'}, func(key, data []byte) {
 		t := Trade{}
 		utils.Decode(data, &t)
@@ -63,7 +81,18 @@ func (w *Web) Reset() error {
 		w.Get(idsKey, &ids)
 		ids = append(ids, t.ID)
 		w.Put(idsKey, ids)
+		if !t.CID.IsNew() {
+			utils.Remove(delc, func(c Customer) bool { return c.ID.Equal(t.CID) })
+		}
+		utils.Remove(deli, func(i Item) bool { return t.HasItem(i.ID) })
 	})
+	// 删除无用的商品和客户
+	for _, i := range deli {
+		w.Delete(i.ID[:])
+	}
+	for _, c := range delc {
+		w.Delete(c.ID[:])
+	}
 	return w.Put(DaysKey, w.days)
 }
 

@@ -33,6 +33,16 @@ func (t *Trade) BeforePut(id utils.ID) {
 	t.ID = id
 }
 
+// HasItem 商品是否使用
+func (t *Trade) HasItem(itemId utils.ID) bool {
+	for _, o := range t.Orders {
+		if !o.ID.IsNew() && o.ID.Equal(itemId) {
+			return true
+		}
+	}
+	return false
+}
+
 // 订单路由
 func (w *Web) tradeRoute(c *echo.Group) {
 	c.GET("", w.tradesGet)          // 订单列表

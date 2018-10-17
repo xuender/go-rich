@@ -17,8 +17,16 @@ type Item struct {
 	Obj
 	Price  int64             `json:"price"`  // 价格,单位分
 	Cost   int64             `json:"cost"`   // 成本，单位分
+	Batchs []Batch           `json:"batchs"` // 批次
 	Extend map[string]string `json:"extend"` // 扩展属性
 	Tags   Tags              `json:"tags"`   // 标签
+}
+
+// Batch 批次
+type Batch struct {
+	Cost      int64 `json:"cost"`      // 成本，单位分
+	Total     int   `json:"total"`     // 采购总量
+	Inventory int   `json:"inventory"` // 库存
 }
 
 // BeforePost 创建前设置拼音标签
@@ -192,4 +200,58 @@ func (w *Web) itemsMerge() {
 		}
 	}
 	delete(w.cache, ItemIDPrefix)
+}
+
+// 商品扣减库存
+func (w *Web) deducting(order Order) error {
+	delete(w.cache, ItemIDPrefix)
+	i := Item{}
+	if err := w.Get(order.ID[:], &i); err != nil {
+		return err
+	}
+	i.deducting(order)
+	return w.Put(i.ID[:], i)
+}
+func (i *Item) deducting(order Order) {
+	num := order.Num
+	for f, b := range i.Batchs {
+		if b.Inventory >= num {
+			i.Batchs[f].Inventory -= num
+			break
+		} else {
+			num -= b.Inventory
+			i.Batchs[f].Inventory = 0
+		}
+	}
+}
+
+// 商品撤销扣减
+func (w *Web) unDeducting(order Order) error {
+	delete(w.cache, ItemIDPrefix)
+	i := Item{}
+	if err := w.Get(order.ID[:], &i); err != nil {
+		return err
+	}
+	i.unDeducting(order)
+	return w.Put(i.ID[:], i)
+}
+func (i *Item) unDeducting(order Order) {
+	num := order.Num
+	reverse(i.Batchs)
+	for f, b := range i.Batchs {
+		if b.Inventory+num <= b.Total {
+			i.Batchs[f].Inventory += num
+			break
+		} else {
+			num -= b.Total - b.Inventory
+			i.Batchs[f].Inventory = b.Total
+		}
+	}
+	reverse(i.Batchs)
+}
+func reverse(s []Batch) []Batch {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+	return s
 }

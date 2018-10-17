@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
+import { pull } from 'lodash'
 
-import { Item } from '../item';
+import { Item, Batch } from '../item';
 import { ObjPage } from '../../api/obj.page';
 import { ItemService } from '../item.service';
+import { ToMoney } from '../../api/money';
 
 @Component({
   selector: 'app-item',
@@ -20,6 +22,24 @@ export class ItemPage extends ObjPage<Item> {
     if (!this.obj.extend) { this.obj.extend = {} }
     if (!this.obj.tags) { this.obj.tags = [] }
     if (!this.obj.cost) { this.obj.cost = 0 }
+    if (!this.obj.batchs) { this.obj.batchs = [] }
+    for (let i = 0; i < this.obj.batchs.length; i++) {
+      if (!this.obj.batchs[i].costMoney) {
+        this.obj.batchs[i] = ToMoney(this.obj.batchs[i])
+      }
+    }
+  }
+
+  addBatch() {
+    this.obj.batchs.push({
+      cost: 0,
+      total: 0,
+      inventory: 0,
+    })
+  }
+
+  remove(b: Batch) {
+    pull(this.obj.batchs, b)
   }
 
   get service() { return this.itemService }

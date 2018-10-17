@@ -34,9 +34,9 @@ func (t *Trade) BeforePut(id utils.ID) {
 }
 
 // HasItem 商品是否使用
-func (t *Trade) HasItem(itemId utils.ID) bool {
+func (t *Trade) HasItem(itemID utils.ID) bool {
 	for _, o := range t.Orders {
-		if !o.ID.IsNew() && o.ID.Equal(itemId) {
+		if !o.ID.IsNew() && o.ID.Equal(itemID) {
 			return true
 		}
 	}
@@ -86,6 +86,10 @@ func (w *Web) tradePost(c echo.Context) error {
 		if !t.CID.IsNew() {
 			w.customerAddTrade(t.CID, t.ID)
 		}
+		// 扣减库存
+		for _, o := range t.Orders {
+			w.deducting(o)
+		}
 		return nil
 	})
 }
@@ -95,7 +99,9 @@ func (w *Web) tradePut(c echo.Context) error {
 	t := Trade{}
 	return w.ObjPut(c, &t, TradeIDPrefix, func() error { return w.Bind(c, &t) }, func() error {
 		old := Trade{}
-		w.Get(t.ID[:], &old)
+		if err := w.Get(t.ID[:], &old); err != nil {
+			return err
+		}
 		if !t.CID.IsNew() {
 			if !old.CID.IsNew() && !old.CID.Equal(t.CID) {
 				// 删除旧订单
@@ -108,7 +114,14 @@ func (w *Web) tradePut(c echo.Context) error {
 				w.customerAddTrade(t.CID, t.ID)
 			}
 		}
-
+		// 撤销出库
+		for _, o := range old.Orders {
+			w.unDeducting(o)
+		}
+		// 扣减库存
+		for _, o := range t.Orders {
+			w.deducting(o)
+		}
 		return nil
 	})
 }
@@ -122,6 +135,10 @@ func (w *Web) tradeDelete(c echo.Context) error {
 			w.customerDelTrade(t.CID, t.ID)
 		}
 		w.dayDel(t)
+		// 撤销出库
+		for _, o := range t.Orders {
+			w.unDeducting(o)
+		}
 		return nil
 	})
 }

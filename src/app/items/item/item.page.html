@@ -20,8 +20,7 @@
       <ion-item-group>
         <ion-item [class.error]="name.invalid && name.touched">
           <ion-label fixed>商品名称</ion-label>
-          <ion-input #name="ngModel" [(ngModel)]="obj.name" name="name" type="text" placeholder="商品名称最长50" maxlength="50"
-            required></ion-input>
+          <ion-input #name="ngModel" [(ngModel)]="obj.name" name="name" type="text" placeholder="商品名称最长50" maxlength="50" required></ion-input>
         </ion-item>
         <ion-item color="danger" *ngIf="name.invalid && name.touched">
           <p [hidden]="!name.errors?.required">请输入商品名称</p>
@@ -30,9 +29,8 @@
       </ion-item-group>
       <ion-item-group>
         <ion-item [class.error]="cost.invalid && cost.touched">
-          <ion-label fixed>成本</ion-label>
-          <ion-input #cost="ngModel" [(ngModel)]="itemCost" name="cost" type="number" min="0" max="99999999999" step="0.01"
-            placeholder="商品成本单位元"></ion-input>
+          <ion-label fixed>成本￥</ion-label>
+          <ion-input #cost="ngModel" [(ngModel)]="obj.costMoney" name="cost" type="number" min="0" max="99999999999" step="0.01" placeholder="商品成本单位元"></ion-input>
         </ion-item>
         <ion-item color="danger" *ngIf="cost.invalid && cost.touched">
           <p [hidden]="!cost.errors?.min">成本最小0</p>
@@ -41,8 +39,8 @@
       </ion-item-group>
       <ion-item-group>
         <ion-item [class.error]="price.invalid && price.touched">
-          <ion-label fixed>价格</ion-label>
-          <ion-input #price="ngModel" [(ngModel)]="itemPrice" name="price" type="number" min="0" max="99999999999" step="0.01"
+          <ion-label fixed>价格￥</ion-label>
+          <ion-input #price="ngModel" [(ngModel)]="obj.priceMoney" name="price" type="number" min="0" max="99999999999" step="0.01"
             placeholder="商品价格单位元"></ion-input>
         </ion-item>
         <ion-item color="danger" *ngIf="price.invalid && price.touched">
@@ -50,6 +48,31 @@
           <p [hidden]="!price.errors?.max">价格最大99999999999</p>
         </ion-item>
       </ion-item-group>
+      <ion-item-divider>
+        <ion-label>库存</ion-label>
+        <ion-button color="secondary" (click)="addBatch()">增加</ion-button>
+      </ion-item-divider>
+      <ng-container *ngFor="let b of obj.batchs; let i = index">
+        <ion-item>
+          ￥
+          <ion-input #cost="ngModel" name="cost-{{i}}" [(ngModel)]="b.costMoney" type="number" placeholder="成本价" min="0" required></ion-input>
+          <ion-input #total="ngModel" name="total-{{i}}" [(ngModel)]="b.total" type="number" placeholder="总数" min="0" required></ion-input>
+          <ion-input #inventory="ngModel" name="inventory-{{i}}" [(ngModel)]="b.inventory" type="number" placeholder="库存" min="0" required></ion-input>
+          <ion-button color="danger" (click)="remove(b)">删除</ion-button>
+        </ion-item>
+        <ion-item color="danger" *ngIf="cost.invalid">
+          <p [hidden]="!cost.errors?.required">请输入成本价</p>
+          <p [hidden]="!cost.errors?.min">最小为0</p>
+        </ion-item>
+        <ion-item color="danger" *ngIf="total.invalid">
+          <p [hidden]="!total.errors?.required">请输入总数</p>
+          <p [hidden]="!total.errors?.min">最小为0</p>
+        </ion-item>
+        <ion-item color="danger" *ngIf="inventory.invalid">
+          <p [hidden]="!inventory.errors?.required">请输入库存</p>
+          <p [hidden]="!inventory.errors?.min">最小为0</p>
+        </ion-item>
+      </ng-container>
       <rich-ext [type]="'I'" [data]="obj.extend"></rich-ext>
       <rich-tags key="tag-I" [tags]="obj.tags"></rich-tags>
       <ion-item-group>

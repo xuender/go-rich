@@ -1,4 +1,4 @@
-import { pull } from 'lodash'
+import { pull, find } from 'lodash'
 import { Observable } from 'rxjs';
 import { Component } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
@@ -10,6 +10,8 @@ import { TradeService } from '../trade.service';
 import { Customer } from '../../customers/customer';
 import { CustomerService } from '../../customers/customer.service';
 import { SelectPage } from '../../items/select/select.page';
+import { Item } from '../../items/item';
+import { filter } from 'minimatch';
 
 @Component({
   selector: 'app-trade',
@@ -18,6 +20,7 @@ import { SelectPage } from '../../items/select/select.page';
 })
 export class TradePage extends ObjPage<Trade>{
   customer$: Observable<Customer>
+  items: Item[] = []
   constructor(
     public tradeService: TradeService,
     private customerService: CustomerService,
@@ -49,7 +52,10 @@ export class TradePage extends ObjPage<Trade>{
     await modal.present()
     const r = await modal.onDidDismiss()
     if (r.data) {
-      for (const i of r.data) {
+      for (const i of r.data as Item[]) {
+        if (!find(this.items, item => item.id == i.id)) {
+          this.items.push(i)
+        }
         this.obj.orders.push({
           id: i.id,
           price: i.price,

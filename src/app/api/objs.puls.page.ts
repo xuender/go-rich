@@ -43,9 +43,11 @@ export abstract class ObjsPlusPage<T extends Obj> extends ObjsPage<T> implements
 
   async load(event) {
     const p = await this.service.nextPaging$.toPromise()
-    this.paging.data.push(...p.data)
-    event.target.complete()
-    event.target.disabled = p.total == p.data.length
+    if (p && p.data) {
+      this.paging.data.push(...p.data)
+      event.target.complete()
+      event.target.disabled = p.total == p.data.length
+    }
   }
 
   hasTag(tag: string): boolean {

@@ -185,7 +185,7 @@ func (w *Web) ObjPaging(c echo.Context, i interface{}) error {
 	}
 	start := page * size
 	if start > rv.Len() {
-		return c.JSON(http.StatusOK, []int{})
+    return c.JSON(http.StatusOK, Paging{Data: []int{}, Total: rv.Len()})
 	}
 	end := start + size
 	if end > rv.Len() {

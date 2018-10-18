@@ -1,3 +1,27 @@
+<a name="0.1.12"></a>
+## [0.1.12](https://github.com/xuender/go-rich/compare/v0.1.11...v0.1.12) (2018-10-18)
+
+
+### Bug Fixes
+
+* 页面加载到底部会出现异常 ([adc7cc3](https://github.com/xuender/go-rich/commit/adc7cc3))
+* **items:** 商品价格成本显示错误 ([5fa0dda](https://github.com/xuender/go-rich/commit/5fa0dda))
+* **items:** 增加或减少订单中的商品,库存随之改变 ([b5244d4](https://github.com/xuender/go-rich/commit/b5244d4)), closes [#54](https://github.com/xuender/go-rich/issues/54)
+* **login:** 增加登录错误提示 ([b41d45f](https://github.com/xuender/go-rich/commit/b41d45f)), closes [#49](https://github.com/xuender/go-rich/issues/49)
+* **tags:** 删除商品客户时单字标签不跟着删除 ([d09b951](https://github.com/xuender/go-rich/commit/d09b951)), closes [#50](https://github.com/xuender/go-rich/issues/50)
+
+
+### Features
+
+* **bat:** 每次启动自动升级并备份 ([7959049](https://github.com/xuender/go-rich/commit/7959049))
+* **items:** item增加成本 ([c8f69a2](https://github.com/xuender/go-rich/commit/c8f69a2)), closes [#48](https://github.com/xuender/go-rich/issues/48)
+* **items:** 增加商品上传功能 ([6cd7df5](https://github.com/xuender/go-rich/commit/6cd7df5)), closes [#49](https://github.com/xuender/go-rich/issues/49)
+* **obj:** item/customer增加缓存参数 ([9f5f7f7](https://github.com/xuender/go-rich/commit/9f5f7f7)), closes [#52](https://github.com/xuender/go-rich/issues/52)
+* **trade:** 删除不用的客户和商品 ([e8265f9](https://github.com/xuender/go-rich/commit/e8265f9)), closes [#51](https://github.com/xuender/go-rich/issues/51)
+* **trades:** 增加库存批次,可根据订单扣减 ([6c6bea4](https://github.com/xuender/go-rich/commit/6c6bea4)), closes [#53](https://github.com/xuender/go-rich/issues/53)
+
+
+
 <a name="0.1.11"></a>
 ## [0.1.11](https://github.com/xuender/go-rich/compare/v0.1.10...v0.1.11) (2018-10-14)
 

@@ -5,12 +5,14 @@ import { Injectable, NgZone } from '@angular/core';
 import { Trade } from './trade';
 import { ObjService } from '../api/obj.service';
 import { CustomerService } from '../customers/customer.service';
+import { ItemService } from '../items/item.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TradeService extends ObjService<Trade>{
   constructor(
+    private itemService: ItemService,
     private customerService: CustomerService,
     protected http: HttpClient,
     protected ngZone: NgZone,
@@ -45,6 +47,7 @@ export class TradeService extends ObjService<Trade>{
       const c = await this.customerService.obj$(o.cid).toPromise()
       this.customerService.reset(c)
     }
+    this.itemService.itemsReset()
     return t
   }
 
@@ -54,5 +57,6 @@ export class TradeService extends ObjService<Trade>{
       const c = await this.customerService.obj$(o.cid).toPromise()
       this.customerService.reset(c)
     }
+    this.itemService.itemsReset()
   }
 }

@@ -11,7 +11,6 @@ import { Customer } from '../../customers/customer';
 import { CustomerService } from '../../customers/customer.service';
 import { SelectPage } from '../../items/select/select.page';
 import { Item } from '../../items/item';
-import { filter } from 'minimatch';
 
 @Component({
   selector: 'app-trade',

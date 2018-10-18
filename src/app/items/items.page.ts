@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { ModalController, ActionSheetController } from '@ionic/angular';
 
 import { Item } from './item';
@@ -17,6 +17,7 @@ import { UploadPage } from '../setting/xlsxes/upload/upload.page';
 export class ItemsPage extends ObjsPlusPage<Item> {
   tags: string[] = []
   paging: Paging<Item> = { data: [], total: 0 }
+  private reload: EventEmitter<boolean>
   constructor(
     public itemService: ItemService,
     protected tagService: TagService,
@@ -24,6 +25,9 @@ export class ItemsPage extends ObjsPlusPage<Item> {
     protected actionSheetCtrl: ActionSheetController,
   ) {
     super(tagService, modalCtrl, actionSheetCtrl)
+    this.reload = new EventEmitter()
+    this.reload.subscribe(() => this.reset())
+    this.itemService.itemsReload = this.reload
   }
 
   get tagKey() { return 'tag-I' };

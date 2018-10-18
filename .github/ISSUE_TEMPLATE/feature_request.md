@@ -1,17 +1,17 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: 特征报告
+about: 为这个项目提出一个想法
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+**你的特征需求与什么问题相关? 请描述.**
+请描述您遇到的问题. 例如: 我在...的时候很沮丧 [...]
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**描述您想要的解决方案**
+请描述您想要发生的的事情
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**请描述您考虑过的替代方案**
+请描述您考虑过的其他替代方案
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+**附加上下文**
+在这里添加关于特征报告的任何其他上下文或截图

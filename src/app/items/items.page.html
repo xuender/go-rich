@@ -6,18 +6,23 @@
       </ion-button>
     </ion-buttons>
     <ion-searchbar placeholder="名称,拼音或声母" (ionChange)="search($event)"></ion-searchbar>
-    <ion-buttons slot="end">
-      <ion-button (click)="upload()">
-        上传
-      </ion-button>
-      <!-- <ion-button (click)="download()">
-        下载
-      </ion-button> -->
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
+  <ion-fab vertical="top" horizontal="end" edge slot="fixed">
+    <ion-fab-button mini>
+      <ion-icon name="arrow-dropdown"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list>
+      <ion-fab-button (click)="upload()">
+        <ion-icon name="cloud-upload"></ion-icon>
+      </ion-fab-button>
+      <!-- <ion-fab-button (click)="download()">
+        <ion-icon name="cloud-download"></ion-icon>
+      </ion-fab-button> -->
+    </ion-fab-list>
+  </ion-fab>
   <ion-fab vertical="center" horizontal="end" edge slot="fixed">
     <ion-fab-button (click)="select()" color="secondary">
       <ion-icon name="pricetags"></ion-icon>

@@ -3,4 +3,5 @@ export interface Xlsx {
   // 名称
   name: string
   map: any
+  type?: number
 }

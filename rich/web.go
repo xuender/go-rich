@@ -83,6 +83,7 @@ func (w *Web) initEcho() *echo.Echo {
 	e.HTTPErrorHandler = w.httpErrorHandler
 	// 开发模式
 	if w.Dev {
+		log.SetFlags(log.Lshortfile | log.LstdFlags)
 		middleware.DefaultLoggerConfig.Format = `${time_rfc3339_nano} [${remote_ip}] ${host}(${method})${uri}(${status}) ${error} ${latency} ` +
 			`[${latency_human}] IN:${bytes_in} OUT:${bytes_out}` + "\n"
 		e.Use(middleware.Recover())
@@ -96,6 +97,7 @@ func (w *Web) initEcho() *echo.Echo {
 		e.HidePort = true
 		if f, err := os.OpenFile(w.LogFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666); err == nil {
 			middleware.DefaultLoggerConfig.Output = f
+			log.SetOutput(f)
 		}
 	}
 	e.Use(middleware.Logger())

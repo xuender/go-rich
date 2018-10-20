@@ -2,13 +2,14 @@ package rich
 
 import (
 	"archive/zip"
+	"fmt"
 	"io"
 	"os"
 	"path"
 )
 
 // Zip 压缩目录或文件
-func Zip(srcDirPath string, destFilePath string) error {
+func Zip(destFilePath string, srcDirPaths ...string) error {
 	fw, err := os.Create(destFilePath)
 	if err != nil {
 		return err
@@ -18,23 +19,29 @@ func Zip(srcDirPath string, destFilePath string) error {
 	tw := zip.NewWriter(fw)
 	defer tw.Close()
 
-	f, err := os.Open(srcDirPath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	fi, err := f.Stat()
-	if err != nil {
-		return err
-	}
-	if fi.IsDir() {
-		if err := zipDir(srcDirPath, path.Base(srcDirPath), tw); err != nil {
-			return err
+	for _, srcDirPath := range srcDirPaths {
+		fmt.Println("src", srcDirPath)
+		if srcDirPath == "" {
+			continue
 		}
-	} else {
-		if err := zipFile(srcDirPath, fi.Name(), tw); err != nil {
-			return err
+		f, err := os.Open(srcDirPath)
+		if err != nil {
+			continue
+		}
+		defer f.Close()
+
+		fi, err := f.Stat()
+		if err != nil {
+			continue
+		}
+		if fi.IsDir() {
+			if err := zipDir(srcDirPath, path.Base(srcDirPath), tw); err != nil {
+				return err
+			}
+		} else {
+			if err := zipFile(srcDirPath, fi.Name(), tw); err != nil {
+				return err
+			}
 		}
 	}
 	return nil

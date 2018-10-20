@@ -25,8 +25,15 @@ var rootCmd = &cobra.Command{
 	Use:     "go-rich",
 	Short:   "致力服务小商家",
 	Version: "v0.2.1",
-	Long:    `Go Rich 致力于为小商家提供免费的客户档案管理，商品库存管理，采购销售管理`,
+	Long: `
+  Go Rich 致力于为小商家提供客户档案，商品库存，采购销售应用`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		db := GetString(cmd, _db)
+		// 备份
+		bak := GetString(cmd, _bak)
+		if bak != "" {
+			Backup(db, bak, GetString(cmd, _name))
+		}
 		address := GetString(cmd, _address)
 		temp := GetString(cmd, _temp)
 		protocol := GetString(cmd, _protocol)
@@ -38,7 +45,7 @@ var rootCmd = &cobra.Command{
 		c := cmd.Root()
 		web := rich.Web{
 			Temp:    temp,
-			DB:      GetString(cmd, _db),
+			DB:      db,
 			Dev:     develop,
 			LogFile: GetString(cmd, _logfile),
 			App:     rich.NewAppVar(c.Name(), c.Short, c.Version),
@@ -109,6 +116,8 @@ func init() {
 	flags.StringP(_cert, "c", "", "TLS证书文件")
 	flags.StringP(_key, "k", "", "TLS密钥文件")
 	flags.StringP(_db, "d", "db", "数据库目录")
+	flags.StringP(_bak, "b", "", "备份目录")
+	flags.StringP(_name, "n", time.Now().Format(rich.DayFormat), "备份文件名")
 	flags.StringP(_temp, "t", "temp", "临时目录")
 	flags.StringP(_logfile, "l", fmt.Sprintf("%s.log", time.Now().Format(rich.DayFormat)), "日志输出文件")
 	flags.BoolP(_open, "o", false, "启动浏览器显示QR码")
@@ -139,6 +148,7 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		log.Println("读取配置文件:", viper.ConfigFileUsed())
+		cfgFile = viper.ConfigFileUsed()
+		log.Println("读取配置文件:", cfgFile)
 	}
 }

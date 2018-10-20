@@ -15,9 +15,7 @@ var cleanCmd = &cobra.Command{
 	Long:    `整理帐目，删除的客户、商品记录，`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		db := GetString(cmd, _db)
-		web := rich.Web{
-			DB: db,
-		}
+		web := rich.Web{DB: db}
 		// 初始化
 		if err := web.DBInit(); err != nil {
 			return err

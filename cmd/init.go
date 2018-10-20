@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	// 命令参数
 	_db       = "db-path"
 	_temp     = "temp-path"
 	_cert     = "tls-cert"
@@ -18,6 +19,8 @@ const (
 	_logfile  = "log-file"
 	_develop  = "develop-mode"
 	_upgrade  = "upgrade"
+	_bak      = "bak-path"
+	_name     = "bak-name"
 )
 
 // GetString 读取配置

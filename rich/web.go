@@ -27,7 +27,7 @@ import (
 // Web 网络服务
 type Web struct {
 	Temp    string                      // 临时文件目录
-	Db      string                      // 数据库目录
+	DB      string                      // 数据库目录
 	Dev     bool                        // 开发模式
 	URL     string                      // 网址
 	LogFile string                      // 日志文件
@@ -40,21 +40,27 @@ type Web struct {
 // DaysKey 文件日期列表主键
 var DaysKey = []byte("days")
 
+// DBInit 数据库初始化
+func (w *Web) DBInit() error {
+	var err error
+	if w.db, err = leveldb.OpenFile(w.DB, nil); err != nil {
+		log.Println(w.db, w.DB)
+		return err
+	}
+	// 每日帐目初始化
+	if err := w.Get(DaysKey, &w.days); err != nil {
+		w.days = []string{}
+	}
+	return nil
+}
+
 // Init 初始化.
 func (w *Web) Init() error {
-	// 日志初始化
-	log.SetFlags(log.Lshortfile | log.LstdFlags)
-	// 数据库初始化
-	err := errors.New("未知异常")
-	if w.db, err = leveldb.OpenFile(w.Db, nil); err != nil {
+	if err := w.DBInit(); err != nil {
 		return err
 	}
 	// 用户初始化
 	w.UserInit()
-	// 每日帐目初始化
-	if err = w.Get(DaysKey, &w.days); err != nil {
-		w.days = []string{}
-	}
 	if len(w.days) > 0 {
 		w.App.IsNew = false
 	}

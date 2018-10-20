@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"strings"
@@ -21,11 +22,15 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:     "Go Rich",
+	Use:     "go-rich",
 	Short:   "致力服务小商家",
 	Version: "v0.2.1",
-	Long:    `为小商家提供客户档案管理，商品库存管理，采购销售管理`,
+	Long:    `Go Rich 致力于为小商家提供免费的客户档案管理，商品库存管理，采购销售管理`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		address := GetString(cmd, _address)
+		temp := GetString(cmd, _temp)
+		protocol := GetString(cmd, _protocol)
+		develop := GetBool(cmd, _develop)
 		// 地址端口号
 		if !strings.HasPrefix(address, ":") {
 			address = ":" + address
@@ -33,9 +38,9 @@ var rootCmd = &cobra.Command{
 		c := cmd.Root()
 		web := rich.Web{
 			Temp:    temp,
-			Db:      db,
+			DB:      GetString(cmd, _db),
 			Dev:     develop,
-			LogFile: logfile,
+			LogFile: GetString(cmd, _logfile),
 			App:     rich.NewAppVar(c.Name(), c.Short, c.Version),
 		}
 		if url, err := rich.GetURL(address, !strings.EqualFold(protocol, "http")); err == nil {
@@ -45,8 +50,8 @@ var rootCmd = &cobra.Command{
 		}
 
 		// 升级
-		if upgrade && !develop {
-			go Upgrade(cmd.Version)
+		if !develop && GetBool(cmd, _upgrade) {
+			go Upgrade(cmd.Version, temp)
 		}
 
 		// 扫码提示
@@ -71,17 +76,17 @@ var rootCmd = &cobra.Command{
 		// 运行
 		switch strings.ToLower(protocol) {
 		case "tls":
-			go web.StartTLS(address, cert, key)
+			go web.StartTLS(address, GetString(cmd, _cert), GetString(cmd, _key))
 		case "autotls":
 			go web.StartAutoTLS(address)
 		default:
 			go web.Start(address)
 		}
 		// 打开浏览器
-		if openBrowser {
+		if GetBool(cmd, _open) {
 			utils.Open(web.URL + "/qr")
 		}
-		fmt.Println(<-quitChan)
+		<-quitChan
 		return nil
 	},
 }
@@ -97,18 +102,18 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "c", "配置文件 (默认: rich.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "y", "", "配置文件")
 	flags := rootCmd.Flags()
-	flags.StringVarP(&address, "address", "a", "6181", "访问地址端口号")
-	flags.StringVarP(&protocol, "protocol", "p", "http", "访问协议: http, TLS, AutoTLS")
-	flags.StringVarP(&cert, "tls-cert", "c", "", "TLS证书文件")
-	flags.StringVarP(&key, "tls-key", "k", "", "TLS密钥文件")
-	flags.StringVarP(&db, "db-path", "d", "db", "数据库目录")
-	flags.StringVarP(&temp, "temp-path", "t", "temp", "临时目录")
-	flags.StringVarP(&logfile, "log-file", "l", fmt.Sprintf("%s.log", time.Now().Format(rich.DayFormat)), "日志输出文件")
-	flags.BoolVarP(&openBrowser, "open-browser", "o", false, "启动浏览器显示QR码")
-	flags.BoolVarP(&develop, "develop-mode", "m", false, "开发模式: 静态资源读自www目录,支持跨域访问,访问日志显示")
-	flags.BoolVarP(&upgrade, "upgrade", "u", true, "更新下载最新版本")
+	flags.StringP(_address, "a", "6181", "访问地址端口号")
+	flags.StringP(_protocol, "p", "http", "访问协议: http, TLS, AutoTLS")
+	flags.StringP(_cert, "c", "", "TLS证书文件")
+	flags.StringP(_key, "k", "", "TLS密钥文件")
+	flags.StringP(_db, "d", "db", "数据库目录")
+	flags.StringP(_temp, "t", "temp", "临时目录")
+	flags.StringP(_logfile, "l", fmt.Sprintf("%s.log", time.Now().Format(rich.DayFormat)), "日志输出文件")
+	flags.BoolP(_open, "o", false, "启动浏览器显示QR码")
+	flags.BoolP(_develop, "m", false, "开发模式: 静态资源读自www目录,支持跨域访问,访问日志显示")
+	flags.BoolP(_upgrade, "u", true, "更新下载最新版本")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -134,6 +139,6 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("读取配置文件:", viper.ConfigFileUsed())
+		log.Println("读取配置文件:", viper.ConfigFileUsed())
 	}
 }

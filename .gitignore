@@ -53,3 +53,4 @@ bindata.go
 private.rsa
 public.rsa.pub
 *.pem
+rich.yaml

@@ -18,6 +18,9 @@ var bakCmd = &cobra.Command{
 	Short:   "数据库、配置备份",
 	Long:    `备份数据库及用户配置，并压缩归档`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		db := GetString(cmd, _db)
+		bak := GetString(cmd, "bak-path")
+		name := GetString(cmd, "name")
 		if fi, err := os.Stat(db); err == nil {
 			if !fi.IsDir() {
 				return errors.New(fmt.Sprintf("异常: 数据库目录 %s 不是目录。", db))
@@ -38,7 +41,7 @@ var bakCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(bakCmd)
-	bakCmd.Flags().StringVarP(&db, "db-path", "d", "db", "数据库目录")
-	bakCmd.Flags().StringVarP(&bak, "bak-path", "b", "bak", "备份目录")
-	bakCmd.Flags().StringVarP(&name, "name", "n", time.Now().Format(rich.DayFormat), "备份文件名")
+	bakCmd.Flags().StringP(_db, "d", "db", "数据库目录")
+	bakCmd.Flags().StringP("bak-path", "b", "bak", "备份目录")
+	bakCmd.Flags().StringP("name", "n", time.Now().Format(rich.DayFormat), "备份文件名")
 }

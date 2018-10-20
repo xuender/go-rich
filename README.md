@@ -18,7 +18,7 @@
     # 校验
     go get gopkg.in/go-playground/validator.v9
     # 资源打包
-    go get github.com/jteeuwen/go-bindata/...
+    go get -u github.com/go-bindata/go-bindata/...
     go get github.com/elazarl/go-bindata-assetfs
     # 数据库
     go get github.com/syndtr/goleveldb/leveldb

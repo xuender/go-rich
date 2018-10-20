@@ -16,11 +16,11 @@ var upgradeCmd = &cobra.Command{
 	Short:   "升级",
 	Long:    `更新下载最新版本`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return Upgrade(cmd.Root().Version)
+		return Upgrade(cmd.Root().Version, GetString(cmd, _temp))
 	},
 }
 
-func Upgrade(version string) error {
+func Upgrade(version, temp string) error {
 	if err := rich.Mkdir(temp); err != nil {
 		return err
 	}
@@ -37,6 +37,6 @@ func Upgrade(version string) error {
 
 func init() {
 	rootCmd.AddCommand(upgradeCmd)
-	upgradeCmd.Flags().StringVarP(&temp, "temp-path", "t", "temp", "临时目录")
+	upgradeCmd.Flags().StringP(_temp, "t", "temp", "临时目录")
 	upgradeCmd.Runnable()
 }

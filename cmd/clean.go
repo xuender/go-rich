@@ -14,17 +14,15 @@ var cleanCmd = &cobra.Command{
 	Short:   "清理优化数据库",
 	Long:    `整理帐目，删除的客户、商品记录，`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("clean")
-		c := cmd.Root()
+		db := GetString(cmd, _db)
 		web := rich.Web{
-			Db:  db,
-			App: rich.NewAppVar(c.Name(), c.Short, c.Version),
+			DB: db,
 		}
-		defer web.Close()
 		// 初始化
-		if err := web.Init(); err != nil {
+		if err := web.DBInit(); err != nil {
 			return err
 		}
+		defer web.Close()
 		if err := web.Reset(); err != nil {
 			return err
 		}
@@ -35,5 +33,5 @@ var cleanCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(cleanCmd)
-	cleanCmd.Flags().StringVarP(&db, "db-path", "d", "db", "数据库目录")
+	cleanCmd.Flags().StringP(_db, "d", "db", "数据库目录")
 }

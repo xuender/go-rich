@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
@@ -60,36 +61,36 @@ func init() {
 	args.Heteronym = true
 }
 
-// py 拼音转换
-func py(str string) string {
-	m := map[string]bool{}
-	m[slugify.Slugify(str)] = true
-	for _, str := range PC(pinyin.Pinyin(str, args)) {
-		m[str] = true
+// PY 字符串拼音
+func PY(str string) string {
+	arr := []string{slugify.Slugify(str)}
+	for _, s := range PC(pinyin.Pinyin(str, args)) {
+		arr = append(arr, s)
 	}
+	sort.Strings(arr)
 	ret := ""
-	for k := range m {
+	for i, k := range arr {
+		if k == "" || (i > 0 && k == arr[i-1]) {
+			continue
+		}
 		ret = ret + k + " ; "
 	}
-	return strings.Trim(ret, " ")
+	return strings.Trim(ret, " ; ")
 }
 
 // Initial 首字母
 func Initial(str string) []string {
-	m := map[string]bool{}
-	s := strings.Trim(slugify.Slugify(str), " ")
-	if s != "" {
-		m[strings.ToUpper(string(s[0]))] = true
+	arr := []string{strings.ToUpper(slugify.Slugify(str))}
+	for _, s := range PC(pinyin.Pinyin(str, args)) {
+		arr = append(arr, strings.ToUpper(s))
 	}
-	for _, i := range PC(pinyin.Pinyin(str, args)) {
-		i = strings.Trim(i, " ")
-		if i != "" {
-			m[strings.ToUpper(string(i[0]))] = true
-		}
-	}
+	sort.Strings(arr)
 	ret := []string{}
-	for k := range m {
-		ret = append(ret, k)
+	for i, k := range arr {
+		if k == "" || (i > 0 && k[0] == arr[i-1][0]) {
+			continue
+		}
+		ret = append(ret, string(k[0]))
 	}
 	return ret
 }

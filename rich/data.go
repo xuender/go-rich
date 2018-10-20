@@ -4,11 +4,11 @@ import (
 	"errors"
 
 	"github.com/go-playground/locales/zh"
-	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/universal-translator"
 	"github.com/labstack/echo"
 	"github.com/syndtr/goleveldb/leveldb/util"
 	"github.com/xuender/go-utils"
-	validator "gopkg.in/go-playground/validator.v9"
+	"gopkg.in/go-playground/validator.v9"
 	zh_translations "gopkg.in/go-playground/validator.v9/translations/zh"
 )
 

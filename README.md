@@ -8,6 +8,7 @@
     git clone https://github.com/golang/sys.git $GOPATH/src/github.com/golang/sys
     git clone https://github.com/golang/tools.git $GOPATH/src/github.com/golang/tools
     git clone https://github.com/golang/crypto.git $GOPATH/src/github.com/golang/crypto
+    git clone https://github.com/golang/test.git $GOPATH/src/github.com/golang/text
     mkdir $GOPATH/src/golang.org
     ln -s $GOPATH/src/github.com/golang $GOPATH/src/golang.org/x
 

@@ -264,7 +264,9 @@ func (w *Web) saveTemp(c echo.Context) (string, error) {
 	}
 	defer src.Close()
 	// 目的
-	mkdir(w.Temp)
+	if err := Mkdir(w.Temp); err != nil {
+		return "", err
+	}
 	f := w.Temp + string(os.PathSeparator) + file.Filename
 	dst, err := os.Create(f)
 	if err != nil {

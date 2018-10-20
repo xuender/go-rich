@@ -41,12 +41,16 @@ func GetIP() (string, error) {
 	return "", errors.New("未找到IP")
 }
 
-// 创建目录
-func mkdir(path string) {
-	_, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		os.MkdirAll(path, 0777)
+// Mkdir 创建目录
+func Mkdir(path string) error {
+	if fi, err := os.Stat(path); err == nil {
+		if !fi.IsDir() {
+			return fmt.Errorf("创建目录失败： %s 已经存在，并且不是目录。", path)
+		}
+	} else if os.IsNotExist(err) {
+		return os.MkdirAll(path, 0755)
 	}
+	return nil
 }
 
 var args = pinyin.NewArgs()

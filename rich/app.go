@@ -19,3 +19,13 @@ func NewApp(app *cli.App) *App {
 	a.IsNew = true
 	return &a
 }
+
+// NewAppVar 新建应用
+func NewAppVar(name, usage, version string) *App {
+	a := App{}
+	a.Name = name
+	a.Usage = usage
+	a.Version = version
+	a.IsNew = true
+	return &a
+}

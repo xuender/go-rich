@@ -1,7 +1,5 @@
 package rich
 
-import "github.com/urfave/cli"
-
 // App 应用信息
 type App struct {
 	Name    string `json:"name"`    // 应用名称
@@ -10,12 +8,12 @@ type App struct {
 	IsNew   bool   `json:"isNew"`   // 新应用
 }
 
-// NewApp 新建应用
-func NewApp(app *cli.App) *App {
+// NewAppVar 新建应用
+func NewAppVar(name, usage, version string) *App {
 	a := App{}
-	a.Name = app.Name
-	a.Usage = app.Usage
-	a.Version = app.Version
+	a.Name = name
+	a.Usage = usage
+	a.Version = version
 	a.IsNew = true
 	return &a
 }

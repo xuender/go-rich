@@ -8,6 +8,7 @@
     git clone https://github.com/golang/sys.git $GOPATH/src/github.com/golang/sys
     git clone https://github.com/golang/tools.git $GOPATH/src/github.com/golang/tools
     git clone https://github.com/golang/crypto.git $GOPATH/src/github.com/golang/crypto
+    git clone https://github.com/golang/test.git $GOPATH/src/github.com/golang/text
     mkdir $GOPATH/src/golang.org
     ln -s $GOPATH/src/github.com/golang $GOPATH/src/golang.org/x
 
@@ -17,7 +18,7 @@
     # 校验
     go get gopkg.in/go-playground/validator.v9
     # 资源打包
-    go get github.com/jteeuwen/go-bindata/...
+    go get -u github.com/go-bindata/go-bindata/...
     go get github.com/elazarl/go-bindata-assetfs
     # 数据库
     go get github.com/syndtr/goleveldb/leveldb

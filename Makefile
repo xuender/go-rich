@@ -15,10 +15,10 @@ generate:
 
 build:
 	@echo 交叉编译
-	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o rich-i386.exe main.go
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o rich-amd64.exe main.go
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o rich-linux main.go
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o rich-darwin main.go
+	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -ldflags="-s -w" -o rich-i386.exe main.go
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o rich-amd64.exe main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o rich-linux main.go
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o rich-darwin main.go
 
 pack:
 	@echo 打包 $(TAG)

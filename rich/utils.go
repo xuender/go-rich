@@ -87,7 +87,7 @@ func Initial(str string) []string {
 	sort.Strings(arr)
 	ret := []string{}
 	for i, k := range arr {
-		if k == "" || (i > 0 && k[0] == arr[i-1][0]) {
+		if k == "" || (i > 0 && arr[i-1] != "" && k[0] == arr[i-1][0]) {
 			continue
 		}
 		ret = append(ret, string(k[0]))

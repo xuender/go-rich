@@ -70,7 +70,7 @@ func (w *Web) profilePatch(c echo.Context) error {
 		return err
 	}
 	users := w.users()
-	utils.Filter(&users, func(o User) bool { return !o.ID.Equal(u.ID) })
+	users = users.filter(func(o *User) bool { return !o.ID.Equal(u.ID) })
 	n := User{}
 	err = w.Bind(c, &n)
 	if err != nil {

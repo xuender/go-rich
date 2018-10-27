@@ -18,6 +18,25 @@ type Tag struct {
 	Nums  map[string]int  `json:"nums"`  // 数量
 }
 
+// TagItems 标签组
+type TagItems []*Tag
+
+func (t *TagItems) filter(c func(*Tag) bool) TagItems {
+	ret := TagItems{}
+	for _, tag := range *t {
+		if c(tag) {
+			ret = append(ret, tag)
+		}
+	}
+	return ret
+}
+
+func (t TagItems) sort() {
+	sort.Slice(t, func(i int, j int) bool {
+		return t[i].Name < t[j].Name
+	})
+}
+
 // TagKeys 标签键值
 var TagKeys = []string{
 	"tag-C", // 客户标签数据
@@ -83,7 +102,7 @@ func (w *Web) tagRoute(c *echo.Group) {
 		key := c.Param("id")
 		ret := w.tags()
 		all := c.QueryParam("all") == "true"
-		utils.Filter(&ret, func(t Tag) bool { return t.Use[key] && (all || len(t.Name) > 1) })
+		ret = ret.filter(func(t *Tag) bool { return t.Use[key] && (all || len(t.Name) > 1) })
 		return c.JSON(http.StatusOK, ret)
 	})
 	// 标签创建
@@ -123,7 +142,7 @@ func (w *Web) tagsGet(c echo.Context) error {
 	ret := w.tags()
 	// 搜索
 	w.ObjSearch(c, &ret)
-	utils.Filter(&ret, func(t Tag) bool { return len(t.Name) > 1 })
+	ret = ret.filter(func(t *Tag) bool { return len(t.Name) > 1 })
 	// 数据库标签使用情况
 	// m := map[string]map[string]int{}
 	// for _, key := range TagKeys {
@@ -143,18 +162,16 @@ func (w *Web) tagsGet(c echo.Context) error {
 }
 
 // 标签列表
-func (w *Web) tags() []Tag {
-	ts := []Tag{}
+func (w *Web) tags() TagItems {
+	ts := TagItems{}
 	w.Iterator([]byte{TagIDPrefix, '-'}, func(key, value []byte) {
-		t := Tag{}
-		if utils.Decode(value, &t) == nil {
+		t := &Tag{}
+		if utils.Decode(value, t) == nil {
 			ts = append(ts, t)
 		} else {
 			log.Printf("标签解析失败 %x \n", key)
 		}
 	})
-	sort.Slice(ts, func(i int, j int) bool {
-		return ts[i].Name < ts[j].Name
-	})
+	ts.sort()
 	return ts
 }

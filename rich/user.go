@@ -20,6 +20,25 @@ type User struct {
 	Extend map[string]string `json:"extend"` // 扩展属性
 }
 
+// Users 用户列表
+type Users []*User
+
+func (us Users) sort() {
+	sort.Slice(us, func(i int, j int) bool {
+		return us[i].Name < us[j].Name
+	})
+}
+
+func (us Users) filter(c func(*User) bool) Users {
+	ret := Users{}
+	for _, u := range us {
+		if c(u) {
+			ret = append(ret, u)
+		}
+	}
+	return ret
+}
+
 // 用户路由
 func (w *Web) userRoute(c *echo.Group) {
 	c.GET("", w.usersGet)            // 全部用户
@@ -64,16 +83,14 @@ func (w *Web) usersGet(c echo.Context) error {
 	return c.JSON(http.StatusOK, ret)
 }
 
-func (w *Web) users() []*User {
-	us := []*User{}
+func (w *Web) users() Users {
+	us := Users{}
 	w.Iterator([]byte{UserIDPrefix, '-'}, func(key, data []byte) {
 		u := &User{}
 		utils.Decode(data, u)
 		us = append(us, u)
 	})
-	sort.Slice(us, func(i int, j int) bool {
-		return us[i].Name < us[j].Name
-	})
+	us.sort()
 	return us
 }
 
@@ -103,7 +120,7 @@ func (w *Web) userPut(c echo.Context) error {
 	u := User{}
 	return w.ObjPut(c, &u, UserIDPrefix, func() error { return w.Bind(c, &u) }, func() error {
 		users := w.users()
-		utils.Filter(&users, func(o User) bool { return !o.ID.Equal(u.ID) })
+		users = users.filter(func(o *User) bool { return !o.ID.Equal(u.ID) })
 		for _, o := range users {
 			if o.Name == u.Name {
 				return errors.New("姓名重复")

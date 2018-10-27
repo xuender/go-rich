@@ -55,10 +55,7 @@ func (w *Web) profilePassPatch(c echo.Context) error {
 	if !bytes.Equal(u.Pass, Pass(old)) {
 		return errors.New("原密码错误")
 	}
-	u.Pass = Pass(pass)
-	w.Put(u.ID[:], u)
-	// 删除用户密钥缓存
-	delete(w.cache, u.ID.String())
+	w.UpdatePass(&u, pass)
 	t, err := w.Signed(u.ID.String(), u.Pass)
 	if err != nil {
 		return err

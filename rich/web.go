@@ -246,17 +246,26 @@ func (w *Web) login(c echo.Context) error {
 		return errors.New("密码不能为空")
 	}
 	passBs := Pass(pass)
-	for _, u := range w.users() {
-		// 身份认证
-		if (u.Name == nick || u.Phone == nick) && bytes.Equal(passBs, u.Pass) {
-			t, err := w.Signed(u.ID.String(), passBs)
-			if err != nil {
-				return err
-			}
-			return c.JSON(http.StatusOK, t)
+	u := w.FindUser(nick)
+	// 身份认证
+	if u != nil && bytes.Equal(passBs, u.Pass) {
+		t, err := w.Signed(u.ID.String(), passBs)
+		if err != nil {
+			return err
 		}
+		return c.JSON(http.StatusOK, t)
 	}
 	return echo.ErrUnauthorized
+}
+
+// 查找用户
+func (w *Web) FindUser(nick string) *User {
+	for _, u := range w.users() {
+		if u.Name == nick || u.Phone == nick {
+			return u
+		}
+	}
+	return nil
 }
 
 // 上传文件临时保存

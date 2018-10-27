@@ -22,7 +22,8 @@ export class TradeService extends ObjService<Trade>{
   path() { return '/api/trades' }
 
   async days(now: string) {
-    const days = await this.http.get<string[]>(this.url).toPromise()
+    let days = await this.http.get<string[]>(this.url).toPromise()
+    if (!days) { days = [] }
     if (!includes(days, now)) {
       days.push(now)
     }

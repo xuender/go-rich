@@ -38,5 +38,5 @@ func Upgrade(version, temp string) error {
 func init() {
 	rootCmd.AddCommand(upgradeCmd)
 	upgradeCmd.Flags().StringP(_temp, "t", "temp", "临时目录")
-	upgradeCmd.Runnable()
+	// upgradeCmd.Runnable()
 }

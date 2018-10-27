@@ -45,11 +45,16 @@ func (w *Web) userPass(c echo.Context) error {
 	if err := w.ObjLoad(c, u); err != nil {
 		return err
 	}
+	w.UpdatePass(u, pass)
+	return c.JSON(http.StatusOK, u)
+}
+
+// 修改用户密码
+func (w *Web) UpdatePass(u *User, pass string) {
 	u.Pass = Pass(pass)
 	w.Put(u.ID[:], u)
 	// 删除用户密钥缓存
 	delete(w.cache, u.ID.String())
-	return c.JSON(http.StatusOK, u)
 }
 
 // 获取全部用户
@@ -59,11 +64,11 @@ func (w *Web) usersGet(c echo.Context) error {
 	return c.JSON(http.StatusOK, ret)
 }
 
-func (w *Web) users() []User {
-	us := []User{}
+func (w *Web) users() []*User {
+	us := []*User{}
 	w.Iterator([]byte{UserIDPrefix, '-'}, func(key, data []byte) {
-		u := User{}
-		utils.Decode(data, &u)
+		u := &User{}
+		utils.Decode(data, u)
 		us = append(us, u)
 	})
 	sort.Slice(us, func(i int, j int) bool {
